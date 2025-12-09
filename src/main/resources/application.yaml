@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: pandq
+  profiles:
+    active: local
+  liquibase:
+    change-log: classpath:db/changelog/grad-changelog-master.yaml

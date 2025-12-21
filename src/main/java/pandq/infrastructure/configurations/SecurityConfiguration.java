@@ -37,9 +37,15 @@ public class SecurityConfiguration {
                                         "/swagger-ui/**",
                                         "/swagger-ui.html",
                                         "/webjars/**",
-                                        "/error"
+                                        "/error",
+                                        "/api/v1/products/search",
+                                        "/api/v1/products",
+                                        "/api/v1/products/{id}",
+                                        "/api/v1/categories",
+                                        "/api/v1/categories/{id}",
+                                        "/init-config",
+                                        "/master-data/**"
                                 ).permitAll()
-                                // .requestMatchers("/api/public/**").permitAll() // Example if you have public endpoints
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

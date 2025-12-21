@@ -1,9 +1,11 @@
 package pandq.application.services;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pandq.adapter.web.api.dtos.ProductDTO;
+import pandq.adapter.web.api.dtos.ProductSearchDTO;
 import pandq.application.port.repositories.CategoryRepository;
 import pandq.application.port.repositories.ProductRepository;
 import pandq.domain.models.product.Category;
@@ -40,6 +42,12 @@ public class ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
         return mapToResponse(product);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ProductSearchDTO.Response> searchProducts(ProductSearchDTO.SearchRequest request) {
+        Page<Product> products = productRepository.search(request);
+        return products.map(this::mapToSearchResponse);
     }
 
     @Transactional
@@ -102,4 +110,22 @@ public class ProductService {
         response.setReviewCount(product.getReviewCount());
         return response;
     }
+
+    private ProductSearchDTO.Response mapToSearchResponse(Product product) {
+        ProductSearchDTO.Response response = new ProductSearchDTO.Response();
+        response.setId(product.getId());
+        response.setCategoryId(product.getCategory().getId());
+        response.setCategoryName(product.getCategory().getName());
+        response.setName(product.getName());
+        response.setDescription(product.getDescription());
+        response.setPrice(product.getPrice());
+        response.setThumbnailUrl(product.getThumbnailUrl());
+        response.setAverageRating(product.getAverageRating());
+        response.setReviewCount(product.getReviewCount());
+        // TODO: Implement isBestSeller and stockQuantity logic when Inventory module is ready
+        response.setIsBestSeller(product.getReviewCount() != null && product.getReviewCount() > 100);
+        response.setStockQuantity(100); // Placeholder - integrate with Inventory later
+        return response;
+    }
 }
+

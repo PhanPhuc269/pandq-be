@@ -1,5 +1,7 @@
 package pandq.application.port.repositories;
 
+import org.springframework.data.domain.Page;
+import pandq.adapter.web.api.dtos.ProductSearchDTO;
 import pandq.domain.models.product.Product;
 
 import java.util.List;
@@ -12,4 +14,5 @@ public interface ProductRepository {
     List<Product> findAll();
     List<Product> findByCategoryId(UUID categoryId);
     void deleteById(UUID id);
+    Page<Product> search(ProductSearchDTO.SearchRequest request);
 }

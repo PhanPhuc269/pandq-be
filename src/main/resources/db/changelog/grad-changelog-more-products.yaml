@@ -1,0 +1,540 @@
+databaseChangeLog:
+  - changeSet:
+      id: 021-seed-more-products
+      author: antigravity
+      changes:
+        # ===== ĐIỆN THOẠI (category: 11111111-1111-1111-1111-111111111111) =====
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: category_id, value: "11111111-1111-1111-1111-111111111111" }
+              - column: { name: name, value: "iPhone 14 Pro" }
+              - column: { name: description, value: "Dynamic Island, chip A16 Bionic." }
+              - column: { name: price, value: "27990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1678685888221-cda773a3dcdb?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "a1000002-0001-0001-0001-000000000002" }
+              - column: { name: category_id, value: "11111111-1111-1111-1111-111111111111" }
+              - column: { name: name, value: "iPhone 13" }
+              - column: { name: description, value: "Chip A15 Bionic, camera kép 12MP." }
+              - column: { name: price, value: "17990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1632633173522-47456de71b76?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "a1000003-0001-0001-0001-000000000003" }
+              - column: { name: category_id, value: "11111111-1111-1111-1111-111111111111" }
+              - column: { name: name, value: "Samsung Galaxy Z Fold 5" }
+              - column: { name: description, value: "Màn hình gập, Snapdragon 8 Gen 2." }
+              - column: { name: price, value: "41990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "a1000004-0001-0001-0001-000000000004" }
+              - column: { name: category_id, value: "11111111-1111-1111-1111-111111111111" }
+              - column: { name: name, value: "Samsung Galaxy Z Flip 5" }
+              - column: { name: description, value: "Thiết kế gập compact, màn hình phụ lớn." }
+              - column: { name: price, value: "25990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1610945264803-c22b62d2a7b3?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "a1000005-0001-0001-0001-000000000005" }
+              - column: { name: category_id, value: "11111111-1111-1111-1111-111111111111" }
+              - column: { name: name, value: "Samsung Galaxy A54 5G" }
+              - column: { name: description, value: "Giá tốt, camera 50MP, pin 5000mAh." }
+              - column: { name: price, value: "10490000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1605236453806-6ff36851218e?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "a1000006-0001-0001-0001-000000000006" }
+              - column: { name: category_id, value: "11111111-1111-1111-1111-111111111111" }
+              - column: { name: name, value: "Google Pixel 8 Pro" }
+              - column: { name: description, value: "AI camera tốt nhất, Tensor G3." }
+              - column: { name: price, value: "26990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "a1000007-0001-0001-0001-000000000007" }
+              - column: { name: category_id, value: "11111111-1111-1111-1111-111111111111" }
+              - column: { name: name, value: "Xiaomi 14 Ultra" }
+              - column: { name: description, value: "Camera Leica, Snapdragon 8 Gen 3." }
+              - column: { name: price, value: "29990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "a1000008-0001-0001-0001-000000000008" }
+              - column: { name: category_id, value: "11111111-1111-1111-1111-111111111111" }
+              - column: { name: name, value: "OPPO Find X7 Ultra" }
+              - column: { name: description, value: "Camera Hasselblad, sạc nhanh 100W." }
+              - column: { name: price, value: "28990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "a1000009-0001-0001-0001-000000000009" }
+              - column: { name: category_id, value: "11111111-1111-1111-1111-111111111111" }
+              - column: { name: name, value: "OnePlus 12" }
+              - column: { name: description, value: "Màn hình 2K LTPO, sạc 100W." }
+              - column: { name: price, value: "22990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1605236453806-6ff36851218e?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "a1000010-0001-0001-0001-000000000010" }
+              - column: { name: category_id, value: "11111111-1111-1111-1111-111111111111" }
+              - column: { name: name, value: "Vivo X100 Pro" }
+              - column: { name: description, value: "Camera ZEISS, Dimensity 9300." }
+              - column: { name: price, value: "24990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "a1000011-0001-0001-0001-000000000011" }
+              - column: { name: category_id, value: "11111111-1111-1111-1111-111111111111" }
+              - column: { name: name, value: "Realme GT 5 Pro" }
+              - column: { name: description, value: "Gaming phone, Snapdragon 8 Gen 3." }
+              - column: { name: price, value: "16990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "a1000012-0001-0001-0001-000000000012" }
+              - column: { name: category_id, value: "11111111-1111-1111-1111-111111111111" }
+              - column: { name: name, value: "Nothing Phone (2)" }
+              - column: { name: description, value: "Thiết kế Glyph độc đáo, Android thuần." }
+              - column: { name: price, value: "15990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+
+        # ===== LAPTOP (category: 22222222-2222-2222-2222-222222222222) =====
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "b2000001-0002-0002-0002-000000000001" }
+              - column: { name: category_id, value: "22222222-2222-2222-2222-222222222222" }
+              - column: { name: name, value: "MacBook Air M2" }
+              - column: { name: description, value: "Chip M2, thiết kế mỏng nhẹ." }
+              - column: { name: price, value: "27990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "b2000002-0002-0002-0002-000000000002" }
+              - column: { name: category_id, value: "22222222-2222-2222-2222-222222222222" }
+              - column: { name: name, value: "MacBook Pro 16 M3 Max" }
+              - column: { name: description, value: "Workstation di động, 128GB RAM." }
+              - column: { name: price, value: "89990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "b2000003-0002-0002-0002-000000000003" }
+              - column: { name: category_id, value: "22222222-2222-2222-2222-222222222222" }
+              - column: { name: name, value: "Dell XPS 15" }
+              - column: { name: description, value: "Màn hình OLED 3.5K, Intel Core i9." }
+              - column: { name: price, value: "52990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "b2000004-0002-0002-0002-000000000004" }
+              - column: { name: category_id, value: "22222222-2222-2222-2222-222222222222" }
+              - column: { name: name, value: "Dell XPS 13 Plus" }
+              - column: { name: description, value: "Thiết kế minimalist, touch bar." }
+              - column: { name: price, value: "38990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "b2000005-0002-0002-0002-000000000005" }
+              - column: { name: category_id, value: "22222222-2222-2222-2222-222222222222" }
+              - column: { name: name, value: "ASUS ROG Zephyrus G16" }
+              - column: { name: description, value: "Gaming laptop, RTX 4090, 240Hz." }
+              - column: { name: price, value: "65990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "b2000006-0002-0002-0002-000000000006" }
+              - column: { name: category_id, value: "22222222-2222-2222-2222-222222222222" }
+              - column: { name: name, value: "ASUS ZenBook Pro 14" }
+              - column: { name: description, value: "OLED 2.8K, Intel Core Ultra 9." }
+              - column: { name: price, value: "42990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "b2000007-0002-0002-0002-000000000007" }
+              - column: { name: category_id, value: "22222222-2222-2222-2222-222222222222" }
+              - column: { name: name, value: "Lenovo ThinkPad X1 Carbon" }
+              - column: { name: description, value: "Business laptop cao cấp, bền bỉ." }
+              - column: { name: price, value: "45990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "b2000008-0002-0002-0002-000000000008" }
+              - column: { name: category_id, value: "22222222-2222-2222-2222-222222222222" }
+              - column: { name: name, value: "Lenovo Legion Pro 7i" }
+              - column: { name: description, value: "Gaming RTX 4080, màn hình 165Hz." }
+              - column: { name: price, value: "58990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "b2000009-0002-0002-0002-000000000009" }
+              - column: { name: category_id, value: "22222222-2222-2222-2222-222222222222" }
+              - column: { name: name, value: "HP Spectre x360 14" }
+              - column: { name: description, value: "2-in-1 convertible, OLED 3K." }
+              - column: { name: price, value: "39990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "b2000010-0002-0002-0002-000000000010" }
+              - column: { name: category_id, value: "22222222-2222-2222-2222-222222222222" }
+              - column: { name: name, value: "HP Omen 16" }
+              - column: { name: description, value: "Gaming RTX 4070, QHD 240Hz." }
+              - column: { name: price, value: "45990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "b2000011-0002-0002-0002-000000000011" }
+              - column: { name: category_id, value: "22222222-2222-2222-2222-222222222222" }
+              - column: { name: name, value: "Razer Blade 15" }
+              - column: { name: description, value: "Premium gaming, vỏ nhôm CNC." }
+              - column: { name: price, value: "62990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "b2000012-0002-0002-0002-000000000012" }
+              - column: { name: category_id, value: "22222222-2222-2222-2222-222222222222" }
+              - column: { name: name, value: "MSI Creator Z17" }
+              - column: { name: description, value: "Dành cho creator, màn hình Mini LED." }
+              - column: { name: price, value: "55990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+
+        # ===== PHỤ KIỆN (category: 33333333-aaaa-3333-aaaa-333333333333) =====
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "c3000001-0003-0003-0003-000000000001" }
+              - column: { name: category_id, value: "33333333-aaaa-3333-aaaa-333333333333" }
+              - column: { name: name, value: "AirPods Max" }
+              - column: { name: description, value: "Tai nghe over-ear cao cấp của Apple." }
+              - column: { name: price, value: "12990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1613040809024-b4ef7ba99bc3?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "c3000002-0003-0003-0003-000000000002" }
+              - column: { name: category_id, value: "33333333-aaaa-3333-aaaa-333333333333" }
+              - column: { name: name, value: "Sony WH-1000XM5" }
+              - column: { name: description, value: "Chống ồn tốt nhất, pin 30 giờ." }
+              - column: { name: price, value: "8490000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "c3000003-0003-0003-0003-000000000003" }
+              - column: { name: category_id, value: "33333333-aaaa-3333-aaaa-333333333333" }
+              - column: { name: name, value: "Samsung Galaxy Buds3 Pro" }
+              - column: { name: description, value: "TWS ANC, âm thanh 360." }
+              - column: { name: price, value: "5490000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "c3000004-0003-0003-0003-000000000004" }
+              - column: { name: category_id, value: "33333333-aaaa-3333-aaaa-333333333333" }
+              - column: { name: name, value: "Apple Magic Keyboard" }
+              - column: { name: description, value: "Bàn phím không dây cho Mac." }
+              - column: { name: price, value: "2990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "c3000005-0003-0003-0003-000000000005" }
+              - column: { name: category_id, value: "33333333-aaaa-3333-aaaa-333333333333" }
+              - column: { name: name, value: "Logitech MX Master 3S" }
+              - column: { name: description, value: "Chuột ergonomic cao cấp." }
+              - column: { name: price, value: "2790000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "c3000006-0003-0003-0003-000000000006" }
+              - column: { name: category_id, value: "33333333-aaaa-3333-aaaa-333333333333" }
+              - column: { name: name, value: "Anker PowerCore 26800" }
+              - column: { name: description, value: "Pin dự phòng 26800mAh, 3 cổng USB." }
+              - column: { name: price, value: "1290000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "c3000007-0003-0003-0003-000000000007" }
+              - column: { name: category_id, value: "33333333-aaaa-3333-aaaa-333333333333" }
+              - column: { name: name, value: "Apple 20W USB-C Adapter" }
+              - column: { name: description, value: "Sạc nhanh 20W cho iPhone/iPad." }
+              - column: { name: price, value: "490000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "c3000008-0003-0003-0003-000000000008" }
+              - column: { name: category_id, value: "33333333-aaaa-3333-aaaa-333333333333" }
+              - column: { name: name, value: "JBL Flip 6" }
+              - column: { name: description, value: "Loa Bluetooth chống nước IP67." }
+              - column: { name: price, value: "2990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "c3000009-0003-0003-0003-000000000009" }
+              - column: { name: category_id, value: "33333333-aaaa-3333-aaaa-333333333333" }
+              - column: { name: name, value: "Apple AirTag 4-Pack" }
+              - column: { name: description, value: "Thiết bị theo dõi Precision Finding." }
+              - column: { name: price, value: "2990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "c3000010-0003-0003-0003-000000000010" }
+              - column: { name: category_id, value: "33333333-aaaa-3333-aaaa-333333333333" }
+              - column: { name: name, value: "Belkin MagSafe Charger 3-in-1" }
+              - column: { name: description, value: "Sạc không dây iPhone, Watch, AirPods." }
+              - column: { name: price, value: "3490000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "c3000011-0003-0003-0003-000000000011" }
+              - column: { name: category_id, value: "33333333-aaaa-3333-aaaa-333333333333" }
+              - column: { name: name, value: "SanDisk Extreme Pro 1TB" }
+              - column: { name: description, value: "USB-C SSD 2000MB/s." }
+              - column: { name: price, value: "4990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "c3000012-0003-0003-0003-000000000012" }
+              - column: { name: category_id, value: "33333333-aaaa-3333-aaaa-333333333333" }
+              - column: { name: name, value: "Apple Pencil Pro" }
+              - column: { name: description, value: "Bút cảm ứng cho iPad Pro/Air." }
+              - column: { name: price, value: "3290000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+
+        # ===== ĐỒNG HỒ (category: 44444444-aaaa-4444-aaaa-444444444444) =====
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "d4000001-0004-0004-0004-000000000001" }
+              - column: { name: category_id, value: "44444444-aaaa-4444-aaaa-444444444444" }
+              - column: { name: name, value: "Apple Watch Series 9" }
+              - column: { name: description, value: "Chip S9, Double Tap gesture." }
+              - column: { name: price, value: "10990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "d4000002-0004-0004-0004-000000000002" }
+              - column: { name: category_id, value: "44444444-aaaa-4444-aaaa-444444444444" }
+              - column: { name: name, value: "Apple Watch SE 2" }
+              - column: { name: description, value: "Giá tốt, đầy đủ tính năng cơ bản." }
+              - column: { name: price, value: "6490000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "d4000003-0004-0004-0004-000000000003" }
+              - column: { name: category_id, value: "44444444-aaaa-4444-aaaa-444444444444" }
+              - column: { name: name, value: "Samsung Galaxy Watch 6 Classic" }
+              - column: { name: description, value: "Bezel xoay, thiết kế cổ điển." }
+              - column: { name: price, value: "9990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "d4000004-0004-0004-0004-000000000004" }
+              - column: { name: category_id, value: "44444444-aaaa-4444-aaaa-444444444444" }
+              - column: { name: name, value: "Samsung Galaxy Watch Ultra" }
+              - column: { name: description, value: "Dành cho thể thao mạo hiểm." }
+              - column: { name: price, value: "15990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "d4000005-0004-0004-0004-000000000005" }
+              - column: { name: category_id, value: "44444444-aaaa-4444-aaaa-444444444444" }
+              - column: { name: name, value: "Garmin Fenix 7X Pro" }
+              - column: { name: description, value: "GPS multi-band, pin 37 ngày." }
+              - column: { name: price, value: "22990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "d4000006-0004-0004-0004-000000000006" }
+              - column: { name: category_id, value: "44444444-aaaa-4444-aaaa-444444444444" }
+              - column: { name: name, value: "Garmin Venu 3" }
+              - column: { name: description, value: "AMOLED, theo dõi giấc ngủ nâng cao." }
+              - column: { name: price, value: "11990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "d4000007-0004-0004-0004-000000000007" }
+              - column: { name: category_id, value: "44444444-aaaa-4444-aaaa-444444444444" }
+              - column: { name: name, value: "Fitbit Sense 2" }
+              - column: { name: description, value: "Theo dõi stress, ECG, SpO2." }
+              - column: { name: price, value: "7490000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "d4000008-0004-0004-0004-000000000008" }
+              - column: { name: category_id, value: "44444444-aaaa-4444-aaaa-444444444444" }
+              - column: { name: name, value: "Xiaomi Watch S3" }
+              - column: { name: description, value: "AMOLED 1.43 inch, 150+ bài tập." }
+              - column: { name: price, value: "3990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "d4000009-0004-0004-0004-000000000009" }
+              - column: { name: category_id, value: "44444444-aaaa-4444-aaaa-444444444444" }
+              - column: { name: name, value: "Amazfit GTR 4" }
+              - column: { name: description, value: "Pin 14 ngày, GPS dual-band." }
+              - column: { name: price, value: "4990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "d4000010-0004-0004-0004-000000000010" }
+              - column: { name: category_id, value: "44444444-aaaa-4444-aaaa-444444444444" }
+              - column: { name: name, value: "Huawei Watch GT 4" }
+              - column: { name: description, value: "Thiết kế sang trọng, pin 14 ngày." }
+              - column: { name: price, value: "5990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "d4000011-0004-0004-0004-000000000011" }
+              - column: { name: category_id, value: "44444444-aaaa-4444-aaaa-444444444444" }
+              - column: { name: name, value: "Google Pixel Watch 2" }
+              - column: { name: description, value: "Fitbit tích hợp, Wear OS 4." }
+              - column: { name: price, value: "8990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }
+        - insert:
+            tableName: products
+            columns:
+              - column: { name: id, value: "d4000012-0004-0004-0004-000000000012" }
+              - column: { name: category_id, value: "44444444-aaaa-4444-aaaa-444444444444" }
+              - column: { name: name, value: "OPPO Watch 4 Pro" }
+              - column: { name: description, value: "LTPO AMOLED, sạc nhanh VOOC." }
+              - column: { name: price, value: "7990000" }
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400" }
+              - column: { name: status, value: "ACTIVE" }
+              - column: { name: created_at, valueDate: "2024-01-02T00:00:00" }

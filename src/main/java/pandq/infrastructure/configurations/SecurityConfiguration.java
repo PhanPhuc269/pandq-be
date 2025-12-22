@@ -38,13 +38,13 @@ public class SecurityConfiguration {
                                         "/swagger-ui.html",
                                         "/webjars/**",
                                         "/error",
+                                        "/api/v1/init-config",
+                                        "/api/v1/master-data/**",
                                         "/api/v1/products/search",
                                         "/api/v1/products",
                                         "/api/v1/products/{id}",
                                         "/api/v1/categories",
-                                        "/api/v1/categories/{id}",
-                                        "/init-config",
-                                        "/master-data/**"
+                                        "/api/v1/categories/{id}"
                                 ).permitAll()
                                 .anyRequest().authenticated()
                 )

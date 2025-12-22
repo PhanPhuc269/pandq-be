@@ -39,7 +39,13 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public Optional<User> findByFirebaseUid(String firebaseUid) {
+        return userJpaRepository.findByFirebaseUid(firebaseUid);
+    }
+
+    @Override
     public void deleteById(UUID id) {
         userJpaRepository.deleteById(id);
     }
 }
+

@@ -7,3 +7,5 @@ databaseChangeLog:
       file: db/changelog/grad-changelog-update-images.yaml
   - include:
       file: db/changelog/grad-changelog-more-products.yaml
+  - include:
+      file: db/changelog/grad-changelog-fcm-token.yaml

@@ -1,0 +1,521 @@
+databaseChangeLog:
+  # =====================================================
+  # DEMO DATA: Product Images, Specifications, Reviews
+  # =====================================================
+  
+  - changeSet:
+      id: 030-demo-product-images
+      author: antigravity
+      changes:
+        # ----- iPhone 15 Pro Images -----
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "33333333-3333-3333-3333-333333333333" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1696446701796-da61225697cc?w=600" }
+              - column: { name: display_order, value: 1 }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "33333333-3333-3333-3333-333333333333" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1678685888221-cda773a3dcdb?w=600" }
+              - column: { name: display_order, value: 2 }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "33333333-3333-3333-3333-333333333333" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1710023038502-d66d11c57452?w=600" }
+              - column: { name: display_order, value: 3 }
+              
+        # ----- MacBook Pro 14 Images -----
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "44444444-4444-4444-4444-444444444444" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600" }
+              - column: { name: display_order, value: 1 }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "44444444-4444-4444-4444-444444444444" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=600" }
+              - column: { name: display_order, value: 2 }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "44444444-4444-4444-4444-444444444444" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=600" }
+              - column: { name: display_order, value: 3 }
+
+        # ----- Sony WH-1000XM5 Images -----
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000002-0003-0003-0003-000000000002" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600" }
+              - column: { name: display_order, value: 1 }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000002-0003-0003-0003-000000000002" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1613040809024-b4ef7ba99bc3?w=600" }
+              - column: { name: display_order, value: 2 }
+
+        # ----- Apple Watch Series 9 Images -----
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "d4000001-0004-0004-0004-000000000001" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=600" }
+              - column: { name: display_order, value: 1 }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "d4000001-0004-0004-0004-000000000001" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600" }
+              - column: { name: display_order, value: 2 }
+
+  - changeSet:
+      id: 031-demo-product-specifications
+      author: antigravity
+      changes:
+        # ===== iPhone 15 Pro Specifications =====
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "33333333-3333-3333-3333-333333333333" }
+              - column: { name: spec_key, value: "Chip" }
+              - column: { name: spec_value, value: "Apple A17 Pro" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "33333333-3333-3333-3333-333333333333" }
+              - column: { name: spec_key, value: "RAM" }
+              - column: { name: spec_value, value: "8GB" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "33333333-3333-3333-3333-333333333333" }
+              - column: { name: spec_key, value: "Màn hình" }
+              - column: { name: spec_value, value: "6.1 inch Super Retina XDR" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "33333333-3333-3333-3333-333333333333" }
+              - column: { name: spec_key, value: "Pin" }
+              - column: { name: spec_value, value: "23 giờ xem video" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "33333333-3333-3333-3333-333333333333" }
+              - column: { name: spec_key, value: "Camera" }
+              - column: { name: spec_value, value: "48MP + 12MP + 12MP" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "33333333-3333-3333-3333-333333333333" }
+              - column: { name: spec_key, value: "Bộ nhớ" }
+              - column: { name: spec_value, value: "256GB" }
+
+        # ===== MacBook Pro 14 Specifications =====
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "44444444-4444-4444-4444-444444444444" }
+              - column: { name: spec_key, value: "Chip" }
+              - column: { name: spec_value, value: "Apple M3 Pro" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "44444444-4444-4444-4444-444444444444" }
+              - column: { name: spec_key, value: "RAM" }
+              - column: { name: spec_value, value: "18GB Unified Memory" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "44444444-4444-4444-4444-444444444444" }
+              - column: { name: spec_key, value: "Màn hình" }
+              - column: { name: spec_value, value: "14.2 inch Liquid Retina XDR" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "44444444-4444-4444-4444-444444444444" }
+              - column: { name: spec_key, value: "Pin" }
+              - column: { name: spec_value, value: "17 giờ sử dụng" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "44444444-4444-4444-4444-444444444444" }
+              - column: { name: spec_key, value: "Bộ nhớ" }
+              - column: { name: spec_value, value: "512GB SSD" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "44444444-4444-4444-4444-444444444444" }
+              - column: { name: spec_key, value: "Kết nối" }
+              - column: { name: spec_value, value: "3x Thunderbolt 4, HDMI, MagSafe" }
+
+        # ===== Sony WH-1000XM5 Specifications =====
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000002-0003-0003-0003-000000000002" }
+              - column: { name: spec_key, value: "Pin" }
+              - column: { name: spec_value, value: "30 giờ" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000002-0003-0003-0003-000000000002" }
+              - column: { name: spec_key, value: "Kết nối" }
+              - column: { name: spec_value, value: "Bluetooth 5.2" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000002-0003-0003-0003-000000000002" }
+              - column: { name: spec_key, value: "Khối lượng" }
+              - column: { name: spec_value, value: "250g" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000002-0003-0003-0003-000000000002" }
+              - column: { name: spec_key, value: "Màu sắc" }
+              - column: { name: spec_value, value: "Đen / Bạc" }
+
+        # ===== Apple Watch Series 9 Specifications =====
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "d4000001-0004-0004-0004-000000000001" }
+              - column: { name: spec_key, value: "Chip" }
+              - column: { name: spec_value, value: "Apple S9 SiP" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "d4000001-0004-0004-0004-000000000001" }
+              - column: { name: spec_key, value: "Màn hình" }
+              - column: { name: spec_value, value: "41mm / 45mm OLED Always-On" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "d4000001-0004-0004-0004-000000000001" }
+              - column: { name: spec_key, value: "Pin" }
+              - column: { name: spec_value, value: "18 giờ sử dụng" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "d4000001-0004-0004-0004-000000000001" }
+              - column: { name: spec_key, value: "Kết nối" }
+              - column: { name: spec_value, value: "GPS + Cellular" }
+
+  - changeSet:
+      id: 032-demo-reviews
+      author: antigravity
+      changes:
+        # ===== iPhone 15 Pro Reviews =====
+        - insert:
+            tableName: reviews
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: user_id, value: "cccc2222-cccc-2222-cccc-222222222222" }
+              - column: { name: product_id, value: "33333333-3333-3333-3333-333333333333" }
+              - column: { name: rating, value: 5 }
+              - column: { name: comment, value: "Máy chạy mượt mà, camera xuất sắc! Chụp đêm đẹp không tưởng. Titanium nhẹ hơn nhiều so với thế hệ trước." }
+              - column: { name: created_at, valueDate: "2024-11-15T10:30:00" }
+        - insert:
+            tableName: reviews
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: user_id, value: "cccc2222-cccc-2222-cccc-222222222222" }
+              - column: { name: product_id, value: "33333333-3333-3333-3333-333333333333" }
+              - column: { name: rating, value: 5 }
+              - column: { name: comment, value: "Đã dùng iPhone từ đời 11, đây là bản nâng cấp đáng giá nhất. Action Button rất tiện lợi!" }
+              - column: { name: created_at, valueDate: "2024-11-20T14:15:00" }
+        - insert:
+            tableName: reviews
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: user_id, value: "cccc2222-cccc-2222-cccc-222222222222" }
+              - column: { name: product_id, value: "33333333-3333-3333-3333-333333333333" }
+              - column: { name: rating, value: 4 }
+              - column: { name: comment, value: "Máy rất tốt nhưng giá hơi cao. Pin cải thiện so với 14 Pro. USB-C cuối cùng cũng có!" }
+              - column: { name: created_at, valueDate: "2024-12-01T09:00:00" }
+
+        # ===== MacBook Pro 14 Reviews =====
+        - insert:
+            tableName: reviews
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: user_id, value: "cccc2222-cccc-2222-cccc-222222222222" }
+              - column: { name: product_id, value: "44444444-4444-4444-4444-444444444444" }
+              - column: { name: rating, value: 5 }
+              - column: { name: comment, value: "Render video 4K phà phà, không quạt, không nóng. M3 Pro quá mạnh cho công việc design và video editing." }
+              - column: { name: created_at, valueDate: "2024-10-25T16:45:00" }
+        - insert:
+            tableName: reviews
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: user_id, value: "cccc2222-cccc-2222-cccc-222222222222" }
+              - column: { name: product_id, value: "44444444-4444-4444-4444-444444444444" }
+              - column: { name: rating, value: 5 }
+              - column: { name: comment, value: "Màn hình XDR đẹp không chê vào đâu được. Dùng cho photography rất chuẩn màu." }
+              - column: { name: created_at, valueDate: "2024-11-10T11:20:00" }
+        - insert:
+            tableName: reviews
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: user_id, value: "cccc2222-cccc-2222-cccc-222222222222" }
+              - column: { name: product_id, value: "44444444-4444-4444-4444-444444444444" }
+              - column: { name: rating, value: 4 }
+              - column: { name: comment, value: "Làm dev iOS/macOS rất mượt. Xcode chạy nhanh hơn Intel quá nhiều. Chỉ tiếc notch hơi to." }
+              - column: { name: created_at, valueDate: "2024-12-05T08:30:00" }
+
+        # ===== Sony WH-1000XM5 Reviews =====
+        - insert:
+            tableName: reviews
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: user_id, value: "cccc2222-cccc-2222-cccc-222222222222" }
+              - column: { name: product_id, value: "c3000002-0003-0003-0003-000000000002" }
+              - column: { name: rating, value: 5 }
+              - column: { name: comment, value: "Chống ồn tốt nhất từng dùng. Nghe nhạc trên máy bay ngon lành, không bị ù tai." }
+              - column: { name: created_at, valueDate: "2024-11-05T20:00:00" }
+        - insert:
+            tableName: reviews
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: user_id, value: "cccc2222-cccc-2222-cccc-222222222222" }
+              - column: { name: product_id, value: "c3000002-0003-0003-0003-000000000002" }
+              - column: { name: rating, value: 4 }
+              - column: { name: comment, value: "Bass tốt, treble trong. Chỉ tiếc không gập được như XM4. Đeo 3-4 tiếng vẫn thoải mái." }
+              - column: { name: created_at, valueDate: "2024-11-28T15:45:00" }
+
+        # ===== Apple Watch Series 9 Reviews =====
+        - insert:
+            tableName: reviews
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: user_id, value: "cccc2222-cccc-2222-cccc-222222222222" }
+              - column: { name: product_id, value: "d4000001-0004-0004-0004-000000000001" }
+              - column: { name: rating, value: 5 }
+              - column: { name: comment, value: "Double Tap thần thánh! Đang lái xe mà bấm nhận cuộc gọi dễ dàng. Theo dõi sức khỏe rất chi tiết." }
+              - column: { name: created_at, valueDate: "2024-10-30T12:00:00" }
+        - insert:
+            tableName: reviews
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: user_id, value: "cccc2222-cccc-2222-cccc-222222222222" }
+              - column: { name: product_id, value: "d4000001-0004-0004-0004-000000000001" }
+              - column: { name: rating, value: 4 }
+              - column: { name: comment, value: "Nâng cấp từ Series 7, màn sáng hơn. Chạy bộ track GPS chính xác. Tiếc là pin vẫn chỉ 1 ngày." }
+              - column: { name: created_at, valueDate: "2024-12-10T07:30:00" }
+
+  - changeSet:
+      id: 033-demo-update-product-ratings
+      author: antigravity
+      changes:
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: 4.8 }
+              - column: { name: review_count, value: 156 }
+            where: id = '33333333-3333-3333-3333-333333333333'
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: 4.9 }
+              - column: { name: review_count, value: 89 }
+            where: id = '44444444-4444-4444-4444-444444444444'
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: 4.7 }
+              - column: { name: review_count, value: 234 }
+            where: id = 'c3000002-0003-0003-0003-000000000002'
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: 4.6 }
+              - column: { name: review_count, value: 312 }
+            where: id = 'd4000001-0004-0004-0004-000000000001'
+        # Update other popular products
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: 4.5 }
+              - column: { name: review_count, value: 178 }
+            where: id = 'a1000001-0001-0001-0001-000000000001'
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: 4.4 }
+              - column: { name: review_count, value: 95 }
+            where: id = 'a1000003-0001-0001-0001-000000000003'
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: 4.8 }
+              - column: { name: review_count, value: 67 }
+            where: id = 'c3000001-0003-0003-0003-000000000001'
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: 4.3 }
+              - column: { name: review_count, value: 145 }
+            where: id = 'b2000001-0002-0002-0002-000000000001'
+
+  - changeSet:
+      id: 034-create-product-related-table
+      author: antigravity
+      changes:
+        - createTable:
+            tableName: product_related
+            columns:
+              - column:
+                  name: product_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: related_product_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: product_related
+            baseColumnNames: product_id
+            referencedTableName: products
+            referencedColumnNames: id
+            constraintName: fk_product_related_product
+        - addForeignKeyConstraint:
+            baseTableName: product_related
+            baseColumnNames: related_product_id
+            referencedTableName: products
+            referencedColumnNames: id
+            constraintName: fk_product_related_related_product
+
+  - changeSet:
+      id: 035-demo-related-products
+      author: antigravity
+      changes:
+        # iPhone 15 Pro -> related to other phones and accessories
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "33333333-3333-3333-3333-333333333333" }
+              - column: { name: related_product_id, value: "a1000001-0001-0001-0001-000000000001" }
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "33333333-3333-3333-3333-333333333333" }
+              - column: { name: related_product_id, value: "c3000001-0003-0003-0003-000000000001" }
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "33333333-3333-3333-3333-333333333333" }
+              - column: { name: related_product_id, value: "d4000001-0004-0004-0004-000000000001" }
+              
+        # MacBook Pro -> related to other laptops and accessories
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "44444444-4444-4444-4444-444444444444" }
+              - column: { name: related_product_id, value: "b2000001-0002-0002-0002-000000000001" }
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "44444444-4444-4444-4444-444444444444" }
+              - column: { name: related_product_id, value: "c3000004-0003-0003-0003-000000000004" }
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "44444444-4444-4444-4444-444444444444" }
+              - column: { name: related_product_id, value: "c3000005-0003-0003-0003-000000000005" }
+
+        # Sony WH-1000XM5 -> related to other audio accessories
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "c3000002-0003-0003-0003-000000000002" }
+              - column: { name: related_product_id, value: "c3000001-0003-0003-0003-000000000001" }
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "c3000002-0003-0003-0003-000000000002" }
+              - column: { name: related_product_id, value: "c3000003-0003-0003-0003-000000000003" }
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "c3000002-0003-0003-0003-000000000002" }
+              - column: { name: related_product_id, value: "c3000008-0003-0003-0003-000000000008" }
+
+        # Apple Watch -> related to other watches and phone
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "d4000001-0004-0004-0004-000000000001" }
+              - column: { name: related_product_id, value: "d4000002-0004-0004-0004-000000000002" }
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "d4000001-0004-0004-0004-000000000001" }
+              - column: { name: related_product_id, value: "33333333-3333-3333-3333-333333333333" }
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "d4000001-0004-0004-0004-000000000001" }
+              - column: { name: related_product_id, value: "c3000010-0003-0003-0003-000000000010" }
+
+  - changeSet:
+      id: 036-demo-update-descriptions
+      author: antigravity
+      changes:
+        - update:
+            tableName: products
+            columns:
+              - column: { name: description, value: "iPhone 15 Pro được chế tác từ titan - vật liệu sử dụng trong tàu vũ trụ - đây là iPhone nhẹ nhất mà Apple từng tạo ra. Chip A17 Pro mang đến hiệu năng chơi game console AAA đầu tiên trên smartphone. Camera 48MP với ống kính thế hệ mới cho phép chụp ảnh chi tiết đáng kinh ngạc. Nút Action mới cho phép tùy chỉnh theo cách bạn muốn." }
+            where: id = '33333333-3333-3333-3333-333333333333'
+        - update:
+            tableName: products
+            columns:
+              - column: { name: description, value: "MacBook Pro 14 inch với chip M3 Pro mang đến hiệu năng CPU nhanh hơn 40% và GPU nhanh hơn 60% so với M1 Pro. RAM Unified Memory lên đến 128GB, SSD 8TB. Màn hình Liquid Retina XDR với độ sáng 3000 nits cho HDR, ProMotion 120Hz. Pin sử dụng lên đến 17 giờ - laptop Pro dành cho những người làm công việc nặng nhất." }
+            where: id = '44444444-4444-4444-4444-444444444444'
+        - update:
+            tableName: products
+            columns:
+              - column: { name: description, value: "Sony WH-1000XM5 là tai nghe chống ồn hàng đầu thế giới với 8 microphone và 2 bộ xử lý V1. Thiết kế mới nhẹ hơn, đeo thoải mái cả ngày. Pin 30 giờ với ANC bật, sạc nhanh 3 phút cho 3 giờ nghe. Hỗ trợ LDAC, DSEE Extreme, 360 Reality Audio. Có thể kết nối 2 thiết bị cùng lúc." }
+            where: id = 'c3000002-0003-0003-0003-000000000002'
+        - update:
+            tableName: products
+            columns:
+              - column: { name: description, value: "Apple Watch Series 9 với chip S9 SiP mạnh mẽ nhất từ trước đến nay. Tính năng Double Tap cho phép điều khiển bằng cử chỉ chạm hai ngón tay mà không cần chạm vào màn hình. Màn hình Always-On sáng gấp đôi, đọc rõ dưới ánh sáng mạnh. Theo dõi sức khỏe toàn diện với đo oxy máu, ECG, và theo dõi giấc ngủ." }
+            where: id = 'd4000001-0004-0004-0004-000000000001'

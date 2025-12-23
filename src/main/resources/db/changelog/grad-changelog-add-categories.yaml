@@ -1,0 +1,87 @@
+databaseChangeLog:
+  # =====================================================
+  # ADD MISSING CATEGORIES (Phụ kiện và Đồng hồ)
+  # These categories are referenced by products in grad-changelog-more-products.yaml
+  # =====================================================
+  
+  - changeSet:
+      id: 019x-add-accessories-category-final
+      author: antigravity
+      preConditions:
+        - onFail: MARK_RAN
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM categories WHERE id = '33333333-aaaa-3333-aaaa-333333333333'"
+      changes:
+        - insert:
+            tableName: categories
+            columns:
+              - column:
+                  name: id
+                  value: "33333333-aaaa-3333-aaaa-333333333333"
+              - column:
+                  name: name
+                  value: "Phụ kiện"
+              - column:
+                  name: description
+                  value: "Tai nghe, sạc, cáp, ốp lưng và các phụ kiện công nghệ"
+              - column:
+                  name: image_url
+                  value: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80"
+
+  - changeSet:
+      id: 019y-add-watches-category-final
+      author: antigravity
+      preConditions:
+        - onFail: MARK_RAN
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM categories WHERE id = '44444444-aaaa-4444-aaaa-444444444444'"
+      changes:
+        - insert:
+            tableName: categories
+            columns:
+              - column:
+                  name: id
+                  value: "44444444-aaaa-4444-aaaa-444444444444"
+              - column:
+                  name: name
+                  value: "Đồng hồ thông minh"
+              - column:
+                  name: description
+                  value: "Apple Watch, Samsung Galaxy Watch, Garmin và các smartwatch"
+              - column:
+                  name: image_url
+                  value: "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=400&q=80"
+
+  # =====================================================
+  # UPDATE EXISTING CATEGORIES WITH IMAGES
+  # =====================================================
+  - changeSet:
+      id: 020z-update-categories-images-final
+      author: antigravity
+      changes:
+        - update:
+            tableName: categories
+            columns:
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=80" }
+              - column: { name: description, value: "iPhone, Samsung, Google Pixel và các smartphone cao cấp" }
+            where: id = '11111111-1111-1111-1111-111111111111'
+        - update:
+            tableName: categories
+            columns:
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=80" }
+              - column: { name: description, value: "MacBook, Dell XPS, ASUS ROG và các laptop hiệu năng cao" }
+            where: id = '22222222-2222-2222-2222-222222222222'
+        - update:
+            tableName: categories
+            columns:
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80" }
+              - column: { name: description, value: "Tai nghe, sạc, cáp, ốp lưng và các phụ kiện công nghệ" }
+            where: id = '33333333-aaaa-3333-aaaa-333333333333'
+        - update:
+            tableName: categories
+            columns:
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=400&q=80" }
+              - column: { name: description, value: "Apple Watch, Samsung Galaxy Watch, Garmin và các smartwatch" }
+            where: id = '44444444-aaaa-4444-aaaa-444444444444'

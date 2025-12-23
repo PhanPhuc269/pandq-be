@@ -1,0 +1,361 @@
+databaseChangeLog:
+  # =====================================================
+  # ENHANCED SPECIFICATIONS & DESCRIPTIONS
+  # =====================================================
+
+  - changeSet:
+      id: 050-enhanced-product-specifications
+      author: antigravity
+      changes:
+        # ===== Samsung Galaxy S24 Ultra Specifications =====
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: spec_key, value: "Chip" }
+              - column: { name: spec_value, value: "Snapdragon 8 Gen 3 for Galaxy" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: spec_key, value: "RAM" }
+              - column: { name: spec_value, value: "12GB LPDDR5X" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: spec_key, value: "Màn hình" }
+              - column: { name: spec_value, value: "6.8 inch Dynamic AMOLED 2X, 120Hz" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: spec_key, value: "Pin" }
+              - column: { name: spec_value, value: "5000mAh, sạc nhanh 45W" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: spec_key, value: "Camera" }
+              - column: { name: spec_value, value: "200MP + 50MP + 12MP + 10MP" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: spec_key, value: "Bộ nhớ" }
+              - column: { name: spec_value, value: "256GB / 512GB / 1TB" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: spec_key, value: "Kết nối" }
+              - column: { name: spec_value, value: "5G, WiFi 7, Bluetooth 5.3, NFC" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: spec_key, value: "Kích thước" }
+              - column: { name: spec_value, value: "162.3 x 79.0 x 8.6mm" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: spec_key, value: "Khối lượng" }
+              - column: { name: spec_value, value: "232g" }
+
+        # ===== Xiaomi 14 Ultra Specifications =====
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000003-0001-0001-0001-000000000003" }
+              - column: { name: spec_key, value: "Chip" }
+              - column: { name: spec_value, value: "Snapdragon 8 Gen 3" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000003-0001-0001-0001-000000000003" }
+              - column: { name: spec_key, value: "RAM" }
+              - column: { name: spec_value, value: "16GB LPDDR5X" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000003-0001-0001-0001-000000000003" }
+              - column: { name: spec_key, value: "Màn hình" }
+              - column: { name: spec_value, value: "6.73 inch LTPO AMOLED, 120Hz, 3200x1440" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000003-0001-0001-0001-000000000003" }
+              - column: { name: spec_key, value: "Pin" }
+              - column: { name: spec_value, value: "5300mAh, sạc nhanh 90W, sạc không dây 50W" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000003-0001-0001-0001-000000000003" }
+              - column: { name: spec_key, value: "Camera" }
+              - column: { name: spec_value, value: "Leica 50MP (1 inch) + 50MP + 50MP + 50MP" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000003-0001-0001-0001-000000000003" }
+              - column: { name: spec_key, value: "Bộ nhớ" }
+              - column: { name: spec_value, value: "512GB / 1TB UFS 4.0" }
+
+        # ===== ASUS ROG Phone 8 Pro Specifications =====
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000008-0001-0001-0001-000000000008" }
+              - column: { name: spec_key, value: "Chip" }
+              - column: { name: spec_value, value: "Snapdragon 8 Gen 3" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000008-0001-0001-0001-000000000008" }
+              - column: { name: spec_key, value: "RAM" }
+              - column: { name: spec_value, value: "24GB LPDDR5X" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000008-0001-0001-0001-000000000008" }
+              - column: { name: spec_key, value: "Màn hình" }
+              - column: { name: spec_value, value: "6.78 inch AMOLED, 165Hz, 2500 nits" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000008-0001-0001-0001-000000000008" }
+              - column: { name: spec_key, value: "Pin" }
+              - column: { name: spec_value, value: "5500mAh, sạc nhanh 65W" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000008-0001-0001-0001-000000000008" }
+              - column: { name: spec_key, value: "Camera" }
+              - column: { name: spec_value, value: "50MP OIS + 32MP + 13MP" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000008-0001-0001-0001-000000000008" }
+              - column: { name: spec_key, value: "Đặc biệt" }
+              - column: { name: spec_value, value: "AirTrigger, GameCool 8 Cooling System" }
+
+        # ===== Dell XPS 15 Specifications =====
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000001-0002-0002-0002-000000000001" }
+              - column: { name: spec_key, value: "CPU" }
+              - column: { name: spec_value, value: "Intel Core i7-13700H (14 cores, 20 threads)" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000001-0002-0002-0002-000000000001" }
+              - column: { name: spec_key, value: "RAM" }
+              - column: { name: spec_value, value: "32GB DDR5 4800MHz" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000001-0002-0002-0002-000000000001" }
+              - column: { name: spec_key, value: "Màn hình" }
+              - column: { name: spec_value, value: "15.6 inch OLED 3.5K, 400 nits, 100% DCI-P3" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000001-0002-0002-0002-000000000001" }
+              - column: { name: spec_key, value: "GPU" }
+              - column: { name: spec_value, value: "NVIDIA GeForce RTX 4060 8GB" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000001-0002-0002-0002-000000000001" }
+              - column: { name: spec_key, value: "Bộ nhớ" }
+              - column: { name: spec_value, value: "1TB NVMe SSD PCIe 4.0" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000001-0002-0002-0002-000000000001" }
+              - column: { name: spec_key, value: "Pin" }
+              - column: { name: spec_value, value: "86Wh, 13 giờ sử dụng" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000001-0002-0002-0002-000000000001" }
+              - column: { name: spec_key, value: "Kết nối" }
+              - column: { name: spec_value, value: "2x Thunderbolt 4, USB-C, SD Card Reader" }
+
+        # ===== AirPods Pro 2 Specifications =====
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000001-0003-0003-0003-000000000001" }
+              - column: { name: spec_key, value: "Chip" }
+              - column: { name: spec_value, value: "Apple H2" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000001-0003-0003-0003-000000000001" }
+              - column: { name: spec_key, value: "Pin" }
+              - column: { name: spec_value, value: "6 giờ (30 giờ với hộp sạc)" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000001-0003-0003-0003-000000000001" }
+              - column: { name: spec_key, value: "Chống ồn" }
+              - column: { name: spec_value, value: "Active Noise Cancellation 2X" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000001-0003-0003-0003-000000000001" }
+              - column: { name: spec_key, value: "Kết nối" }
+              - column: { name: spec_value, value: "Bluetooth 5.3" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000001-0003-0003-0003-000000000001" }
+              - column: { name: spec_key, value: "Chống nước" }
+              - column: { name: spec_value, value: "IP54 (tai nghe và hộp sạc)" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000001-0003-0003-0003-000000000001" }
+              - column: { name: spec_key, value: "Đặc biệt" }
+              - column: { name: spec_value, value: "Spatial Audio, Adaptive Transparency" }
+
+  - changeSet:
+      id: 051-enhanced-product-descriptions
+      author: antigravity
+      changes:
+        # ===== Samsung Galaxy S24 Ultra Description =====
+        - update:
+            tableName: products
+            columns:
+              - column: { name: description, value: "Samsung Galaxy S24 Ultra - Flagship đỉnh cao với AI Galaxy\n\n🔥 HIỆU NĂNG MẠNH MẼ\nTrang bị chip Snapdragon 8 Gen 3 for Galaxy được tối ưu riêng cho Samsung, kết hợp với 12GB RAM LPDDR5X cho hiệu năng vượt trội. Chơi game, đa nhiệm, xử lý AI tất cả đều mượt mà.\n\n📸 CAMERA 200MP ĐẲNG CẤP\nHệ thống 4 camera với cảm biến chính 200MP cho ảnh chi tiết đáng kinh ngạc. Zoom quang học 5x và Space Zoom 100x để không bỏ lỡ khoảnh khắc nào. Nightography cải tiến cho ảnh đêm sáng rõ như ban ngày.\n\n🖊️ S PEN TÍCH HỢP\nBút S Pen được tích hợp sẵn với độ trễ cực thấp, hỗ trợ Air Command và Galaxy AI để viết, vẽ và điều khiển từ xa.\n\n🤖 GALAXY AI\n- Circle to Search: Khoanh tròn để tìm kiếm bất kỳ thứ gì\n- Live Translate: Dịch cuộc gọi realtime\n- Chat Assist: Đề xuất tin nhắn thông minh\n- Generative Edit: Chỉnh sửa ảnh AI\n\n🔋 PIN TRÂU 5000MAH\nPin lớn 5000mAh sạc nhanh 45W, dùng cả ngày thoải mái." }
+            where: id = 'a1000001-0001-0001-0001-000000000001'
+
+        # ===== Xiaomi 14 Ultra Description =====
+        - update:
+            tableName: products
+            columns:
+              - column: { name: description, value: "Xiaomi 14 Ultra - Camera Phone Cao Cấp Nhất\n\n📸 HỢP TÁC CÙNG LEICA\nCamera 1-inch 50MP chính hãng Leica với khẩu độ thay đổi f/1.63-f/4.0. Hệ thống 4 camera 50MP toàn bộ, quay video 8K và Dolby Vision.\n\n⚡ HIỆU NĂNG KHỦNG\n- Snapdragon 8 Gen 3 flagship\n- RAM 16GB LPDDR5X siêu nhanh\n- Bộ nhớ UFS 4.0 tốc độ cao\n\n🖥️ MÀN HÌNH ĐỈNH CAO\nLTPO AMOLED 6.73 inch độ phân giải 2K+, tần số quét 1-120Hz, độ sáng 3000 nits cho hình ảnh sống động dưới ánh sáng mặt trời.\n\n🔋 SẠC SIÊU TỐC\n- Pin 5300mAh dùng cả ngày\n- Sạc nhanh 90W (100% trong 33 phút)\n- Sạc không dây 50W\n- Sạc ngược 10W\n\n📦 TRONG HỘP\n- Xiaomi 14 Ultra\n- Sạc 90W HyperCharge\n- Photography Kit (tùy phiên bản)\n- Ốp lưng cao cấp" }
+            where: id = 'a1000003-0001-0001-0001-000000000003'
+
+        # ===== Dell XPS 15 Description =====
+        - update:
+            tableName: products
+            columns:
+              - column: { name: description, value: "Dell XPS 15 - Laptop cao cấp cho sáng tạo nội dung\n\n🖥️ MÀN HÌNH OLED 3.5K TUYỆT ĐẸP\nMàn hình OLED 15.6 inch độ phân giải 3456x2160, độ sáng 400 nits, 100% DCI-P3 và 100% Adobe RGB. Màu sắc chính xác đến từng pixel cho công việc thiết kế, chỉnh ảnh, video.\n\n💪 SỨC MẠNH CHUYÊN NGHIỆP\n- Intel Core i7-13700H 14 nhân 20 luồng\n- RAM 32GB DDR5 tốc độ cao\n- NVIDIA RTX 4060 8GB cho AI và render\n- SSD 1TB PCIe 4.0 siêu nhanh\n\n⌨️ THIẾT KẾ TINH TẾ\nViền màn hình siêu mỏng InfinityEdge, bàn phím full-size với đèn nền, touchpad lớn chính xác. Vỏ nhôm CNC nguyên khối, chỉ 1.86kg.\n\n🔌 KẾT NỐI HIỆN ĐẠI\n- 2x Thunderbolt 4 (40Gbps)\n- USB-C 3.2 Gen 2\n- SD Card Reader\n- 3.5mm Audio\n\n🔋 PIN BỀN BỈ\nPin 86Wh cho 13 giờ sử dụng, sạc nhanh 80% trong 1 giờ." }
+            where: id = 'b2000001-0002-0002-0002-000000000001'
+
+        # ===== AirPods Pro 2 Description =====
+        - update:
+            tableName: products
+            columns:
+              - column: { name: description, value: "AirPods Pro 2 - Tai nghe true wireless tốt nhất của Apple\n\n🔇 CHỐNG ỒN ĐỈNH CAO\nActive Noise Cancellation mạnh gấp 2 lần thế hệ trước nhờ chip H2. Adaptive Transparency cho phép nghe âm thanh xung quanh mà không cần tháo tai nghe.\n\n🎵 ÂM THANH KHÔNG GIAN\n- Spatial Audio với head tracking\n- Personalized Spatial Audio\n- Âm bass sâu, treble trong trẻo\n- Adaptive EQ tự động điều chỉnh\n\n🔋 PIN LÂU HƠN\n- 6 giờ nghe nhạc (ANC bật)\n- 30 giờ tổng với hộp sạc\n- Sạc 5 phút = 1 giờ nghe\n- Hộp sạc tương thích MagSafe, Apple Watch\n\n💧 CHỐNG NƯỚC IP54\nCả tai nghe và hộp sạc đều chống nước, mồ hôi - yên tâm tập gym và chạy bộ.\n\n✨ TÍNH NĂNG MỚI\n- Touch control điều chỉnh âm lượng\n- Find My với speaker tích hợp\n- Conversation Awareness tự động giảm nhạc khi nói chuyện" }
+            where: id = 'c3000001-0003-0003-0003-000000000001'
+
+        # ===== Sony WH-1000XM5 Enhanced Description =====
+        - update:
+            tableName: products
+            columns:
+              - column: { name: description, value: "Sony WH-1000XM5 - Tai nghe chống ồn #1 thế giới\n\n🔇 CHỐNG ỒN TỐT NHẤT\n8 microphone và 2 bộ xử lý V1 + QN1 mang đến khả năng chống ồn tốt nhất từng có trên tai nghe Sony. Auto NC Optimizer tự động điều chỉnh theo môi trường.\n\n🎵 ÂM THANH HI-RES\n- Driver 30mm carbon fiber mới\n- Hỗ trợ LDAC, AAC, SBC\n- DSEE Extreme nâng cấp nhạc MP3\n- 360 Reality Audio\n\n☁️ THIẾT KẾ NHẸ NHÀNG\n- Chỉ 250g, nhẹ hơn XM4\n- Đệm tai mềm mại, thoáng khí\n- Đeo thoải mái 8 tiếng liên tục\n- Gập phẳng, bỏ túi xách dễ dàng\n\n🔋 PIN KHỦNG 30 GIỜ\n- 30 giờ nghe nhạc với ANC\n- Sạc nhanh 3 phút = 3 giờ nghe\n- USB-C sạc đầy trong 3.5 giờ\n\n📞 MULTIPOINT\nKết nối 2 thiết bị cùng lúc, chuyển đổi mượt mà giữa laptop và điện thoại." }
+            where: id = 'c3000002-0003-0003-0003-000000000002'
+
+        # ===== ASUS ROG Phone 8 Pro Description =====
+        - update:
+            tableName: products
+            columns:
+              - column: { name: description, value: "ASUS ROG Phone 8 Pro - Gaming Phone Đỉnh Cao 2024\n\n🎮 SINH RA ĐỂ CHƠI GAME\nSnapdragon 8 Gen 3 kết hợp RAM khủng 24GB LPDDR5X cho hiệu năng gaming không giới hạn. Đạt 2.2 triệu điểm AnTuTu.\n\n🖥️ MÀN HÌNH 165HZ SAMSUNG\n- AMOLED 6.78 inch siêu mượt\n- Tần số quét 165Hz, lấy mẫu 720Hz\n- Độ sáng 2500 nits outdoor\n- Thời gian phản hồi 1ms\n\n❄️ TẢN NHIỆT GAMECOOL 8\n- Buồng hơi lớn nhất phân khúc\n- Giữ nhiệt độ ổn định khi chơi game nặng\n- AeroActive Cooler tùy chọn\n\n🕹️ AIRTRIGGER ULTRASONIC\n- 2 nút bấm ảo tích hợp\n- Hỗ trợ cử chỉ vuốt, nhấn, giữ\n- Đáp ứng <20ms\n\n📸 CAMERA 50MP GIMBAL\n- Camera chính 50MP với OIS 6 trục\n- Quay video 8K\n- Góc siêu rộng 32MP, macro 13MP\n\n🔋 PIN 5500MAH + SẠC 65W\nChơi game cả ngày, sạc đầy trong 45 phút." }
+            where: id = 'a1000008-0001-0001-0001-000000000008'
+
+  - changeSet:
+      id: 052-add-product-images
+      author: antigravity
+      changes:
+        # ===== Samsung Galaxy S24 Ultra Images =====
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=600" }
+              - column: { name: display_order, value: 1 }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1585060544812-6b45742d762f?w=600" }
+              - column: { name: display_order, value: 2 }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600" }
+              - column: { name: display_order, value: 3 }
+
+        # ===== Dell XPS 15 Images =====
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000001-0002-0002-0002-000000000001" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=600" }
+              - column: { name: display_order, value: 1 }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000001-0002-0002-0002-000000000001" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600" }
+              - column: { name: display_order, value: 2 }
+
+        # ===== AirPods Pro 2 Images =====
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000001-0003-0003-0003-000000000001" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=600" }
+              - column: { name: display_order, value: 1 }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000001-0003-0003-0003-000000000001" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1588423771073-b8903fbb85b5?w=600" }
+              - column: { name: display_order, value: 2 }

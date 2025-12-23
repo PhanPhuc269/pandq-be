@@ -13,5 +13,7 @@ public interface UserRepository {
     Optional<User> findById(UUID id);
     List<User> findAll();
     Optional<User> findByEmail(String email);
+    Optional<User> findByFirebaseUid(String firebaseUid);
     void deleteById(UUID id);
 }
+

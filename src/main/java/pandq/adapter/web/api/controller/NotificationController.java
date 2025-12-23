@@ -21,9 +21,15 @@ public class NotificationController {
         return ResponseEntity.ok(notificationService.getNotificationsByUserId(userId));
     }
 
+    @GetMapping("/by-email")
+    public ResponseEntity<List<NotificationDTO.Response>> getNotificationsByEmail(@RequestParam String email) {
+        return ResponseEntity.ok(notificationService.getNotificationsByEmail(email));
+    }
+
     @PutMapping("/{id}/read")
     public ResponseEntity<Void> markAsRead(@PathVariable UUID id) {
         notificationService.markAsRead(id);
         return ResponseEntity.noContent().build();
     }
 }
+

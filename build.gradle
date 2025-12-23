@@ -51,6 +51,9 @@ dependencies {
     implementation 'com.google.guava:guava:33.0.0-jre' // Fixes CVE-2023-2976
     implementation 'com.google.protobuf:protobuf-java:3.25.1' // Fixes CVE-2024-7254
     implementation 'io.grpc:grpc-netty-shaded:1.60.0' // Fixes CVE-2025-55163
+
+    // Apache HttpClient for ZaloPay API (version 5.4 for Spring Boot 3.5.x compatibility)
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.4'
 }
 
 tasks.named('test') {

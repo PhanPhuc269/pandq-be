@@ -1,9 +1,14 @@
 package pandq.application.services;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pandq.adapter.web.api.dtos.OrderDTO;
+import pandq.adapter.web.api.dtos.response.PaginationMetaDto;
+import pandq.adapter.web.api.dtos.response.PaginationResponseDto;
 import pandq.application.port.repositories.OrderRepository;
 import pandq.application.port.repositories.ProductRepository;
 import pandq.domain.models.enums.OrderStatus;
@@ -17,6 +22,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -40,6 +46,42 @@ public class OrderService {
         return orderRepository.findByUserId(userId).stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public PaginationResponseDto<OrderDTO.Response> searchUserOrders(UUID userId,
+                                                                     String statusStr,
+                                                                     String q,
+                                                                     Integer page,
+                                                                     Integer size) {
+        OrderStatus status = null;
+        if (statusStr != null && !statusStr.isBlank()) {
+            // 'all' means no status filter
+            if (!"all".equalsIgnoreCase(statusStr)) {
+                try {
+                    status = OrderStatus.valueOf(statusStr.toUpperCase());
+                } catch (IllegalArgumentException ex) {
+                    // unknown status -> treat as no filter
+                    status = null;
+                }
+            }
+        }
+
+        UUID orderId = null;
+        if (q != null) {
+            try {
+                orderId = UUID.fromString(q.trim());
+            } catch (Exception ignored) { }
+        }
+
+        PageRequest pageable = PageRequest.of(Optional.ofNullable(page).orElse(0),
+                                              Optional.ofNullable(size).orElse(20),
+                                              Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        Page<Order> result = orderRepository.searchUserOrders(userId, status, (q == null || q.isBlank()) ? null : q.trim(), orderId, pageable);
+        List<OrderDTO.Response> data = result.getContent().stream().map(this::mapToResponse).toList();
+        PaginationMetaDto meta = new PaginationMetaDto(result.getNumber(), result.getSize(), result.getTotalElements());
+        return PaginationResponseDto.of(data, meta, "OK", "Search successful");
     }
 
     @Transactional(readOnly = true)

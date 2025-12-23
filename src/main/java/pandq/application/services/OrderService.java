@@ -131,6 +131,11 @@ public class OrderService {
                     itemResponse.setQuantity(item.getQuantity());
                     itemResponse.setPrice(item.getPrice());
                     itemResponse.setTotalPrice(item.getTotalPrice());
+                    // Get the first product image URL if available
+                    String imageUrl = item.getProduct().getImages() != null && !item.getProduct().getImages().isEmpty()
+                            ? item.getProduct().getImages().get(0).getImageUrl()
+                            : null;
+                    itemResponse.setImageUrl(imageUrl);
                     return itemResponse;
                 })
                 .collect(Collectors.toList());

@@ -48,6 +48,7 @@ public class OrderDTO {
         private Integer quantity;
         private BigDecimal price;
         private BigDecimal totalPrice;
+        private String imageUrl;
     }
 
     @Data

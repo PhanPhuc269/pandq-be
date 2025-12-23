@@ -1,0 +1,81 @@
+databaseChangeLog:
+  - changeSet:
+      id: 067-enrich-watches
+      author: antigravity
+      changes:
+        # d4000002: Apple Watch SE 2
+        - update:
+            tableName: products
+            columns:
+              - column: { name: description, value: "Apple Watch SE 2 - Đáng giá, đáng yêu.\n\nTheo dõi sức khỏe, phát hiện va chạm, theo dõi giấc ngủ. Chip S8 SiP nhanh hơn 20%. Bạn đồng hành tuyệt vời cho iPhone." }
+            where: id = 'd4000002-0004-0004-0004-000000000002'
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "d4000002-0004-0004-0004-000000000002" }
+              - column: { name: spec_key, value: "Chip" }
+              - column: { name: spec_value, value: "Apple S8 SiP" }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "d4000002-0004-0004-0004-000000000002" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1544117519-31a4b719223d?w=600" }
+              - column: { name: display_order, value: 1 }
+
+        # d4000003: Galaxy Watch 6 Classic
+        - update:
+            tableName: products
+            columns:
+              - column: { name: description, value: "Galaxy Watch 6 Classic - Vẻ đẹp vượt thời gian.\n\nViền xoay bezel vật lý mỏng hơn, màn hình lớn hơn. Theo dõi sức khỏe toàn diện với cảm biến Samsung BioActive. Hỗ trợ giấc ngủ chuyên sâu." }
+            where: id = 'd4000003-0004-0004-0004-000000000003'
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "d4000003-0004-0004-0004-000000000003" }
+              - column: { name: spec_key, value: "Màn hình" }
+              - column: { name: spec_value, value: "Super AMOLED, Sapphire Crystal" }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "d4000003-0004-0004-0004-000000000003" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1695213605330-8a18357876a9?w=600" }
+              - column: { name: display_order, value: 1 }
+
+        # d4000005: Garmin Fenix 7X Pro
+        - update:
+            tableName: products
+            columns:
+              - column: { name: description, value: "Garmin Fenix 7X Pro - Chinh phục mọi giới hạn.\n\nĐồng hồ GPS đa thể thao với sạc năng lượng mặt trời. Đèn pin LED tích hợp. Bản đồ TopoActive và hàng ngàn sân golf, khu nghỉ dưỡng trượt tuyết." }
+            where: id = 'd4000005-0004-0004-0004-000000000005'
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "d4000005-0004-0004-0004-000000000005" }
+              - column: { name: spec_key, value: "Pin" }
+              - column: { name: spec_value, value: "Lên đến 37 ngày (với Solar)" }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "d4000005-0004-0004-0004-000000000005" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1550928431-747353f6562d?w=600" }
+              - column: { name: display_order, value: 1 }
+
+        # d4000006: Garmin Venu 3
+        - update:
+            tableName: products
+            columns:
+              - column: { name: description, value: "Garmin Venu 3 - Hiểu rõ cơ thể bạn.\n\nHuấn luyện viên giấc ngủ, phát hiện giấc ngủ ngắn. Chế độ xe lăn. Loa và mic để nghe gọi trực tiếp. Màn hình AMOLED rực rỡ." }
+            where: id = 'd4000006-0004-0004-0004-000000000006'
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "d4000006-0004-0004-0004-000000000006" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1575311373937-0c795ef23f05?w=600" }
+              - column: { name: display_order, value: 1 }

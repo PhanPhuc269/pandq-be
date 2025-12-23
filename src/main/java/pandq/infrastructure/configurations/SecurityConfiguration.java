@@ -45,7 +45,10 @@ public class SecurityConfiguration {
                                         "/api/v1/products/{id}",
                                         "/api/v1/categories",
                                         "/api/v1/categories/{id}",
-                                        "/api/v1/reviews/**")
+                                        "/api/v1/categories/{id}",
+                                        "/api/v1/reviews/**",
+                                        "/api/v1/upload",
+                                        "/uploads/**")
                                 .permitAll()
                                 .anyRequest().authenticated())
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

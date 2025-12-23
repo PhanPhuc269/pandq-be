@@ -1,0 +1,132 @@
+databaseChangeLog:
+  - changeSet:
+      id: 063-fix-laptop-specs
+      author: antigravity
+      changes:
+        # Delete bad specs for MacBook Air M2 (was Dell XPS 15)
+        - delete:
+            tableName: product_specifications
+            where: product_id = 'b2000001-0002-0002-0002-000000000001'
+
+  - changeSet:
+      id: 064-enrich-laptops
+      author: antigravity
+      changes:
+        # b2000001: MacBook Air M2
+        - update:
+            tableName: products
+            columns:
+              - column: { name: description, value: "MacBook Air M2 - Thiết kế mới, sức mạnh mới.\n\nSức mạnh từ chip M2 trong thiết kế siêu mỏng nhẹ chỉ 1.24kg. Màn hình Liquid Retina 13.6 inch rực rỡ. Thời lượng pin lên đến 18 giờ." }
+            where: id = 'b2000001-0002-0002-0002-000000000001'
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000001-0002-0002-0002-000000000001" }
+              - column: { name: spec_key, value: "Chip" }
+              - column: { name: spec_value, value: "Apple M2 (8-core CPU, 8/10-core GPU)" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000001-0002-0002-0002-000000000001" }
+              - column: { name: spec_key, value: "Màn hình" }
+              - column: { name: spec_value, value: "13.6 inch Liquid Retina" }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000001-0002-0002-0002-000000000001" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1655562723146-563b711af574?w=600" }
+              - column: { name: display_order, value: 3 }
+
+        # b2000003: Dell XPS 15 (Correcting data: This one WAS M2, now putting real XPS data)
+        - update:
+            tableName: products
+            columns:
+              - column: { name: description, value: "Dell XPS 15 - Đỉnh cao ultrabook Windows.\n\nMàn hình OLED 3.5K viền siêu mỏng InfinityEdge. Hiệu năng mạnh mẽ với Intel Core i7 và card đồ họa rời RTX 40 series trong thân máy nhôm CNC cao cấp." }
+            where: id = 'b2000003-0002-0002-0002-000000000003'
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000003-0002-0002-0002-000000000003" }
+              - column: { name: spec_key, value: "CPU" }
+              - column: { name: spec_value, value: "Intel Core i7-13700H" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000003-0002-0002-0002-000000000003" }
+              - column: { name: spec_key, value: "GPU" }
+              - column: { name: spec_value, value: "NVIDIA GeForce RTX 4050" }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000003-0002-0002-0002-000000000003" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=600" }
+              - column: { name: display_order, value: 1 }
+
+        # b2000004: Dell XPS 13 Plus
+        - update:
+            tableName: products
+            columns:
+              - column: { name: description, value: "Dell XPS 13 Plus - Tương lai của laptop.\n\nThiết kế tối giản với hàng phím chức năng cảm ứng và trackpad vô hình. Màn hình 4K+ tuyệt đẹp. Cực kỳ mỏng và nhẹ." }
+            where: id = 'b2000004-0002-0002-0002-000000000004'
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000004-0002-0002-0002-000000000004" }
+              - column: { name: spec_key, value: "CPU" }
+              - column: { name: spec_value, value: "Intel Core i7-1360P" }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000004-0002-0002-0002-000000000004" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1660463945936-231a47734139?w=600" }
+              - column: { name: display_order, value: 1 }
+
+        # b2000005: ASUS ROG Zephyrus G16
+        - update:
+            tableName: products
+            columns:
+              - column: { name: description, value: "ROG Zephyrus G16 - Gaming mỏng nhẹ, sức mạnh OLED.\n\nMàn hình ROG Nebula OLED 240Hz sắc nét. GPU RTX 4090 cân mọi game AAA. Thiết kế Slash Lighting độc đáo ở mặt lưng." }
+            where: id = 'b2000005-0002-0002-0002-000000000005'
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000005-0002-0002-0002-000000000005" }
+              - column: { name: spec_key, value: "GPU" }
+              - column: { name: spec_value, value: "RTX 4090 16GB" }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000005-0002-0002-0002-000000000005" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1636209598285-0d480371465e?w=600" }
+              - column: { name: display_order, value: 1 }
+
+        # b2000007: Lenovo ThinkPad X1 Carbon
+        - update:
+            tableName: products
+            columns:
+              - column: { name: description, value: "ThinkPad X1 Carbon Gen 12 - Biểu tượng doanh nhân.\n\nNhẹ chưa từng thấy nhờ sợi carbon. Bàn phím ThinkPad huyền thoại. Bảo mật cấp doanh nghiệp. Sẵn sàng cho mọi cuộc họp với camera MIPI sắc nét." }
+            where: id = 'b2000007-0002-0002-0002-000000000007'
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000007-0002-0002-0002-000000000007" }
+              - column: { name: spec_key, value: "Trọng lượng" }
+              - column: { name: spec_value, value: "1.09 kg" }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000007-0002-0002-0002-000000000007" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=600" }
+              - column: { name: display_order, value: 1 }

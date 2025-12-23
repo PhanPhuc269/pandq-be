@@ -46,7 +46,14 @@ public class SecurityConfiguration {
                                         "/api/v1/categories",
                                         "/api/v1/categories/{id}",
                                         "/api/v1/users/**",
-                                        "/api/v1/addresses/**"
+                                        "/api/v1/addresses/**",
+                                        "/api/v1/categories/{id}",
+                                        "/api/v1/reviews/**",
+                                        "/api/v1/upload",
+                                        "/uploads/**",
+                                        "/api/v1/users/fcm-token-by-email",
+                                        "/api/v1/payments/sepay/webhook",
+                                        "/api/v1/payments/zalopay/callback"
                                 ).permitAll()
                                 .anyRequest().authenticated()
                 )

@@ -1,0 +1,477 @@
+databaseChangeLog:
+  # =====================================================
+  # ADD PRODUCT IMAGES FOR ALL PRODUCTS
+  # This ensures every product has at least one image in product_images table
+  # =====================================================
+  
+  - changeSet:
+      id: 040-add-product-images-from-thumbnails
+      author: antigravity
+      comment: "Add product_images entries for all products that only have thumbnail_url"
+      changes:
+        # ===== Điện thoại Images =====
+        # iPhone 14 Pro
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1678685888221-cda773a3dcdb?w=600" }
+              - column: { name: display_order, value: 1 }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1696446701796-da61225697cc?w=600" }
+              - column: { name: display_order, value: 2 }
+              
+        # iPhone 13
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000002-0001-0001-0001-000000000002" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1632633173522-47456de71b76?w=600" }
+              - column: { name: display_order, value: 1 }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000002-0001-0001-0001-000000000002" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1591337676887-a217a6970a8a?w=600" }
+              - column: { name: display_order, value: 2 }
+              
+        # Samsung Galaxy Z Fold 5
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000003-0001-0001-0001-000000000003" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600" }
+              - column: { name: display_order, value: 1 }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000003-0001-0001-0001-000000000003" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1610945264803-c22b62d2a7b3?w=600" }
+              - column: { name: display_order, value: 2 }
+              
+        # Samsung Galaxy Z Flip 5
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000004-0001-0001-0001-000000000004" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1610945264803-c22b62d2a7b3?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # Samsung Galaxy A54 5G
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000005-0001-0001-0001-000000000005" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1605236453806-6ff36851218e?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # Google Pixel 8 Pro
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000006-0001-0001-0001-000000000006" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600" }
+              - column: { name: display_order, value: 1 }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000006-0001-0001-0001-000000000006" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600" }
+              - column: { name: display_order, value: 2 }
+              
+        # Xiaomi 14 Ultra
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000007-0001-0001-0001-000000000007" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # OPPO Find X7 Ultra
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000008-0001-0001-0001-000000000008" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # OnePlus 12
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000009-0001-0001-0001-000000000009" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1605236453806-6ff36851218e?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # Vivo X100 Pro
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000010-0001-0001-0001-000000000010" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600" }
+              - column: { name: display_order, value: 1 }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000010-0001-0001-0001-000000000010" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?w=600" }
+              - column: { name: display_order, value: 2 }
+              
+        # Realme GT 5 Pro
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000011-0001-0001-0001-000000000011" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # Nothing Phone (2)
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000012-0001-0001-0001-000000000012" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=600" }
+              - column: { name: display_order, value: 1 }
+
+        # ===== Laptop Images =====
+        # MacBook Air M2
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000001-0002-0002-0002-000000000001" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=600" }
+              - column: { name: display_order, value: 1 }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000001-0002-0002-0002-000000000001" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600" }
+              - column: { name: display_order, value: 2 }
+              
+        # MacBook Pro 16 M3 Max
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000002-0002-0002-0002-000000000002" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # Dell XPS 15
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000003-0002-0002-0002-000000000003" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # Dell XPS 13 Plus
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000004-0002-0002-0002-000000000004" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # ASUS ROG Zephyrus G16
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000005-0002-0002-0002-000000000005" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # ASUS ZenBook Pro 14
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000006-0002-0002-0002-000000000006" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # Lenovo ThinkPad X1 Carbon
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000007-0002-0002-0002-000000000007" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # Lenovo Legion Pro 7i
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000008-0002-0002-0002-000000000008" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # HP Spectre x360 14
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000009-0002-0002-0002-000000000009" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # HP Omen 16
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000010-0002-0002-0002-000000000010" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # Razer Blade 15
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000011-0002-0002-0002-000000000011" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # MSI Creator Z17
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000012-0002-0002-0002-000000000012" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=600" }
+              - column: { name: display_order, value: 1 }
+
+        # ===== Phụ kiện Images =====
+        # AirPods Max
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000001-0003-0003-0003-000000000001" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1613040809024-b4ef7ba99bc3?w=600" }
+              - column: { name: display_order, value: 1 }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000001-0003-0003-0003-000000000001" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600" }
+              - column: { name: display_order, value: 2 }
+              
+        # Samsung Galaxy Buds3 Pro
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000003-0003-0003-0003-000000000003" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # Apple Magic Keyboard
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000004-0003-0003-0003-000000000004" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # Logitech MX Master 3S
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000005-0003-0003-0003-000000000005" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # Anker PowerCore 26800
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000006-0003-0003-0003-000000000006" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # Apple 20W USB-C Adapter
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000007-0003-0003-0003-000000000007" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # JBL Flip 6
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000008-0003-0003-0003-000000000008" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # Apple AirTag 4-Pack
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000009-0003-0003-0003-000000000009" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # Belkin MagSafe Charger 3-in-1
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000010-0003-0003-0003-000000000010" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # SanDisk Extreme Pro 1TB
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000011-0003-0003-0003-000000000011" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # Apple Pencil Pro
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000012-0003-0003-0003-000000000012" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=600" }
+              - column: { name: display_order, value: 1 }
+
+        # ===== Đồng hồ Images =====
+        # Apple Watch SE 2
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "d4000002-0004-0004-0004-000000000002" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # Samsung Galaxy Watch 6 Classic
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "d4000003-0004-0004-0004-000000000003" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # Samsung Galaxy Watch Ultra
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "d4000004-0004-0004-0004-000000000004" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # Garmin Fenix 7X Pro
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "d4000005-0004-0004-0004-000000000005" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # Garmin Venu 3
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "d4000006-0004-0004-0004-000000000006" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # Fitbit Sense 2
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "d4000007-0004-0004-0004-000000000007" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # Xiaomi Watch S3
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "d4000008-0004-0004-0004-000000000008" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # Amazfit GTR 4
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "d4000009-0004-0004-0004-000000000009" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # Huawei Watch GT 4
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "d4000010-0004-0004-0004-000000000010" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # Google Pixel Watch 2
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "d4000011-0004-0004-0004-000000000011" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=600" }
+              - column: { name: display_order, value: 1 }
+              
+        # OPPO Watch 4 Pro
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "d4000012-0004-0004-0004-000000000012" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600" }
+              - column: { name: display_order, value: 1 }

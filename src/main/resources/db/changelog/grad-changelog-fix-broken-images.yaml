@@ -1,0 +1,127 @@
+databaseChangeLog:
+  - changeSet:
+      id: 070-fix-broken-apple-images
+      author: antigravity
+      changes:
+        # 1. MacBook Air M2 (b2000001) - Fix White Image
+        - delete:
+            tableName: product_images
+            where: product_id = 'b2000001-0002-0002-0002-000000000001'
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000001-0002-0002-0002-000000000001" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1655562723146-563b711af574?w=600" } # M2 Midnight
+              - column: { name: display_order, value: 1 }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000001-0002-0002-0002-000000000001" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1531297461136-82lw9z2l3b8z?w=600" } # Generic Laptop
+              - column: { name: display_order, value: 2 }
+        - update:
+            tableName: products
+            columns:
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1655562723146-563b711af574?w=400" }
+            where: id = 'b2000001-0002-0002-0002-000000000001'
+
+        # 2. iPhone 15 Pro (33333333) - Fix White Image
+        - delete:
+            tableName: product_images
+            where: product_id = '33333333-3333-3333-3333-333333333333'
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "33333333-3333-3333-3333-333333333333" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1696446701796-da61225697cc?w=600" } # Titanium
+              - column: { name: display_order, value: 1 }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "33333333-3333-3333-3333-333333333333" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600" } # Natural
+              - column: { name: display_order, value: 2 }
+        - update:
+            tableName: products
+            columns:
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1696446701796-da61225697cc?w=400" }
+            where: id = '33333333-3333-3333-3333-333333333333'
+
+        # 3. MacBook Pro 16 M3 (b2000002) - Fix White Image
+        - delete:
+            tableName: product_images
+            where: product_id = 'b2000002-0002-0002-0002-000000000002'
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000002-0002-0002-0002-000000000002" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600" }
+              - column: { name: display_order, value: 1 }
+        - update:
+            tableName: products
+            columns:
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400" }
+            where: id = 'b2000002-0002-0002-0002-000000000002'
+
+        # 4. iPhone 14 Pro (a1000001) - Fix White Image
+        - delete:
+            tableName: product_images
+            where: product_id = 'a1000001-0001-0001-0001-000000000001'
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1663499482523-1c0c166928e1?w=600" }
+              - column: { name: display_order, value: 1 }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1678685888221-cda773a3dcdb?w=600" }
+              - column: { name: display_order, value: 2 }
+        - update:
+            tableName: products
+            columns:
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1663499482523-1c0c166928e1?w=400" }
+            where: id = 'a1000001-0001-0001-0001-000000000001'
+
+        # 5. AirPods Max (c3000001) - Fix White Image
+        - delete:
+            tableName: product_images
+            where: product_id = 'c3000001-0003-0003-0003-000000000001'
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000001-0003-0003-0003-000000000001" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1613040809024-b4ef7ba99bc3?w=600" }
+              - column: { name: display_order, value: 1 }
+        - update:
+            tableName: products
+            columns:
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1613040809024-b4ef7ba99bc3?w=400" }
+            where: id = 'c3000001-0003-0003-0003-000000000001'
+
+        # 6. Apple Watch S9 (d4000001) - Fix White Image
+        - delete:
+            tableName: product_images
+            where: product_id = 'd4000001-0004-0004-0004-000000000001'
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "d4000001-0004-0004-0004-000000000001" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=600" }
+              - column: { name: display_order, value: 1 }
+        - update:
+            tableName: products
+            columns:
+              - column: { name: thumbnail_url, value: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=400" }
+            where: id = 'd4000001-0004-0004-0004-000000000001'

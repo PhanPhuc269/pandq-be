@@ -1,0 +1,386 @@
+databaseChangeLog:
+  # =====================================================
+  # FIX: Category images with working URLs + Product data enrichment
+  # =====================================================
+
+  - changeSet:
+      id: 040-fix-category-icons
+      author: antigravity
+      changes:
+        # Use direct image URLs that work well
+        - update:
+            tableName: categories
+            columns:
+              - column: { name: image_url, value: "https://cdn-icons-png.flaticon.com/512/186/186239.png" }
+            where: id = '11111111-1111-1111-1111-111111111111'
+        - update:
+            tableName: categories
+            columns:
+              - column: { name: image_url, value: "https://cdn-icons-png.flaticon.com/512/2721/2721613.png" }
+            where: id = '22222222-2222-2222-2222-222222222222'
+        - update:
+            tableName: categories
+            columns:
+              - column: { name: image_url, value: "https://cdn-icons-png.flaticon.com/512/2942/2942821.png" }
+            where: id = '33333333-aaaa-3333-aaaa-333333333333'
+        - update:
+            tableName: categories
+            columns:
+              - column: { name: image_url, value: "https://cdn-icons-png.flaticon.com/512/3373/3373068.png" }
+            where: id = '44444444-aaaa-4444-aaaa-444444444444'
+
+  - changeSet:
+      id: 041-fix-product-images-macbook16
+      author: antigravity
+      changes:
+        # MacBook Pro 16 M3 Max Images
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000002-0002-0002-0002-000000000002" }
+              - column: { name: image_url, value: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mbp16-spacegray-select-202310?wid=904&hei=840&fmt=jpeg&qlt=90" }
+              - column: { name: display_order, value: 1 }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000002-0002-0002-0002-000000000002" }
+              - column: { name: image_url, value: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mbp16-silver-select-202310?wid=904&hei=840&fmt=jpeg&qlt=90" }
+              - column: { name: display_order, value: 2 }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000002-0002-0002-0002-000000000002" }
+              - column: { name: image_url, value: "https://i.imgur.com/7sV5KpN.jpg" }
+              - column: { name: display_order, value: 3 }
+
+  - changeSet:
+      id: 042-fix-all-product-thumbnails
+      author: antigravity
+      changes:
+        # Update iPhone 15 Pro Max with working image
+        - update:
+            tableName: products
+            columns:
+              - column: { name: thumbnail_url, value: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-finish-select-202309-6-7inch-naturaltitanium?wid=300" }
+            where: id = '33333333-3333-3333-3333-333333333333'
+        # Update MacBook Pro 14
+        - update:
+            tableName: products
+            columns:
+              - column: { name: thumbnail_url, value: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mbp14-spacegray-select-202310?wid=300" }
+            where: id = '44444444-4444-4444-4444-444444444444'
+        # Update MacBook Pro 16 M3 Max
+        - update:
+            tableName: products
+            columns:
+              - column: { name: thumbnail_url, value: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mbp16-spacegray-select-202310?wid=300" }
+            where: id = 'b2000002-0002-0002-0002-000000000002'
+        # iPhone 14 Pro
+        - update:
+            tableName: products
+            columns:
+              - column: { name: thumbnail_url, value: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-14-pro-finish-select-202209-6-7inch-deeppurple?wid=300" }
+            where: id = 'a1000001-0001-0001-0001-000000000001'
+        # Samsung Galaxy Z Fold 5
+        - update:
+            tableName: products
+            columns:
+              - column: { name: thumbnail_url, value: "https://images.samsung.com/is/image/samsung/p6pim/ph/2307/gallery/ph-galaxy-z-fold5-f946-sm-f946bzkephv-thumb-537255245" }
+            where: id = 'a1000003-0001-0001-0001-000000000003'
+        # AirPods Max
+        - update:
+            tableName: products
+            columns:
+              - column: { name: thumbnail_url, value: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/airpods-max-select-spacegray-202011?wid=300" }
+            where: id = 'c3000001-0003-0003-0003-000000000001'
+        # Sony WH-1000XM5
+        - update:
+            tableName: products
+            columns:
+              - column: { name: thumbnail_url, value: "https://m.media-amazon.com/images/I/61+btxzpfDL._AC_SL1500_.jpg" }
+            where: id = 'c3000002-0003-0003-0003-000000000002'
+        # Apple Watch Series 9
+        - update:
+            tableName: products
+            columns:
+              - column: { name: thumbnail_url, value: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/watch-s9-aluminum-41-midnight-midnight-sport-band-202309?wid=300" }
+            where: id = 'd4000001-0004-0004-0004-000000000001'
+
+  - changeSet:
+      id: 043-fix-macbook16-specs
+      author: antigravity
+      changes:
+        # MacBook Pro 16 M3 Max Specifications
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000002-0002-0002-0002-000000000002" }
+              - column: { name: spec_key, value: "Chip" }
+              - column: { name: spec_value, value: "Apple M3 Max (16-core CPU, 40-core GPU)" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000002-0002-0002-0002-000000000002" }
+              - column: { name: spec_key, value: "RAM" }
+              - column: { name: spec_value, value: "128GB Unified Memory" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000002-0002-0002-0002-000000000002" }
+              - column: { name: spec_key, value: "Màn hình" }
+              - column: { name: spec_value, value: "16.2 inch Liquid Retina XDR, 3456x2234, ProMotion 120Hz" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000002-0002-0002-0002-000000000002" }
+              - column: { name: spec_key, value: "Bộ nhớ" }
+              - column: { name: spec_value, value: "8TB SSD" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000002-0002-0002-0002-000000000002" }
+              - column: { name: spec_key, value: "Pin" }
+              - column: { name: spec_value, value: "22 giờ phát video, sạc nhanh MagSafe 140W" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000002-0002-0002-0002-000000000002" }
+              - column: { name: spec_key, value: "Kết nối" }
+              - column: { name: spec_value, value: "3x Thunderbolt 4, HDMI 2.1, SDXC, MagSafe 3, Wi-Fi 6E" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000002-0002-0002-0002-000000000002" }
+              - column: { name: spec_key, value: "Âm thanh" }
+              - column: { name: spec_value, value: "6 loa, Spatial Audio với Dolby Atmos" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000002-0002-0002-0002-000000000002" }
+              - column: { name: spec_key, value: "Camera" }
+              - column: { name: spec_value, value: "1080p FaceTime HD, Center Stage" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000002-0002-0002-0002-000000000002" }
+              - column: { name: spec_key, value: "Khối lượng" }
+              - column: { name: spec_value, value: "2.14 kg" }
+
+  - changeSet:
+      id: 044-fix-descriptions
+      author: antigravity
+      changes:
+        # MacBook Pro 16 M3 Max - Detailed description
+        - update:
+            tableName: products
+            columns:
+              - column: { name: description, value: "MacBook Pro 16 inch thế hệ mới được trang bị chip M3 Max mang đến sức mạnh tuyệt đối cho các chuyên gia sáng tạo. Với CPU 16 nhân và GPU 40 nhân, đây là chiếc laptop mạnh nhất Apple từng sản xuất. RAM Unified Memory 128GB xử lý mượt mà các project video 8K, render 3D phức tạp. Màn hình Liquid Retina XDR 16.2 inch với độ sáng 3000 nits, dải màu rộng P3 và công nghệ ProMotion 120Hz. Pin lên đến 22 giờ - dài nhất trên một chiếc Mac. Hệ thống 6 loa với Spatial Audio mang đến trải nghiệm âm thanh sống động như rạp chiếu phim." }
+            where: id = 'b2000002-0002-0002-0002-000000000002'
+        # Add rating for MacBook Pro 16
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: 4.9 }
+              - column: { name: review_count, value: 45 }
+            where: id = 'b2000002-0002-0002-0002-000000000002'
+
+  - changeSet:
+      id: 045-fix-macbook16-reviews
+      author: antigravity
+      changes:
+        # MacBook Pro 16 M3 Max Reviews
+        - insert:
+            tableName: reviews
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: user_id, value: "cccc2222-cccc-2222-cccc-222222222222" }
+              - column: { name: product_id, value: "b2000002-0002-0002-0002-000000000002" }
+              - column: { name: rating, value: 5 }
+              - column: { name: comment, value: "Quái vật render! Export video 4K trong Final Cut Pro nhanh gấp 3 lần so với Intel Mac Pro. 128GB RAM chạy song song nhiều app nặng không hề giật lag. Đáng đồng tiền bát gạo!" }
+              - column: { name: created_at, valueDate: "2024-11-20T14:30:00" }
+        - insert:
+            tableName: reviews
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: user_id, value: "cccc2222-cccc-2222-cccc-222222222222" }
+              - column: { name: product_id, value: "b2000002-0002-0002-0002-000000000002" }
+              - column: { name: rating, value: 5 }
+              - column: { name: comment, value: "Màn hình XDR đẹp không tả nổi, xem HDR content sáng rực. Pin trâu bò, làm việc cả ngày không cần sạc. Loa built-in nghe nhạc hay như loa ngoài!" }
+              - column: { name: created_at, valueDate: "2024-12-05T09:15:00" }
+        - insert:
+            tableName: reviews
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: user_id, value: "cccc2222-cccc-2222-cccc-222222222222" }
+              - column: { name: product_id, value: "b2000002-0002-0002-0002-000000000002" }
+              - column: { name: rating, value: 4 }
+              - column: { name: comment, value: "Mạnh không đối thủ nhưng máy khá nặng (2.14kg). Nếu di chuyển nhiều thì nên cân nhắc MBA hoặc MBP 14. Còn lại thì hoàn hảo cho workstation di động." }
+              - column: { name: created_at, valueDate: "2024-12-15T16:00:00" }
+
+  - changeSet:
+      id: 046-fix-more-product-images
+      author: antigravity
+      changes:
+        # iPhone 14 Pro Images
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: image_url, value: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-14-pro-finish-select-202209-6-7inch-deeppurple?wid=800" }
+              - column: { name: display_order, value: 1 }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: image_url, value: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-14-pro-finish-select-202209-6-7inch-gold?wid=800" }
+              - column: { name: display_order, value: 2 }
+        # MacBook Air M2 Images
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000001-0002-0002-0002-000000000001" }
+              - column: { name: image_url, value: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mba-midnight-select-202306?wid=800" }
+              - column: { name: display_order, value: 1 }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "b2000001-0002-0002-0002-000000000001" }
+              - column: { name: image_url, value: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mba-starlight-select-202306?wid=800" }
+              - column: { name: display_order, value: 2 }
+        # AirPods Max Images
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000001-0003-0003-0003-000000000001" }
+              - column: { name: image_url, value: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/airpods-max-select-spacegray-202011?wid=800" }
+              - column: { name: display_order, value: 1 }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000001-0003-0003-0003-000000000001" }
+              - column: { name: image_url, value: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/airpods-max-select-silver-202011?wid=800" }
+              - column: { name: display_order, value: 2 }
+
+  - changeSet:
+      id: 047-add-more-specs
+      author: antigravity
+      changes:
+        # iPhone 14 Pro Specifications
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: spec_key, value: "Chip" }
+              - column: { name: spec_value, value: "Apple A16 Bionic" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: spec_key, value: "RAM" }
+              - column: { name: spec_value, value: "6GB" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: spec_key, value: "Màn hình" }
+              - column: { name: spec_value, value: "6.7 inch Super Retina XDR, Dynamic Island" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: spec_key, value: "Camera" }
+              - column: { name: spec_value, value: "48MP + 12MP + 12MP hệ thống 3 camera" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: spec_key, value: "Pin" }
+              - column: { name: spec_value, value: "4323mAh, sạc nhanh 20W, MagSafe 15W" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: spec_key, value: "Bộ nhớ" }
+              - column: { name: spec_value, value: "256GB" }
+        # AirPods Max Specifications  
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000001-0003-0003-0003-000000000001" }
+              - column: { name: spec_key, value: "Driver" }
+              - column: { name: spec_value, value: "40mm Apple-designed dynamic" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000001-0003-0003-0003-000000000001" }
+              - column: { name: spec_key, value: "Chip" }
+              - column: { name: spec_value, value: "Apple H1, tính toán âm thanh 9 tỷ phép/giây" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000001-0003-0003-0003-000000000001" }
+              - column: { name: spec_key, value: "Pin" }
+              - column: { name: spec_value, value: "20 giờ với ANC bật" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000001-0003-0003-0003-000000000001" }
+              - column: { name: spec_key, value: "Kết nối" }
+              - column: { name: spec_value, value: "Bluetooth 5.0, Lightning" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000001-0003-0003-0003-000000000001" }
+              - column: { name: spec_key, value: "Tính năng" }
+              - column: { name: spec_value, value: "ANC, Transparency Mode, Spatial Audio, Dolby Atmos" }
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000001-0003-0003-0003-000000000001" }
+              - column: { name: spec_key, value: "Khối lượng" }
+              - column: { name: spec_value, value: "385g (bao gồm earcups)" }
+
+  - changeSet:
+      id: 048-update-descriptions-more
+      author: antigravity
+      changes:
+        - update:
+            tableName: products
+            columns:
+              - column: { name: description, value: "iPhone 14 Pro với Dynamic Island - tính năng hoàn toàn mới thay thế notch truyền thống. Chip A16 Bionic mang đến hiệu năng vượt trội cho gaming và xử lý ảnh. Camera 48MP chụp ảnh chi tiết sắc nét với ProRAW. Màn hình Always-On hiển thị thông tin mà không cần đánh thức màn hình. Safety features: Crash Detection và Emergency SOS qua vệ tinh. Thiết kế thép không gỉ sang trọng với mặt kính Ceramic Shield." }
+            where: id = 'a1000001-0001-0001-0001-000000000001'
+        - update:
+            tableName: products
+            columns:
+              - column: { name: description, value: "AirPods Max - tai nghe over-ear cao cấp nhất của Apple với chất lượng âm thanh Hi-Fi. Driver 40mm thiết kế riêng mang đến âm bass sâu, treble trong trẻo. Chống ồn chủ động ANC với 9 microphone. Transparency Mode nghe âm thanh xung quanh tự nhiên. Spatial Audio với head tracking cho trải nghiệm xem phim như rạp chiếu. Khung nhôm anodized, earcups mesh thoáng khí. Smart Case tiết kiệm pin siêu việt." }
+            where: id = 'c3000001-0003-0003-0003-000000000001'

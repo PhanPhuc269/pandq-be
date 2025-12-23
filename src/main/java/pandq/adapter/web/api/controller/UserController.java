@@ -41,4 +41,18 @@ public class UserController {
     public ResponseEntity<UserDTO.Response> updateUser(@PathVariable UUID id, @RequestBody UserDTO.UpdateRequest request) {
         return ResponseEntity.ok(userService.updateUser(id, request));
     }
+
+    @PostMapping("/fcm-token")
+    public ResponseEntity<Void> updateFcmToken(@RequestBody UserDTO.FcmTokenRequest request) {
+        userService.updateFcmToken(request.getUserId(), request.getFcmToken());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/fcm-token-by-email")
+    public ResponseEntity<Void> updateFcmTokenByEmail(@RequestBody UserDTO.FcmTokenByEmailRequest request) {
+        userService.updateFcmTokenByEmail(request.getEmail(), request.getFcmToken(), request.getFirebaseUid());
+        return ResponseEntity.ok().build();
+    }
 }
+
+

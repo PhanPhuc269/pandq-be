@@ -29,7 +29,7 @@ public class ProductService {
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
-    
+
     @Transactional(readOnly = true)
     public List<ProductDTO.Response> getProductsByCategory(UUID categoryId) {
         return productRepository.findByCategoryId(categoryId).stream()
@@ -108,6 +108,47 @@ public class ProductService {
         response.setStatus(product.getStatus());
         response.setAverageRating(product.getAverageRating());
         response.setReviewCount(product.getReviewCount());
+
+        // Map images
+        if (product.getImages() != null) {
+            response.setImages(product.getImages().stream()
+                    .map(img -> {
+                        ProductDTO.ProductImageDTO imageDTO = new ProductDTO.ProductImageDTO();
+                        imageDTO.setId(img.getId());
+                        imageDTO.setImageUrl(img.getImageUrl());
+                        imageDTO.setDisplayOrder(img.getDisplayOrder());
+                        return imageDTO;
+                    })
+                    .collect(Collectors.toList()));
+        }
+
+        // Map specifications
+        if (product.getSpecifications() != null) {
+            response.setSpecifications(product.getSpecifications().stream()
+                    .map(spec -> {
+                        ProductDTO.ProductSpecificationDTO specDTO = new ProductDTO.ProductSpecificationDTO();
+                        specDTO.setSpecKey(spec.getSpecKey());
+                        specDTO.setSpecValue(spec.getSpecValue());
+                        return specDTO;
+                    })
+                    .collect(Collectors.toList()));
+        }
+
+        // Map related products (limit to 4)
+        if (product.getRelatedProducts() != null) {
+            response.setRelatedProducts(product.getRelatedProducts().stream()
+                    .limit(4)
+                    .map(rel -> {
+                        ProductDTO.RelatedProductDTO relDTO = new ProductDTO.RelatedProductDTO();
+                        relDTO.setId(rel.getId());
+                        relDTO.setName(rel.getName());
+                        relDTO.setThumbnailUrl(rel.getThumbnailUrl());
+                        relDTO.setPrice(rel.getPrice());
+                        return relDTO;
+                    })
+                    .collect(Collectors.toList()));
+        }
+
         return response;
     }
 
@@ -122,10 +163,10 @@ public class ProductService {
         response.setThumbnailUrl(product.getThumbnailUrl());
         response.setAverageRating(product.getAverageRating());
         response.setReviewCount(product.getReviewCount());
-        // TODO: Implement isBestSeller and stockQuantity logic when Inventory module is ready
+        // TODO: Implement isBestSeller and stockQuantity logic when Inventory module is
+        // ready
         response.setIsBestSeller(product.getReviewCount() != null && product.getReviewCount() > 100);
         response.setStockQuantity(100); // Placeholder - integrate with Inventory later
         return response;
     }
 }
-

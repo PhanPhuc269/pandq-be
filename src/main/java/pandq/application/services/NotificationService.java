@@ -32,6 +32,15 @@ public class NotificationService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public List<NotificationDTO.Response> getNotificationsByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+        return notificationRepository.findByUserId(user.getId()).stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     public void markAsRead(UUID id) {
         Notification notification = notificationRepository.findById(id)

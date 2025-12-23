@@ -333,6 +333,7 @@ databaseChangeLog:
       id: 015-seed-notifications
       author: antigravity
       changes:
+        # System welcome notification
         - insert:
             tableName: notifications
             columns:
@@ -344,19 +345,213 @@ databaseChangeLog:
                   value: "cccc2222-cccc-2222-cccc-222222222222"
               - column:
                   name: title
-                  value: "Welcome to PandQ"
+                  value: "Chào mừng đến với PandQ!"
               - column:
                   name: body
-                  value: "Thank you for joining us. Happy shopping!"
+                  value: "Cảm ơn bạn đã đăng ký. Khám phá hàng ngàn sản phẩm công nghệ với giá tốt nhất!"
               - column:
                   name: type
                   value: "SYSTEM"
               - column:
                   name: is_read
+                  valueBoolean: true
+              - column:
+                  name: created_at
+                  valueDate: "2024-12-15T08:00:00"
+        # Order delivered
+        - insert:
+            tableName: notifications
+            columns:
+              - column:
+                  name: id
+                  valueComputed: "gen_random_uuid()"
+              - column:
+                  name: user_id
+                  value: "cccc2222-cccc-2222-cccc-222222222222"
+              - column:
+                  name: title
+                  value: "Giao hàng thành công"
+              - column:
+                  name: body
+                  value: "Đơn hàng #29381 của bạn đã được giao thành công. Vui lòng xác nhận và đánh giá sản phẩm để nhận 200 xu."
+              - column:
+                  name: type
+                  value: "ORDER_UPDATE"
+              - column:
+                  name: target_url
+                  value: "pandq://orders/29381"
+              - column:
+                  name: is_read
                   valueBoolean: false
               - column:
                   name: created_at
-                  valueDate: "2024-01-01T08:00:00"
+                  valueDate: "2024-12-23T10:30:00"
+        # Promo Sale
+        - insert:
+            tableName: notifications
+            columns:
+              - column:
+                  name: id
+                  valueComputed: "gen_random_uuid()"
+              - column:
+                  name: user_id
+                  value: "cccc2222-cccc-2222-cccc-222222222222"
+              - column:
+                  name: title
+                  value: "Siêu Sale Cuối Năm 🔥"
+              - column:
+                  name: body
+                  value: "Giảm giá lên đến 50% cho các sản phẩm điện tử. Số lượng có hạn, mua ngay kẻo lỡ!"
+              - column:
+                  name: type
+                  value: "PROMOTION"
+              - column:
+                  name: target_url
+                  value: "pandq://promotions/sale-cuoi-nam"
+              - column:
+                  name: is_read
+                  valueBoolean: false
+              - column:
+                  name: created_at
+                  valueDate: "2024-12-23T10:00:00"
+        # Order shipping
+        - insert:
+            tableName: notifications
+            columns:
+              - column:
+                  name: id
+                  valueComputed: "gen_random_uuid()"
+              - column:
+                  name: user_id
+                  value: "cccc2222-cccc-2222-cccc-222222222222"
+              - column:
+                  name: title
+                  value: "Đơn hàng đang vận chuyển"
+              - column:
+                  name: body
+                  value: "Đơn hàng #29381 đã được bàn giao cho đơn vị vận chuyển GHN. Dự kiến giao trong 2-3 ngày."
+              - column:
+                  name: type
+                  value: "ORDER_UPDATE"
+              - column:
+                  name: target_url
+                  value: "pandq://orders/29381/tracking"
+              - column:
+                  name: is_read
+                  valueBoolean: true
+              - column:
+                  name: created_at
+                  valueDate: "2024-12-22T16:45:00"
+        # System maintenance
+        - insert:
+            tableName: notifications
+            columns:
+              - column:
+                  name: id
+                  valueComputed: "gen_random_uuid()"
+              - column:
+                  name: user_id
+                  value: "cccc2222-cccc-2222-cccc-222222222222"
+              - column:
+                  name: title
+                  value: "Bảo trì hệ thống"
+              - column:
+                  name: body
+                  value: "Hệ thống sẽ bảo trì định kỳ vào lúc 02:00 AM ngày 25/12. Dịch vụ sẽ gián đoạn trong 30 phút."
+              - column:
+                  name: type
+                  value: "SYSTEM"
+              - column:
+                  name: is_read
+                  valueBoolean: true
+              - column:
+                  name: created_at
+                  valueDate: "2024-12-22T09:00:00"
+        # Promo coupon
+        - insert:
+            tableName: notifications
+            columns:
+              - column:
+                  name: id
+                  valueComputed: "gen_random_uuid()"
+              - column:
+                  name: user_id
+                  value: "cccc2222-cccc-2222-cccc-222222222222"
+              - column:
+                  name: title
+                  value: "Mã giảm giá dành riêng cho bạn"
+              - column:
+                  name: body
+                  value: "Tặng bạn mã GIAM20K cho đơn hàng từ 100K. Hạn sử dụng đến hết tháng này."
+              - column:
+                  name: type
+                  value: "PROMOTION"
+              - column:
+                  name: target_url
+                  value: "pandq://coupons/GIAM20K"
+              - column:
+                  name: is_read
+                  valueBoolean: true
+              - column:
+                  name: created_at
+                  valueDate: "2024-12-18T14:00:00"
+        # Order confirmed
+        - insert:
+            tableName: notifications
+            columns:
+              - column:
+                  name: id
+                  valueComputed: "gen_random_uuid()"
+              - column:
+                  name: user_id
+                  value: "cccc2222-cccc-2222-cccc-222222222222"
+              - column:
+                  name: title
+                  value: "Đặt hàng thành công"
+              - column:
+                  name: body
+                  value: "Đơn hàng #29381 đã được xác nhận. Shop đang chuẩn bị hàng cho bạn."
+              - column:
+                  name: type
+                  value: "ORDER_UPDATE"
+              - column:
+                  name: target_url
+                  value: "pandq://orders/29381"
+              - column:
+                  name: is_read
+                  valueBoolean: true
+              - column:
+                  name: created_at
+                  valueDate: "2024-12-21T10:00:00"
+        # Flash sale promo
+        - insert:
+            tableName: notifications
+            columns:
+              - column:
+                  name: id
+                  valueComputed: "gen_random_uuid()"
+              - column:
+                  name: user_id
+                  value: "cccc2222-cccc-2222-cccc-222222222222"
+              - column:
+                  name: title
+                  value: "Flash Sale 12:00 hôm nay!"
+              - column:
+                  name: body
+                  value: "iPhone 15 Pro giảm 2 triệu. Chỉ 50 sản phẩm. Đặt ngay!"
+              - column:
+                  name: type
+                  value: "PROMOTION"
+              - column:
+                  name: target_url
+                  value: "pandq://flash-sale"
+              - column:
+                  name: is_read
+                  valueBoolean: true
+              - column:
+                  name: created_at
+                  valueDate: "2024-12-20T11:55:00"
+
 
   - changeSet:
       id: 016-seed-orders

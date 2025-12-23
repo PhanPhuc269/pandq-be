@@ -1,5 +1,6 @@
 package pandq.application.port.repositories;
 
+import pandq.domain.models.enums.OrderStatus;
 import pandq.domain.models.order.Order;
 
 import java.util.List;
@@ -11,5 +12,6 @@ public interface OrderRepository {
     Optional<Order> findById(UUID id);
     List<Order> findAll();
     List<Order> findByUserId(UUID userId);
+    List<Order> findByUserIdAndStatus(UUID userId, OrderStatus status);
     void deleteById(UUID id);
 }

@@ -1,0 +1,315 @@
+databaseChangeLog:
+  - changeSet:
+      id: 022-update-product-ratings
+      author: antigravity
+      comment: "Add average_rating values to all products"
+      changes:
+        # Original products from seed
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.8" }
+              - column: { name: review_count, value: "125" }
+            where: "id = '33333333-3333-3333-3333-333333333333'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.7" }
+              - column: { name: review_count, value: "89" }
+            where: "id = '44444444-4444-4444-4444-444444444444'"
+
+        # ĐIỆN THOẠI
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.6" }
+              - column: { name: review_count, value: "203" }
+            where: "id = 'a1000001-0001-0001-0001-000000000001'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.5" }
+              - column: { name: review_count, value: "356" }
+            where: "id = 'a1000002-0001-0001-0001-000000000002'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.4" }
+              - column: { name: review_count, value: "78" }
+            where: "id = 'a1000003-0001-0001-0001-000000000003'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.3" }
+              - column: { name: review_count, value: "92" }
+            where: "id = 'a1000004-0001-0001-0001-000000000004'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.2" }
+              - column: { name: review_count, value: "187" }
+            where: "id = 'a1000005-0001-0001-0001-000000000005'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.7" }
+              - column: { name: review_count, value: "64" }
+            where: "id = 'a1000006-0001-0001-0001-000000000006'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.5" }
+              - column: { name: review_count, value: "112" }
+            where: "id = 'a1000007-0001-0001-0001-000000000007'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.3" }
+              - column: { name: review_count, value: "45" }
+            where: "id = 'a1000008-0001-0001-0001-000000000008'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.6" }
+              - column: { name: review_count, value: "134" }
+            where: "id = 'a1000009-0001-0001-0001-000000000009'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.4" }
+              - column: { name: review_count, value: "67" }
+            where: "id = 'a1000010-0001-0001-0001-000000000010'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.1" }
+              - column: { name: review_count, value: "89" }
+            where: "id = 'a1000011-0001-0001-0001-000000000011'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.0" }
+              - column: { name: review_count, value: "56" }
+            where: "id = 'a1000012-0001-0001-0001-000000000012'"
+
+        # LAPTOP
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.8" }
+              - column: { name: review_count, value: "278" }
+            where: "id = 'b2000001-0002-0002-0002-000000000001'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.9" }
+              - column: { name: review_count, value: "45" }
+            where: "id = 'b2000002-0002-0002-0002-000000000002'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.5" }
+              - column: { name: review_count, value: "156" }
+            where: "id = 'b2000003-0002-0002-0002-000000000003'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.4" }
+              - column: { name: review_count, value: "98" }
+            where: "id = 'b2000004-0002-0002-0002-000000000004'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.7" }
+              - column: { name: review_count, value: "189" }
+            where: "id = 'b2000005-0002-0002-0002-000000000005'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.3" }
+              - column: { name: review_count, value: "67" }
+            where: "id = 'b2000006-0002-0002-0002-000000000006'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.6" }
+              - column: { name: review_count, value: "234" }
+            where: "id = 'b2000007-0002-0002-0002-000000000007'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.5" }
+              - column: { name: review_count, value: "145" }
+            where: "id = 'b2000008-0002-0002-0002-000000000008'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.2" }
+              - column: { name: review_count, value: "78" }
+            where: "id = 'b2000009-0002-0002-0002-000000000009'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.4" }
+              - column: { name: review_count, value: "112" }
+            where: "id = 'b2000010-0002-0002-0002-000000000010'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.6" }
+              - column: { name: review_count, value: "89" }
+            where: "id = 'b2000011-0002-0002-0002-000000000011'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.5" }
+              - column: { name: review_count, value: "56" }
+            where: "id = 'b2000012-0002-0002-0002-000000000012'"
+
+        # PHỤ KIỆN
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.3" }
+              - column: { name: review_count, value: "312" }
+            where: "id = 'c3000001-0003-0003-0003-000000000001'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.8" }
+              - column: { name: review_count, value: "567" }
+            where: "id = 'c3000002-0003-0003-0003-000000000002'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.2" }
+              - column: { name: review_count, value: "134" }
+            where: "id = 'c3000003-0003-0003-0003-000000000003'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.5" }
+              - column: { name: review_count, value: "289" }
+            where: "id = 'c3000004-0003-0003-0003-000000000004'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.7" }
+              - column: { name: review_count, value: "445" }
+            where: "id = 'c3000005-0003-0003-0003-000000000005'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.4" }
+              - column: { name: review_count, value: "678" }
+            where: "id = 'c3000006-0003-0003-0003-000000000006'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.1" }
+              - column: { name: review_count, value: "234" }
+            where: "id = 'c3000007-0003-0003-0003-000000000007'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.6" }
+              - column: { name: review_count, value: "389" }
+            where: "id = 'c3000008-0003-0003-0003-000000000008'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.3" }
+              - column: { name: review_count, value: "156" }
+            where: "id = 'c3000009-0003-0003-0003-000000000009'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.5" }
+              - column: { name: review_count, value: "198" }
+            where: "id = 'c3000010-0003-0003-0003-000000000010'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.7" }
+              - column: { name: review_count, value: "145" }
+            where: "id = 'c3000011-0003-0003-0003-000000000011'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.4" }
+              - column: { name: review_count, value: "267" }
+            where: "id = 'c3000012-0003-0003-0003-000000000012'"
+
+        # ĐỒNG HỒ
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.7" }
+              - column: { name: review_count, value: "456" }
+            where: "id = 'd4000001-0004-0004-0004-000000000001'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.4" }
+              - column: { name: review_count, value: "278" }
+            where: "id = 'd4000002-0004-0004-0004-000000000002'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.5" }
+              - column: { name: review_count, value: "189" }
+            where: "id = 'd4000003-0004-0004-0004-000000000003'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.2" }
+              - column: { name: review_count, value: "67" }
+            where: "id = 'd4000004-0004-0004-0004-000000000004'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.8" }
+              - column: { name: review_count, value: "234" }
+            where: "id = 'd4000005-0004-0004-0004-000000000005'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.3" }
+              - column: { name: review_count, value: "145" }
+            where: "id = 'd4000006-0004-0004-0004-000000000006'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.1" }
+              - column: { name: review_count, value: "98" }
+            where: "id = 'd4000007-0004-0004-0004-000000000007'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.0" }
+              - column: { name: review_count, value: "167" }
+            where: "id = 'd4000008-0004-0004-0004-000000000008'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.2" }
+              - column: { name: review_count, value: "123" }
+            where: "id = 'd4000009-0004-0004-0004-000000000009'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.4" }
+              - column: { name: review_count, value: "189" }
+            where: "id = 'd4000010-0004-0004-0004-000000000010'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.3" }
+              - column: { name: review_count, value: "78" }
+            where: "id = 'd4000011-0004-0004-0004-000000000011'"
+        - update:
+            tableName: products
+            columns:
+              - column: { name: average_rating, value: "4.1" }
+              - column: { name: review_count, value: "56" }
+            where: "id = 'd4000012-0004-0004-0004-000000000012'"

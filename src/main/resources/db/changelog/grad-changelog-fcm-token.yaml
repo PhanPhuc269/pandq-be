@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-fcm-token-to-users
+      author: fcm-integration
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: fcm_token
+                  type: varchar(255)
+                  constraints:
+                    nullable: true

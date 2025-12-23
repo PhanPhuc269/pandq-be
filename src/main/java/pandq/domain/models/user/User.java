@@ -46,6 +46,9 @@ public class User {
     @Column(name = "pref_key")
     private java.util.Set<String> notificationPreferences;
 
+    // FCM token for push notifications
+    private String fcmToken;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Address> addresses;
 

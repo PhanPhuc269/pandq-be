@@ -48,9 +48,11 @@ public class SecurityConfiguration {
                                         "/api/v1/categories/{id}",
                                         "/api/v1/reviews/**",
                                         "/api/v1/upload",
-                                        "/uploads/**")
-                                .permitAll()
-                                .anyRequest().authenticated())
+                                        "/uploads/**",
+                                        "/api/v1/users/fcm-token-by-email"
+                                ).permitAll()
+                                .anyRequest().authenticated()
+                )
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(firebaseAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

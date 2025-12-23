@@ -29,3 +29,5 @@ databaseChangeLog:
       file: db/changelog/grad-changelog-fix-broken-images.yaml
   - include:
       file: db/changelog/grad-changelog-related-products-all.yaml
+  - include:
+      file: db/changelog/grad-changelog-fcm-token.yaml

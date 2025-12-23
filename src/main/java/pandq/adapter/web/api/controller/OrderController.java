@@ -41,6 +41,18 @@ public class OrderController {
         return ResponseEntity.ok(orderService.addToCart(request));
     }
 
+    @PostMapping("/cart/decrease")
+    public ResponseEntity<OrderDTO.Response> decreaseQuantity(@RequestBody OrderDTO.AddToCartRequest request) {
+        return ResponseEntity.ok(orderService.decreaseQuantity(request));
+    }
+
+    @DeleteMapping("/cart/{userId}/{productId}")
+    public ResponseEntity<OrderDTO.Response> removeFromCart(
+            @PathVariable String userId,
+            @PathVariable UUID productId) {
+        return ResponseEntity.ok(orderService.removeFromCart(userId, productId));
+    }
+
     @GetMapping("/cart/{userId}")
     public ResponseEntity<OrderDTO.Response> getCart(@PathVariable String userId) {
         return ResponseEntity.ok(orderService.getCart(userId));

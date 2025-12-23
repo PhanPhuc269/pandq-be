@@ -251,4 +251,88 @@ public class OrderService {
         }
         return mapToResponse(pendingOrders.get(0));
     }
+
+    @Transactional
+    public OrderDTO.Response decreaseQuantity(OrderDTO.AddToCartRequest request) {
+        User user = userRepository.findByFirebaseUid(request.getUserId())
+                .orElse(null);
+        
+        UUID userUUID = null;
+        if (user == null) {
+            try {
+                userUUID = UUID.fromString(request.getUserId());
+                user = userRepository.findById(userUUID)
+                        .orElseThrow(() -> new RuntimeException("User not found"));
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("Invalid user ID format");
+            }
+        }
+
+        List<Order> pendingOrders = orderRepository.findByUserIdAndStatus(user.getId(), OrderStatus.PENDING);
+        if (pendingOrders.isEmpty()) {
+            throw new RuntimeException("Cart not found");
+        }
+
+        Order cart = pendingOrders.get(0);
+        Product product = productRepository.findById(request.getProductId())
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        OrderItem existingItem = cart.getOrderItems().stream()
+                .filter(item -> item.getProduct().getId().equals(request.getProductId()))
+                .findFirst()
+                .orElse(null);
+
+        if (existingItem != null) {
+            if (existingItem.getQuantity() > 1) {
+                existingItem.setQuantity(existingItem.getQuantity() - 1);
+                existingItem.setTotalPrice(product.getPrice().multiply(BigDecimal.valueOf(existingItem.getQuantity())));
+            } else {
+                cart.getOrderItems().remove(existingItem);
+            }
+        }
+
+        // Recalculate totals
+        BigDecimal totalAmount = cart.getOrderItems().stream()
+                .map(OrderItem::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        cart.setTotalAmount(totalAmount);
+        cart.setFinalAmount(totalAmount);
+
+        Order savedCart = orderRepository.save(cart);
+        return mapToResponse(savedCart);
+    }
+
+    @Transactional
+    public OrderDTO.Response removeFromCart(String userId, UUID productId) {
+        User user = userRepository.findByFirebaseUid(userId)
+                .orElse(null);
+        
+        if (user == null) {
+            try {
+                UUID userUUID = UUID.fromString(userId);
+                user = userRepository.findById(userUUID)
+                        .orElseThrow(() -> new RuntimeException("User not found"));
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("Invalid user ID format");
+            }
+        }
+
+        List<Order> pendingOrders = orderRepository.findByUserIdAndStatus(user.getId(), OrderStatus.PENDING);
+        if (pendingOrders.isEmpty()) {
+            throw new RuntimeException("Cart not found");
+        }
+
+        Order cart = pendingOrders.get(0);
+        cart.getOrderItems().removeIf(item -> item.getProduct().getId().equals(productId));
+
+        // Recalculate totals
+        BigDecimal totalAmount = cart.getOrderItems().stream()
+                .map(OrderItem::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        cart.setTotalAmount(totalAmount);
+        cart.setFinalAmount(totalAmount);
+
+        Order savedCart = orderRepository.save(cart);
+        return mapToResponse(savedCart);
+    }
 }

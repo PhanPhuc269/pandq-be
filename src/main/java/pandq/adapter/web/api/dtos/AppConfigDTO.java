@@ -37,6 +37,6 @@ public class AppConfigDTO {
     public static class CategoryResponse {
         private String id;
         private String name;
-        private String iconUrl;
+        private String imageUrl;
     }
 }

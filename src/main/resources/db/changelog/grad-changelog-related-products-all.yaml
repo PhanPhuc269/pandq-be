@@ -1,0 +1,436 @@
+databaseChangeLog:
+  - changeSet:
+      id: 080-ensure-related-products-all
+      author: antigravity
+      changes:
+        # ==========================================
+        # 1. SMARTPHONES RELATIONS
+        # a1000001 to a1000012
+        # Strategy: Link to 2 other phones + 1 accessory + 1 watch
+        # ==========================================
+        
+        # iPhone 14 Pro (a1000001) -> iPhone 13, AirPods Max, Watch SE
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: related_product_id, value: "a1000002-0001-0001-0001-000000000002" }
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: related_product_id, value: "c3000001-0003-0003-0003-000000000001" }
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "a1000001-0001-0001-0001-000000000001" }
+              - column: { name: related_product_id, value: "d4000002-0004-0004-0004-000000000002" }
+
+        # iPhone 13 (a1000002) -> iPhone 14 Pro, MagSafe Charger, AirPods Max
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "a1000002-0001-0001-0001-000000000002" }
+              - column: { name: related_product_id, value: "a1000001-0001-0001-0001-000000000001" }
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "a1000002-0001-0001-0001-000000000002" }
+              - column: { name: related_product_id, value: "c3000010-0003-0003-0003-000000000010" }
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "a1000002-0001-0001-0001-000000000002" }
+              - column: { name: related_product_id, value: "c3000001-0003-0003-0003-000000000001" }
+
+        # Z Fold 5 (a1000003) -> Z Flip 5, Galaxy Buds3 Pro, Watch 6 Classic
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "a1000003-0001-0001-0001-000000000003" }
+              - column: { name: related_product_id, value: "a1000004-0001-0001-0001-000000000004" }
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "a1000003-0001-0001-0001-000000000003" }
+              - column: { name: related_product_id, value: "c3000003-0003-0003-0003-000000000003" }
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "a1000003-0001-0001-0001-000000000003" }
+              - column: { name: related_product_id, value: "d4000003-0004-0004-0004-000000000003" }
+
+        # Z Flip 5 (a1000004) -> Z Fold 5, Galaxy Buds3 Pro, Watch 6
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "a1000004-0001-0001-0001-000000000004" }
+              - column: { name: related_product_id, value: "a1000003-0001-0001-0001-000000000003" }
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "a1000004-0001-0001-0001-000000000004" }
+              - column: { name: related_product_id, value: "c3000003-0003-0003-0003-000000000003" }
+
+        # Galaxy A54 (a1000005) -> Flip 6, Anker PowerCore
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "a1000005-0001-0001-0001-000000000005" }
+              - column: { name: related_product_id, value: "c3000008-0003-0003-0003-000000000008" }
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "a1000005-0001-0001-0001-000000000005" }
+              - column: { name: related_product_id, value: "c3000006-0003-0003-0003-000000000006" }
+
+        # Pixel 8 Pro (a1000006) -> Pixel Watch 2, Sony WH-1000XM5
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "a1000006-0001-0001-0001-000000000006" }
+              - column: { name: related_product_id, value: "d4000011-0004-0004-0004-000000000011" }
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "a1000006-0001-0001-0001-000000000006" }
+              - column: { name: related_product_id, value: "c3000002-0003-0003-0003-000000000002" }
+
+        # Xiaomi 14 Ultra (a1000007) -> Watch S3, Xiaomi 14
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "a1000007-0001-0001-0001-000000000007" }
+              - column: { name: related_product_id, value: "d4000008-0004-0004-0004-000000000008" }
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "a1000007-0001-0001-0001-000000000007" }
+              - column: { name: related_product_id, value: "c3000006-0003-0003-0003-000000000006" }
+
+        # OPPO Find X7 (a1000008) -> OPPO Watch 4 Pro, Vivo X100
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "a1000008-0001-0001-0001-000000000008" }
+              - column: { name: related_product_id, value: "d4000012-0004-0004-0004-000000000012" }
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "a1000008-0001-0001-0001-000000000008" }
+              - column: { name: related_product_id, value: "a1000010-0001-0001-0001-000000000010" }
+
+        # OnePlus 12 (a1000009) -> Realme GT, Buds3
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "a1000009-0001-0001-0001-000000000009" }
+              - column: { name: related_product_id, value: "a1000011-0001-0001-0001-000000000011" }
+
+        # Vivo X100 (a1000010) -> OPPO Find X7
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "a1000010-0001-0001-0001-000000000010" }
+              - column: { name: related_product_id, value: "a1000008-0001-0001-0001-000000000008" }
+
+        # Realme GT 5 (a1000011) -> OnePlus
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "a1000011-0001-0001-0001-000000000011" }
+              - column: { name: related_product_id, value: "a1000009-0001-0001-0001-000000000009" }
+
+        # Nothing Phone 2 (a1000012) -> Pixel 8 Pro
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "a1000012-0001-0001-0001-000000000012" }
+              - column: { name: related_product_id, value: "a1000006-0001-0001-0001-000000000006" }
+
+        # ==========================================
+        # 2. LAPTOPS RELATIONS
+        # b2000001 to b2000012
+        # Use mouse, keyboards, headphones
+        # ==========================================
+
+        # MacBook Air M2 (b2000001) -> Magic Mouse, MacBook Pro 14
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "b2000001-0002-0002-0002-000000000001" }
+              - column: { name: related_product_id, value: "c3000005-0003-0003-0003-000000000005" } # MX Master 3S
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "b2000001-0002-0002-0002-000000000001" }
+              - column: { name: related_product_id, value: "c3000004-0003-0003-0003-000000000004" } # Magic Keyboard
+
+        # Dell XPS 15 (b2000003) -> XPS 13, MX Master 3S
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "b2000003-0002-0002-0002-000000000003" }
+              - column: { name: related_product_id, value: "b2000004-0002-0002-0002-000000000004" }
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "b2000003-0002-0002-0002-000000000003" }
+              - column: { name: related_product_id, value: "c3000005-0003-0003-0003-000000000005" }
+
+        # XPS 13 Plus (b2000004) -> XPS 15
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "b2000004-0002-0002-0002-000000000004" }
+              - column: { name: related_product_id, value: "b2000003-0002-0002-0002-000000000003" }
+
+        # ROG Zephyrus G16 (b2000005) -> ROG 7i, Razer Blade
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "b2000005-0002-0002-0002-000000000005" }
+              - column: { name: related_product_id, value: "b2000008-0002-0002-0002-000000000008" }
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "b2000005-0002-0002-0002-000000000005" }
+              - column: { name: related_product_id, value: "b2000011-0002-0002-0002-000000000011" }
+
+        # ZenBook Pro 14 (b2000006) -> XPS 15
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "b2000006-0002-0002-0002-000000000006" }
+              - column: { name: related_product_id, value: "b2000003-0002-0002-0002-000000000003" }
+
+        # ThinkPad X1 (b2000007) -> XPS 13
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "b2000007-0002-0002-0002-000000000007" }
+              - column: { name: related_product_id, value: "b2000004-0002-0002-0002-000000000004" }
+
+        # Legion Pro 7i (b2000008) -> ROG Zephyrus
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "b2000008-0002-0002-0002-000000000008" }
+              - column: { name: related_product_id, value: "b2000005-0002-0002-0002-000000000005" }
+
+        # HP Spectre (b2000009) -> Dell XPS
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "b2000009-0002-0002-0002-000000000009" }
+              - column: { name: related_product_id, value: "b2000004-0002-0002-0002-000000000004" }
+
+        # HP Omen (b2000010) -> ROG
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "b2000010-0002-0002-0002-000000000010" }
+              - column: { name: related_product_id, value: "b2000005-0002-0002-0002-000000000005" }
+
+        # Razer Blade 15 (b2000011) -> ROG Zephyrus, MX Master 3S
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "b2000011-0002-0002-0002-000000000011" }
+              - column: { name: related_product_id, value: "b2000005-0002-0002-0002-000000000005" }
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "b2000011-0002-0002-0002-000000000011" }
+              - column: { name: related_product_id, value: "c3000005-0003-0003-0003-000000000005" }
+
+        # MSI Creator (b2000012) -> MacBook Pro 16
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "b2000012-0002-0002-0002-000000000012" }
+              - column: { name: related_product_id, value: "b2000002-0002-0002-0002-000000000002" }
+
+
+        # ==========================================
+        # 3. ACCESSORIES RELATIONS
+        # c3000001 to c3000012
+        # Link to compatible phones/laptops
+        # ==========================================
+
+        # AirPods Max (c3000001) -> iPhone 14 Pro, MacBook Air
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "c3000001-0003-0003-0003-000000000001" }
+              - column: { name: related_product_id, value: "a1000001-0001-0001-0001-000000000001" }
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "c3000001-0003-0003-0003-000000000001" }
+              - column: { name: related_product_id, value: "b2000001-0002-0002-0002-000000000001" }
+
+        # Sony WH-1000XM5 (c3000002) -> Pixel 8 Pro, Dell XPS
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "c3000002-0003-0003-0003-000000000002" }
+              - column: { name: related_product_id, value: "a1000006-0001-0001-0001-000000000006" }
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "c3000002-0003-0003-0003-000000000002" }
+              - column: { name: related_product_id, value: "b2000003-0002-0002-0002-000000000003" }
+
+        # Galaxy Buds3 Pro (c3000003) -> Z Fold 5, Z Flip 5
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "c3000003-0003-0003-0003-000000000003" }
+              - column: { name: related_product_id, value: "a1000003-0001-0001-0001-000000000003" }
+
+        # Magic Keyboard (c3000004) -> MacBook Air M2
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "c3000004-0003-0003-0003-000000000004" }
+              - column: { name: related_product_id, value: "b2000001-0002-0002-0002-000000000001" }
+
+        # MX Master 3S (c3000005) -> Dell XPS 15
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "c3000005-0003-0003-0003-000000000005" }
+              - column: { name: related_product_id, value: "b2000003-0002-0002-0002-000000000003" }
+
+        # Anker PowerCore (c3000006) -> iPhone 13, Galaxy A54
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "c3000006-0003-0003-0003-000000000006" }
+              - column: { name: related_product_id, value: "a1000002-0001-0001-0001-000000000002" }
+
+        # Apple 20W (c3000007) -> iPhone 14 Pro
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "c3000007-0003-0003-0003-000000000007" }
+              - column: { name: related_product_id, value: "a1000001-0001-0001-0001-000000000001" }
+
+        # JBL Flip 6 (c3000008) -> Galaxy A54
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "c3000008-0003-0003-0003-000000000008" }
+              - column: { name: related_product_id, value: "a1000005-0001-0001-0001-000000000005" }
+
+        # AirTag (c3000009) -> iPhone 14 Pro
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "c3000009-0003-0003-0003-000000000009" }
+              - column: { name: related_product_id, value: "a1000001-0001-0001-0001-000000000001" }
+
+        # Belkin MagSafe (c3000010) -> iPhone 13
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "c3000010-0003-0003-0003-000000000010" }
+              - column: { name: related_product_id, value: "a1000002-0001-0001-0001-000000000002" }
+
+        # SanDisk SSD (c3000011) -> MacBook Pro 16
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "c3000011-0003-0003-0003-000000000011" }
+              - column: { name: related_product_id, value: "b2000002-0002-0002-0002-000000000002" }
+
+        # Apple Pencil (c3000012) -> MacBook Air M2 (just for suggestion)
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "c3000012-0003-0003-0003-000000000012" }
+              - column: { name: related_product_id, value: "b2000001-0002-0002-0002-000000000001" }
+
+        # ==========================================
+        # 4. WATCHES RELATIONS
+        # d4000001 to d4000012
+        # Link to compatible phones
+        # ==========================================
+
+        # Watch SE 2 (d4000002) -> iPhone 13
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "d4000002-0004-0004-0004-000000000002" }
+              - column: { name: related_product_id, value: "a1000002-0001-0001-0001-000000000002" }
+
+        # Watch 6 Classic (d4000003) -> Z Fold 5
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "d4000003-0004-0004-0004-000000000003" }
+              - column: { name: related_product_id, value: "a1000003-0001-0001-0001-000000000003" }
+
+        # Watch Ultra (d4000004) -> Z Fold 5
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "d4000004-0004-0004-0004-000000000004" }
+              - column: { name: related_product_id, value: "a1000003-0001-0001-0001-000000000003" }
+
+        # Garmin Fenix 7X (d4000005) -> iPhone 14 Pro
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "d4000005-0004-0004-0004-000000000005" }
+              - column: { name: related_product_id, value: "a1000001-0001-0001-0001-000000000001" }
+
+        # Garmin Venu 3 (d4000006) -> Galaxy A54
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "d4000006-0004-0004-0004-000000000006" }
+              - column: { name: related_product_id, value: "a1000005-0001-0001-0001-000000000005" }
+
+        # Fitbit Sense 2 (d4000007) -> Pixel 8 Pro
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "d4000007-0004-0004-0004-000000000007" }
+              - column: { name: related_product_id, value: "a1000006-0001-0001-0001-000000000006" }
+
+        # Xiaomi Watch S3 (d4000008) -> Xiaomi 14 Ultra
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "d4000008-0004-0004-0004-000000000008" }
+              - column: { name: related_product_id, value: "a1000007-0001-0001-0001-000000000007" }
+
+        # Amazfit GTR 4 (d4000009) -> Galaxy A54
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "d4000009-0004-0004-0004-000000000009" }
+              - column: { name: related_product_id, value: "a1000005-0001-0001-0001-000000000005" }
+
+        # Huawei Watch GT 4 (d4000010) -> Nothing Phone
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "d4000010-0004-0004-0004-000000000010" }
+              - column: { name: related_product_id, value: "a1000012-0001-0001-0001-000000000012" }
+
+        # Pixel Watch 2 (d4000011) -> Pixel 8 Pro
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "d4000011-0004-0004-0004-000000000011" }
+              - column: { name: related_product_id, value: "a1000006-0001-0001-0001-000000000006" }
+
+        # OPPO Watch 4 (d4000012) -> OPPO Find X7
+        - insert:
+            tableName: product_related
+            columns:
+              - column: { name: product_id, value: "d4000012-0004-0004-0004-000000000012" }
+              - column: { name: related_product_id, value: "a1000008-0001-0001-0001-000000000008" }

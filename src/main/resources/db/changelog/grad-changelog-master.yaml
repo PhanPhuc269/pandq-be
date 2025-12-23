@@ -6,9 +6,11 @@ databaseChangeLog:
   - include:
       file: db/changelog/grad-changelog-update-images.yaml
   - include:
-      file: db/changelog/grad-changelog-add-categories.yaml
-  - include:
       file: db/changelog/grad-changelog-more-products.yaml
+  - include:
+      file: db/changelog/grad-changelog-test-user.yaml
+  - include:      
+      file: db/changelog/grad-changelog-add-categories.yaml
   - include:
       file: db/changelog/grad-changelog-demo-data.yaml
   - include:

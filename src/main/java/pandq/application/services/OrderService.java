@@ -37,25 +37,40 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public List<OrderDTO.Response> getOrdersByUserId(String userId) {
+        System.out.println("=== DEBUG: getOrdersByUserId called with userId: " + userId);
+
         // Try to find user by Firebase UID first
         User user = userRepository.findByFirebaseUid(userId).orElse(null);
-        
+        System.out.println("=== DEBUG: User found by Firebase UID: "
+                + (user != null ? user.getId() + " - " + user.getEmail() : "null"));
+
         // If not found, try as UUID
         if (user == null) {
             try {
                 UUID userUUID = UUID.fromString(userId);
                 user = userRepository.findById(userUUID).orElse(null);
+                System.out.println("=== DEBUG: User found by UUID: "
+                        + (user != null ? user.getId() + " - " + user.getEmail() : "null"));
             } catch (IllegalArgumentException e) {
                 // Not a valid UUID, user not found
+                System.out.println("=== DEBUG: Invalid UUID format");
                 return new ArrayList<>();
             }
         }
-        
+
         if (user == null) {
+            System.out.println("=== DEBUG: No user found, returning empty list");
             return new ArrayList<>();
         }
-        
-        return orderRepository.findByUserId(user.getId()).stream()
+
+        List<Order> orders = orderRepository.findByUserId(user.getId());
+        System.out.println("=== DEBUG: Found " + orders.size() + " orders for user " + user.getId());
+        for (Order o : orders) {
+            System.out.println("=== DEBUG: Order ID: " + o.getId() + ", Status: " + o.getStatus() + ", Items: "
+                    + o.getOrderItems().size());
+        }
+
+        return orders.stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
@@ -70,11 +85,11 @@ public class OrderService {
     @Transactional
     public OrderDTO.Response createOrder(OrderDTO.CreateRequest request) {
         User user = null;
-        if(request.getUserId() != null) {
+        if (request.getUserId() != null) {
             // Try to find user by Firebase UID first
             user = userRepository.findByFirebaseUid(request.getUserId())
                     .orElse(null);
-            
+
             // If not found, try as UUID
             if (user == null) {
                 try {
@@ -86,11 +101,11 @@ public class OrderService {
                 }
             }
         } else {
-             // TODO: get user from Security Context
-             // For now throw error if no user ID
-             throw new RuntimeException("User ID is required");
+            // TODO: get user from Security Context
+            // For now throw error if no user ID
+            throw new RuntimeException("User ID is required");
         }
-        
+
         Order order = new Order();
         order.setUser(user);
         order.setShippingAddress(request.getShippingAddress());
@@ -98,14 +113,14 @@ public class OrderService {
         order.setPaymentMethod(request.getPaymentMethod());
         order.setStatus(OrderStatus.PENDING);
         order.setCreatedAt(LocalDateTime.now());
-        
+
         List<OrderItem> orderItems = new ArrayList<>();
         BigDecimal totalAmount = BigDecimal.ZERO;
 
         for (OrderDTO.OrderItemRequest itemRequest : request.getItems()) {
             Product product = productRepository.findById(itemRequest.getProductId())
                     .orElseThrow(() -> new RuntimeException("Product not found: " + itemRequest.getProductId()));
-            
+
             OrderItem orderItem = OrderItem.builder()
                     .order(order)
                     .product(product)
@@ -113,7 +128,7 @@ public class OrderService {
                     .price(product.getPrice())
                     .totalPrice(product.getPrice().multiply(BigDecimal.valueOf(itemRequest.getQuantity())))
                     .build();
-            
+
             orderItems.add(orderItem);
             totalAmount = totalAmount.add(orderItem.getTotalPrice());
         }
@@ -141,7 +156,14 @@ public class OrderService {
         response.setShippingAddress(order.getShippingAddress());
         response.setCreatedAt(order.getCreatedAt());
 
-        List<OrderDTO.OrderItemResponse> items = order.getOrderItems().stream()
+        // Deduplicate order items by ID (Hibernate may return duplicates due to
+        // cartesian product)
+        java.util.LinkedHashMap<UUID, OrderItem> uniqueItemsMap = new java.util.LinkedHashMap<>();
+        for (OrderItem item : order.getOrderItems()) {
+            uniqueItemsMap.putIfAbsent(item.getId(), item);
+        }
+
+        List<OrderDTO.OrderItemResponse> items = uniqueItemsMap.values().stream()
                 .map(item -> {
                     OrderDTO.OrderItemResponse itemResponse = new OrderDTO.OrderItemResponse();
                     itemResponse.setProductId(item.getProduct().getId());
@@ -167,7 +189,7 @@ public class OrderService {
         // Try to find user by Firebase UID first
         User user = userRepository.findByFirebaseUid(request.getUserId())
                 .orElse(null);
-        
+
         // If not found, try as UUID
         if (user == null) {
             try {
@@ -240,7 +262,7 @@ public class OrderService {
         // Try to find user by Firebase UID first
         User user = userRepository.findByFirebaseUid(userId)
                 .orElse(null);
-        
+
         // If not found, try as UUID
         UUID userUUID = null;
         if (user == null) {
@@ -252,7 +274,7 @@ public class OrderService {
                 throw new RuntimeException("Invalid user ID format");
             }
         }
-        
+
         List<Order> pendingOrders = orderRepository.findByUserIdAndStatus(user.getId(), OrderStatus.PENDING);
         if (pendingOrders.isEmpty()) {
             // Return empty cart
@@ -274,7 +296,7 @@ public class OrderService {
     public OrderDTO.Response decreaseQuantity(OrderDTO.AddToCartRequest request) {
         User user = userRepository.findByFirebaseUid(request.getUserId())
                 .orElse(null);
-        
+
         UUID userUUID = null;
         if (user == null) {
             try {
@@ -324,7 +346,7 @@ public class OrderService {
     public OrderDTO.Response removeFromCart(String userId, UUID productId) {
         User user = userRepository.findByFirebaseUid(userId)
                 .orElse(null);
-        
+
         if (user == null) {
             try {
                 UUID userUUID = UUID.fromString(userId);

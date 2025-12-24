@@ -1,0 +1,57 @@
+databaseChangeLog:
+  - changeSet:
+      id: 061-seed-orders-for-pihuc77-v3
+      author: antigravity
+      comment: "Create orders for existing user pihuc77@gmail.com"
+      changes:
+        # Order 1: iPhone 15 Pro - DELIVERED
+        - sql:
+            sql: |
+              INSERT INTO orders (id, user_id, total_amount, shipping_fee, discount_amount, final_amount, payment_method, status, shipping_address, created_at)
+              SELECT 'aa001100-aa00-1100-aa00-110000aa0001'::uuid, id, 28990000, 0, 0, 28990000, 'COD', 'DELIVERED', '123 Nguyen Hue, Quan 1, Ho Chi Minh', '2024-12-10T10:00:00'::timestamp
+              FROM users WHERE email = 'pihuc77@gmail.com'
+              ON CONFLICT (id) DO NOTHING;
+        - sql:
+            sql: |
+              INSERT INTO order_items (id, order_id, product_id, quantity, price, total_price)
+              VALUES (gen_random_uuid(), 'aa001100-aa00-1100-aa00-110000aa0001'::uuid, 'a1000001-0001-0001-0001-000000000001'::uuid, 1, 28990000, 28990000)
+              ON CONFLICT DO NOTHING;
+
+        # Order 2: MacBook Air M2 - COMPLETED
+        - sql:
+            sql: |
+              INSERT INTO orders (id, user_id, total_amount, shipping_fee, discount_amount, final_amount, payment_method, status, shipping_address, created_at)
+              SELECT 'bb002200-bb00-2200-bb00-220000bb0002'::uuid, id, 27990000, 0, 1000000, 26990000, 'ZALOPAY', 'COMPLETED', '123 Nguyen Hue, Quan 1, Ho Chi Minh', '2024-12-15T14:30:00'::timestamp
+              FROM users WHERE email = 'pihuc77@gmail.com'
+              ON CONFLICT (id) DO NOTHING;
+        - sql:
+            sql: |
+              INSERT INTO order_items (id, order_id, product_id, quantity, price, total_price)
+              VALUES (gen_random_uuid(), 'bb002200-bb00-2200-bb00-220000bb0002'::uuid, 'b2000001-0002-0002-0002-000000000001'::uuid, 1, 27990000, 27990000)
+              ON CONFLICT DO NOTHING;
+
+        # Order 3: AirPods Pro 2 - DELIVERED
+        - sql:
+            sql: |
+              INSERT INTO orders (id, user_id, total_amount, shipping_fee, discount_amount, final_amount, payment_method, status, shipping_address, created_at)
+              SELECT 'cc003300-cc00-3300-cc00-330000cc0003'::uuid, id, 6790000, 30000, 0, 6820000, 'COD', 'DELIVERED', '123 Nguyen Hue, Quan 1, Ho Chi Minh', '2024-12-20T09:00:00'::timestamp
+              FROM users WHERE email = 'pihuc77@gmail.com'
+              ON CONFLICT (id) DO NOTHING;
+        - sql:
+            sql: |
+              INSERT INTO order_items (id, order_id, product_id, quantity, price, total_price)
+              VALUES (gen_random_uuid(), 'cc003300-cc00-3300-cc00-330000cc0003'::uuid, 'c3000003-0003-0003-0003-000000000003'::uuid, 1, 6790000, 6790000)
+              ON CONFLICT DO NOTHING;
+
+        # Order 4: Samsung Galaxy Watch 6 - PENDING
+        - sql:
+            sql: |
+              INSERT INTO orders (id, user_id, total_amount, shipping_fee, discount_amount, final_amount, payment_method, status, shipping_address, created_at)
+              SELECT 'dd004400-dd00-4400-dd00-440000dd0004'::uuid, id, 7990000, 0, 0, 7990000, 'SEPAY', 'PENDING', '123 Nguyen Hue, Quan 1, Ho Chi Minh', '2024-12-24T16:00:00'::timestamp
+              FROM users WHERE email = 'pihuc77@gmail.com'
+              ON CONFLICT (id) DO NOTHING;
+        - sql:
+            sql: |
+              INSERT INTO order_items (id, order_id, product_id, quantity, price, total_price)
+              VALUES (gen_random_uuid(), 'dd004400-dd00-4400-dd00-440000dd0004'::uuid, 'd4000002-0004-0004-0004-000000000002'::uuid, 1, 7990000, 7990000)
+              ON CONFLICT DO NOTHING;

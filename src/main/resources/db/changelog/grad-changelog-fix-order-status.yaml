@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 063-fix-order-status-to-completed
+      author: antigravity
+      comment: "Change DELIVERED orders to COMPLETED for review testing"
+      changes:
+        - sql:
+            sql: |
+              UPDATE orders SET status = 'COMPLETED' WHERE status = 'DELIVERED';

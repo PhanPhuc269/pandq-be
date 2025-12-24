@@ -35,3 +35,13 @@ databaseChangeLog:
       file: db/changelog/grad-changelog-fcm-token.yaml
   - include:      
       file: db/changelog/grad-changelog-ratings.yaml
+  - include:      
+      file: db/changelog/grad-changelog-reset-ratings.yaml
+  - include:      
+      file: db/changelog/grad-changelog-user-orders-pihuc.yaml
+  - include:      
+      file: db/changelog/grad-changelog-fix-payment.yaml
+  - include:      
+      file: db/changelog/grad-changelog-fix-order-status.yaml
+  - include:      
+      file: db/changelog/grad-changelog-notification-prefs.yaml

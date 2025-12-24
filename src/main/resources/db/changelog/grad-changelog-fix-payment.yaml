@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id: 062-fix-payment-method
+      author: antigravity
+      comment: "Fix invalid payment method BANK_TRANSFER to SEPAY"
+      changes:
+        - sql:
+            sql: |
+              UPDATE orders SET payment_method = 'SEPAY' 
+              WHERE payment_method = 'BANK_TRANSFER';

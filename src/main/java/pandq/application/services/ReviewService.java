@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pandq.adapter.web.api.dtos.ReviewDTO;
+import pandq.application.port.repositories.OrderRepository;
 import pandq.application.port.repositories.ProductRepository;
 import pandq.application.port.repositories.ReviewRepository;
 import pandq.domain.models.interaction.Review;
@@ -25,6 +26,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ProductRepository productRepository;
     private final JpaUserRepository userRepository;
+    private final OrderRepository orderRepository;
 
     @Transactional(readOnly = true)
     public List<ReviewDTO.Response> getReviewsByProductId(UUID productId, Integer filterByRating, String sortBy) {
@@ -83,15 +85,26 @@ public class ReviewService {
                 request.getProductId(), request.getUserId(), request.getRating());
 
         User user = null;
-        if (request.getUserId() != null) {
-            user = userRepository.findById(request.getUserId())
-                    .orElseThrow(() -> {
-                        log.error("User not found: {}", request.getUserId());
-                        return new RuntimeException("User not found");
-                    });
+        if (request.getUserId() != null && !request.getUserId().isEmpty()) {
+            // Try to find by Firebase UID first
+            user = userRepository.findByFirebaseUid(request.getUserId()).orElse(null);
+
+            // If not found, try as UUID
+            if (user == null) {
+                try {
+                    UUID userUUID = UUID.fromString(request.getUserId());
+                    user = userRepository.findById(userUUID).orElse(null);
+                } catch (IllegalArgumentException e) {
+                    // Not a valid UUID, user not found
+                }
+            }
+
+            if (user == null) {
+                log.error("User not found: {}", request.getUserId());
+                throw new RuntimeException("User not found");
+            }
             log.info("User found: {}", user.getFullName());
         } else {
-            // TODO: Get from security context
             log.error("User ID is required but not provided");
             throw new RuntimeException("User ID required");
         }
@@ -102,6 +115,16 @@ public class ReviewService {
                     return new RuntimeException("Product not found");
                 });
         log.info("Product found: {}", product.getName());
+
+        // Check if user has purchased this product
+        boolean hasPurchased = orderRepository.hasUserPurchasedProduct(
+                user.getId(), request.getProductId());
+        if (!hasPurchased) {
+            log.warn("User {} has not purchased product {}, review not allowed",
+                    user.getId(), request.getProductId());
+            throw new RuntimeException("Bạn chỉ có thể đánh giá sản phẩm mà bạn đã mua và nhận hàng thành công");
+        }
+        log.info("User has purchased product, proceeding with review creation");
 
         Review review = Review.builder()
                 .user(user)

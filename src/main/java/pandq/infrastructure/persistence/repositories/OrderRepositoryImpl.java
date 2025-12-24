@@ -46,4 +46,9 @@ public class OrderRepositoryImpl implements OrderRepository {
     public void deleteById(UUID id) {
         jpaOrderRepository.deleteById(id);
     }
+
+    @Override
+    public boolean hasUserPurchasedProduct(UUID userId, UUID productId) {
+        return jpaOrderRepository.existsByUserIdAndProductIdWithDeliveredStatus(userId, productId);
+    }
 }

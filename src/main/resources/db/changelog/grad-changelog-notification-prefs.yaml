@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: 064-create-user-notification-prefs-table
+      author: antigravity
+      comment: "Create user_notification_prefs table for User entity ElementCollection"
+      changes:
+        - createTable:
+            tableName: user_notification_prefs
+            columns:
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: pref_key
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: user_notification_prefs
+            columnNames: user_id, pref_key
+        - addForeignKeyConstraint:
+            baseTableName: user_notification_prefs
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_notification_prefs_user
+            onDelete: CASCADE

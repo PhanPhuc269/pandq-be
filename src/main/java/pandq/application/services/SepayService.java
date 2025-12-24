@@ -1,6 +1,7 @@
 package pandq.application.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -9,6 +10,9 @@ import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import pandq.adapter.web.api.dtos.SepayDTO;
+import pandq.application.port.repositories.OrderRepository;
+import pandq.domain.models.order.Order;
+import pandq.domain.models.enums.OrderStatus;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -21,7 +25,10 @@ import java.util.*;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SepayService {
+
+    private final OrderRepository orderRepository;
 
     @Value("${SEPAY_API_TOKEN:}")
     private String apiToken;
@@ -151,8 +158,21 @@ public class SepayService {
                         pending.isPaid = true;
                         pending.paidAt = System.currentTimeMillis();
                         
-                        // TODO: Update order status in database
-                        // orderService.markAsPaid(pending.orderId);
+                        // Update order status in database
+                        if (pending.orderId != null && !pending.orderId.isEmpty()) {
+                            try {
+                                UUID orderUuid = UUID.fromString(pending.orderId);
+                                Optional<Order> orderOpt = orderRepository.findById(orderUuid);
+                                if (orderOpt.isPresent()) {
+                                    Order order = orderOpt.get();
+                                    order.setStatus(OrderStatus.CONFIRMED);
+                                    orderRepository.save(order);
+                                    log.info("Updated order {} status to CONFIRMED", pending.orderId);
+                                }
+                            } catch (IllegalArgumentException e) {
+                                log.warn("Invalid orderId format: {}", pending.orderId);
+                            }
+                        }
                         
                         response.setSuccess(true);
                         response.setMessage("Payment confirmed");

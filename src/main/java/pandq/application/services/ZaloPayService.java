@@ -1,6 +1,7 @@
 package pandq.application.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -10,6 +11,9 @@ import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import pandq.adapter.web.api.dtos.ZaloPayDTO;
+import pandq.application.port.repositories.OrderRepository;
+import pandq.domain.models.order.Order;
+import pandq.domain.models.enums.OrderStatus;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -20,7 +24,10 @@ import java.util.*;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ZaloPayService {
+
+    private final OrderRepository orderRepository;
 
     @Value("${ZALOPAY_APP_ID:2554}")
     private int appId;
@@ -30,6 +37,9 @@ public class ZaloPayService {
 
     @Value("${ZALOPAY_KEY2:trMrHtvjo6myautxDUiAcYsVtaeQ8nhf}")
     private String key2;
+
+    @Value("${ZALOPAY_CALLBACK_URL:https://callback.url/api/v1/payments/zalopay/callback}")
+    private String callbackUrl;
 
     private static final String SANDBOX_ENDPOINT = "https://sb-openapi.zalopay.vn/v2/create";
     private static final String QUERY_ENDPOINT = "https://sb-openapi.zalopay.vn/v2/query";
@@ -43,10 +53,11 @@ public class ZaloPayService {
         try {
             String appTransId = generateAppTransId();
             long appTime = System.currentTimeMillis();
-            String appUser = "user123";
+            String appUser = request.getUserId() != null ? request.getUserId() : "user123";
             
-            // embed_data and item as JSON strings
-            String embedData = "{}";
+            // embed_data with orderId for callback processing, item as JSON strings
+            String embedData = request.getOrderId() != null ? 
+                "{\"orderId\":\"" + request.getOrderId() + "\"}" : "{}";
             String item = "[]";
             
             // Description
@@ -58,6 +69,7 @@ public class ZaloPayService {
             
             log.info("Using appId: {}", appId);
             log.info("MAC data string: {}", macData);
+            log.info("Callback URL: {}", callbackUrl);
             String mac = hmacSHA256(key1, macData);
             log.info("Generated MAC: {}", mac);
             
@@ -71,6 +83,7 @@ public class ZaloPayService {
             formBody.append("&description=").append(URLEncoder.encode(description, StandardCharsets.UTF_8));
             formBody.append("&embed_data=").append(URLEncoder.encode(embedData, StandardCharsets.UTF_8));
             formBody.append("&item=").append(URLEncoder.encode(item, StandardCharsets.UTF_8));
+            formBody.append("&callback_url=").append(URLEncoder.encode(callbackUrl, StandardCharsets.UTF_8));
             formBody.append("&mac=").append(mac);
             
             log.info("Request body: {}", formBody);
@@ -148,6 +161,64 @@ public class ZaloPayService {
         } catch (Exception e) {
             log.error("Error verifying callback", e);
             return false;
+        }
+    }
+
+    /**
+     * Process ZaloPay callback data and update order status
+     * ZaloPay callback data format (JSON string):
+     * {"app_id":2554,"app_trans_id":"241224_123456","app_time":1703398400000,
+     *  "amount":10000,"embed_data":"{\"orderId\":\"uuid-here\"}","item":"[]",
+     *  "zp_trans_id":12345678,"server_time":1703398401000,"channel":38}
+     */
+    @SuppressWarnings("unchecked")
+    public void processCallback(String data) {
+        try {
+            Map<String, Object> callbackData = objectMapper.readValue(data, Map.class);
+            
+            String appTransId = (String) callbackData.get("app_trans_id");
+            Long amount = callbackData.get("amount") != null ? 
+                ((Number) callbackData.get("amount")).longValue() : 0L;
+            String zpTransId = callbackData.get("zp_trans_id") != null ?
+                String.valueOf(callbackData.get("zp_trans_id")) : null;
+            
+            log.info("Processing ZaloPay callback: appTransId={}, amount={}, zpTransId={}", 
+                appTransId, amount, zpTransId);
+            
+            // Try to extract orderId from embed_data if available
+            String embedDataStr = (String) callbackData.get("embed_data");
+            String orderId = null;
+            if (embedDataStr != null && !embedDataStr.isEmpty()) {
+                try {
+                    Map<String, Object> embedData = objectMapper.readValue(embedDataStr, Map.class);
+                    orderId = (String) embedData.get("orderId");
+                } catch (Exception e) {
+                    log.warn("Could not parse embed_data: {}", embedDataStr);
+                }
+            }
+            
+            // Update order status if orderId found
+            if (orderId != null && !orderId.isEmpty()) {
+                try {
+                    UUID orderUuid = UUID.fromString(orderId);
+                    Optional<Order> orderOpt = orderRepository.findById(orderUuid);
+                    if (orderOpt.isPresent()) {
+                        Order order = orderOpt.get();
+                        order.setStatus(OrderStatus.CONFIRMED);
+                        orderRepository.save(order);
+                        log.info("Updated order {} status to CONFIRMED", orderId);
+                    } else {
+                        log.warn("Order not found: {}", orderId);
+                    }
+                } catch (IllegalArgumentException e) {
+                    log.warn("Invalid orderId format: {}", orderId);
+                }
+            } else {
+                log.warn("No orderId in callback data, cannot update order status");
+            }
+            
+        } catch (Exception e) {
+            log.error("Error processing ZaloPay callback data", e);
         }
     }
 

@@ -38,7 +38,8 @@ public class ZaloPayController {
         
         ZaloPayDTO.CallbackResponse response = new ZaloPayDTO.CallbackResponse();
         if (isValid) {
-            // TODO: Update order status in database based on callback data
+            // Process callback and update order status
+            zaloPayService.processCallback(request.getData());
             response.setReturnCode(1);
             response.setReturnMessage("Success");
         } else {

@@ -92,8 +92,9 @@ public class PaymentService {
     /**
      * Get payment details for an order including all required information for checkout
      * Must use @Transactional to ensure lazy-loaded relationships are loaded
+     * Also saves shipping address to order if not already set
      */
-    @Transactional(readOnly = true)
+    @Transactional
     public PaymentDTO.OrderPaymentDetailsResponse getOrderPaymentDetails(String orderId) {
         PaymentDTO.OrderPaymentDetailsResponse response = new PaymentDTO.OrderPaymentDetailsResponse();
         
@@ -166,6 +167,7 @@ public class PaymentService {
             String shippingAddress = "";
             String shippingCity = null;
             String shippingDistrict = null;
+            boolean needsSaveAddress = false;
             
             if (order.getUser() != null && order.getUser().getAddresses() != null) {
                 // Find default address
@@ -177,10 +179,26 @@ public class PaymentService {
                         }
                         shippingCity = addr.getCity();
                         shippingDistrict = addr.getDistrict();
+                        
+                        // If order doesn't have shipping address yet, save it
+                        if (order.getShippingAddress() == null || order.getShippingAddress().isEmpty()) {
+                            String fullAddress = shippingAddress;
+                            if (shippingDistrict != null) fullAddress += ", " + shippingDistrict;
+                            if (shippingCity != null) fullAddress += ", " + shippingCity;
+                            order.setShippingAddress(fullAddress);
+                            needsSaveAddress = true;
+                            log.info("Saving shipping address to order {}: {}", orderId, fullAddress);
+                        }
+                        
                         log.debug("Using default address for order {}", orderId);
                         break;
                     }
                 }
+            }
+            
+            // Save order if shipping address was updated
+            if (needsSaveAddress) {
+                orderRepository.save(order);
             }
             
             // Fallback to order's shipping address if no default found

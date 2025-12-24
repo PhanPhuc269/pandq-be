@@ -22,7 +22,7 @@ public class OrderController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<OrderDTO.Response>> getOrdersByUserId(@PathVariable UUID userId) {
+    public ResponseEntity<List<OrderDTO.Response>> getOrdersByUserId(@PathVariable String userId) {
         return ResponseEntity.ok(orderService.getOrdersByUserId(userId));
     }
 

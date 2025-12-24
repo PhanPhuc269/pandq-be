@@ -36,8 +36,26 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public List<OrderDTO.Response> getOrdersByUserId(UUID userId) {
-        return orderRepository.findByUserId(userId).stream()
+    public List<OrderDTO.Response> getOrdersByUserId(String userId) {
+        // Try to find user by Firebase UID first
+        User user = userRepository.findByFirebaseUid(userId).orElse(null);
+        
+        // If not found, try as UUID
+        if (user == null) {
+            try {
+                UUID userUUID = UUID.fromString(userId);
+                user = userRepository.findById(userUUID).orElse(null);
+            } catch (IllegalArgumentException e) {
+                // Not a valid UUID, user not found
+                return new ArrayList<>();
+            }
+        }
+        
+        if (user == null) {
+            return new ArrayList<>();
+        }
+        
+        return orderRepository.findByUserId(user.getId()).stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }

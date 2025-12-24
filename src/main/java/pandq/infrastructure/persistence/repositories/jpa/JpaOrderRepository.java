@@ -24,4 +24,5 @@ public interface JpaOrderRepository extends JpaRepository<Order, UUID> {
                                  @Param("q") String q,
                                  @Param("orderId") UUID orderId,
                                  Pageable pageable);
+    List<Order> findByUserIdAndStatus(UUID userId, OrderStatus status);
 }

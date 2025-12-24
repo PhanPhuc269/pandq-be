@@ -45,6 +45,11 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
+    public List<Order> findByUserIdAndStatus(UUID userId, OrderStatus status) {
+        return jpaOrderRepository.findByUserIdAndStatus(userId, status);
+    }
+
+    @Override
     public void deleteById(UUID id) {
         jpaOrderRepository.deleteById(id);
     }

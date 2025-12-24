@@ -15,5 +15,6 @@ public interface OrderRepository {
     List<Order> findAll();
     List<Order> findByUserId(UUID userId);
     Page<Order> searchUserOrders(UUID userId, OrderStatus status, String query, UUID orderId, Pageable pageable);
+    List<Order> findByUserIdAndStatus(UUID userId, OrderStatus status);
     void deleteById(UUID id);
 }

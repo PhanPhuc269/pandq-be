@@ -95,8 +95,20 @@ public class OrderService {
     public OrderDTO.Response createOrder(OrderDTO.CreateRequest request) {
         User user = null;
         if(request.getUserId() != null) {
-            user = userRepository.findById(request.getUserId())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+            // Try to find user by Firebase UID first
+            user = userRepository.findByFirebaseUid(request.getUserId())
+                    .orElse(null);
+            
+            // If not found, try as UUID
+            if (user == null) {
+                try {
+                    UUID userId = UUID.fromString(request.getUserId());
+                    user = userRepository.findById(userId)
+                            .orElseThrow(() -> new RuntimeException("User not found"));
+                } catch (IllegalArgumentException e) {
+                    throw new RuntimeException("Invalid user ID format");
+                }
+            }
         } else {
              // TODO: get user from Security Context
              // For now throw error if no user ID
@@ -143,7 +155,7 @@ public class OrderService {
     private OrderDTO.Response mapToResponse(Order order) {
         OrderDTO.Response response = new OrderDTO.Response();
         response.setId(order.getId());
-        response.setUserId(order.getUser().getId());
+        response.setUserId(order.getUser().getId().toString());
         response.setTotalAmount(order.getTotalAmount());
         response.setShippingFee(order.getShippingFee());
         response.setDiscountAmount(order.getDiscountAmount());
@@ -161,11 +173,208 @@ public class OrderService {
                     itemResponse.setQuantity(item.getQuantity());
                     itemResponse.setPrice(item.getPrice());
                     itemResponse.setTotalPrice(item.getTotalPrice());
+                    // Get the first product image URL if available
+                    String imageUrl = item.getProduct().getImages() != null && !item.getProduct().getImages().isEmpty()
+                            ? item.getProduct().getImages().get(0).getImageUrl()
+                            : null;
+                    itemResponse.setImageUrl(imageUrl);
                     return itemResponse;
                 })
                 .collect(Collectors.toList());
         response.setItems(items);
 
         return response;
+    }
+
+    @Transactional
+    public OrderDTO.Response addToCart(OrderDTO.AddToCartRequest request) {
+        // Try to find user by Firebase UID first
+        User user = userRepository.findByFirebaseUid(request.getUserId())
+                .orElse(null);
+        
+        // If not found, try as UUID
+        if (user == null) {
+            try {
+                UUID userId = UUID.fromString(request.getUserId());
+                user = userRepository.findById(userId)
+                        .orElseThrow(() -> new RuntimeException("User not found"));
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("Invalid user ID format");
+            }
+        }
+
+        Product product = productRepository.findById(request.getProductId())
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        // Find or create a PENDING order (cart) for the user
+        List<Order> pendingOrders = orderRepository.findByUserIdAndStatus(user.getId(), OrderStatus.PENDING);
+        Order cart;
+
+        if (pendingOrders.isEmpty()) {
+            // Create new cart
+            cart = new Order();
+            cart.setUser(user);
+            cart.setStatus(OrderStatus.PENDING);
+            cart.setCreatedAt(LocalDateTime.now());
+            cart.setTotalAmount(BigDecimal.ZERO);
+            cart.setShippingFee(BigDecimal.ZERO);
+            cart.setDiscountAmount(BigDecimal.ZERO);
+            cart.setFinalAmount(BigDecimal.ZERO);
+            cart.setOrderItems(new ArrayList<>());
+        } else {
+            // Use existing cart
+            cart = pendingOrders.get(0);
+        }
+
+        // Check if product already exists in cart
+        OrderItem existingItem = cart.getOrderItems().stream()
+                .filter(item -> item.getProduct().getId().equals(request.getProductId()))
+                .findFirst()
+                .orElse(null);
+
+        if (existingItem != null) {
+            // Update quantity
+            existingItem.setQuantity(existingItem.getQuantity() + request.getQuantity());
+            existingItem.setTotalPrice(product.getPrice().multiply(BigDecimal.valueOf(existingItem.getQuantity())));
+        } else {
+            // Add new item
+            OrderItem newItem = OrderItem.builder()
+                    .order(cart)
+                    .product(product)
+                    .quantity(request.getQuantity())
+                    .price(product.getPrice())
+                    .totalPrice(product.getPrice().multiply(BigDecimal.valueOf(request.getQuantity())))
+                    .build();
+            cart.getOrderItems().add(newItem);
+        }
+
+        // Recalculate totals
+        BigDecimal totalAmount = cart.getOrderItems().stream()
+                .map(OrderItem::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        cart.setTotalAmount(totalAmount);
+        cart.setFinalAmount(totalAmount);
+
+        Order savedCart = orderRepository.save(cart);
+        return mapToResponse(savedCart);
+    }
+
+    @Transactional(readOnly = true)
+    public OrderDTO.Response getCart(String userId) {
+        // Try to find user by Firebase UID first
+        User user = userRepository.findByFirebaseUid(userId)
+                .orElse(null);
+        
+        // If not found, try as UUID
+        UUID userUUID = null;
+        if (user == null) {
+            try {
+                userUUID = UUID.fromString(userId);
+                user = userRepository.findById(userUUID)
+                        .orElseThrow(() -> new RuntimeException("User not found"));
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("Invalid user ID format");
+            }
+        }
+        
+        List<Order> pendingOrders = orderRepository.findByUserIdAndStatus(user.getId(), OrderStatus.PENDING);
+        if (pendingOrders.isEmpty()) {
+            // Return empty cart
+            Order emptyCart = new Order();
+            emptyCart.setId(UUID.randomUUID());
+            emptyCart.setUser(user);
+            emptyCart.setStatus(OrderStatus.PENDING);
+            emptyCart.setOrderItems(new ArrayList<>());
+            emptyCart.setTotalAmount(BigDecimal.ZERO);
+            emptyCart.setFinalAmount(BigDecimal.ZERO);
+            emptyCart.setShippingFee(BigDecimal.ZERO);
+            emptyCart.setDiscountAmount(BigDecimal.ZERO);
+            return mapToResponse(emptyCart);
+        }
+        return mapToResponse(pendingOrders.get(0));
+    }
+
+    @Transactional
+    public OrderDTO.Response decreaseQuantity(OrderDTO.AddToCartRequest request) {
+        User user = userRepository.findByFirebaseUid(request.getUserId())
+                .orElse(null);
+        
+        UUID userUUID = null;
+        if (user == null) {
+            try {
+                userUUID = UUID.fromString(request.getUserId());
+                user = userRepository.findById(userUUID)
+                        .orElseThrow(() -> new RuntimeException("User not found"));
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("Invalid user ID format");
+            }
+        }
+
+        List<Order> pendingOrders = orderRepository.findByUserIdAndStatus(user.getId(), OrderStatus.PENDING);
+        if (pendingOrders.isEmpty()) {
+            throw new RuntimeException("Cart not found");
+        }
+
+        Order cart = pendingOrders.get(0);
+        Product product = productRepository.findById(request.getProductId())
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        OrderItem existingItem = cart.getOrderItems().stream()
+                .filter(item -> item.getProduct().getId().equals(request.getProductId()))
+                .findFirst()
+                .orElse(null);
+
+        if (existingItem != null) {
+            if (existingItem.getQuantity() > 1) {
+                existingItem.setQuantity(existingItem.getQuantity() - 1);
+                existingItem.setTotalPrice(product.getPrice().multiply(BigDecimal.valueOf(existingItem.getQuantity())));
+            } else {
+                cart.getOrderItems().remove(existingItem);
+            }
+        }
+
+        // Recalculate totals
+        BigDecimal totalAmount = cart.getOrderItems().stream()
+                .map(OrderItem::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        cart.setTotalAmount(totalAmount);
+        cart.setFinalAmount(totalAmount);
+
+        Order savedCart = orderRepository.save(cart);
+        return mapToResponse(savedCart);
+    }
+
+    @Transactional
+    public OrderDTO.Response removeFromCart(String userId, UUID productId) {
+        User user = userRepository.findByFirebaseUid(userId)
+                .orElse(null);
+        
+        if (user == null) {
+            try {
+                UUID userUUID = UUID.fromString(userId);
+                user = userRepository.findById(userUUID)
+                        .orElseThrow(() -> new RuntimeException("User not found"));
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("Invalid user ID format");
+            }
+        }
+
+        List<Order> pendingOrders = orderRepository.findByUserIdAndStatus(user.getId(), OrderStatus.PENDING);
+        if (pendingOrders.isEmpty()) {
+            throw new RuntimeException("Cart not found");
+        }
+
+        Order cart = pendingOrders.get(0);
+        cart.getOrderItems().removeIf(item -> item.getProduct().getId().equals(productId));
+
+        // Recalculate totals
+        BigDecimal totalAmount = cart.getOrderItems().stream()
+                .map(OrderItem::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        cart.setTotalAmount(totalAmount);
+        cart.setFinalAmount(totalAmount);
+
+        Order savedCart = orderRepository.save(cart);
+        return mapToResponse(savedCart);
     }
 }

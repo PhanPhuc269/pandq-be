@@ -163,7 +163,7 @@ public class PaymentService {
                 response.setUserPhone("");
             }
             
-            // Shipping address - get from user's default address or use order snapshot
+            // Shipping address - ALWAYS sync from user's current default address
             String shippingAddress = "";
             String shippingCity = null;
             String shippingDistrict = null;
@@ -180,14 +180,16 @@ public class PaymentService {
                         shippingCity = addr.getCity();
                         shippingDistrict = addr.getDistrict();
                         
-                        // If order doesn't have shipping address yet, save it
-                        if (order.getShippingAddress() == null || order.getShippingAddress().isEmpty()) {
-                            String fullAddress = shippingAddress;
-                            if (shippingDistrict != null) fullAddress += ", " + shippingDistrict;
-                            if (shippingCity != null) fullAddress += ", " + shippingCity;
+                        // ALWAYS update order's shipping address from user's current default
+                        String fullAddress = shippingAddress;
+                        if (shippingDistrict != null) fullAddress += ", " + shippingDistrict;
+                        if (shippingCity != null) fullAddress += ", " + shippingCity;
+                        
+                        // Check if address changed
+                        if (order.getShippingAddress() == null || !order.getShippingAddress().equals(fullAddress)) {
                             order.setShippingAddress(fullAddress);
                             needsSaveAddress = true;
-                            log.info("Saving shipping address to order {}: {}", orderId, fullAddress);
+                            log.info("Updating shipping address for order {}: {}", orderId, fullAddress);
                         }
                         
                         log.debug("Using default address for order {}", orderId);

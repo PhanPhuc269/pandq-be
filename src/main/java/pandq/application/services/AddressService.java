@@ -96,6 +96,25 @@ public class AddressService {
         addressRepository.deleteById(id);
     }
 
+    /**
+     * Set an address as the default address for checkout
+     * Unsets any previous default address for the same user
+     */
+    @Transactional
+    public AddressDTO.Response setDefaultAddress(UUID id) {
+        Address address = addressRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Address not found"));
+        
+        // Unset other default addresses for this user
+        unsetOtherDefaultAddresses(address.getUser().getId());
+        
+        // Set this address as default
+        address.setIsDefault(true);
+        Address savedAddress = addressRepository.save(address);
+        
+        return mapToResponse(savedAddress);
+    }
+
     private AddressDTO.Response mapToResponse(Address address) {
         AddressDTO.Response response = new AddressDTO.Response();
         response.setId(address.getId());

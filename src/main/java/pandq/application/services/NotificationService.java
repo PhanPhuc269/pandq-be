@@ -2,6 +2,7 @@ package pandq.application.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pandq.adapter.web.api.dtos.NotificationDTO;
@@ -100,6 +101,28 @@ public class NotificationService {
     public void sendBroadcastNotification(String topic, String title, String body) {
         fcmService.sendToTopic(topic, title, body);
         log.info("Sent broadcast notification to topic '{}': {}", topic, title);
+    }
+
+    /**
+     * Create a notification asynchronously (non-blocking).
+     * Use this from payment callbacks to avoid blocking the response.
+     *
+     * @param userId    The user to notify
+     * @param type      Notification type
+     * @param title     Notification title
+     * @param body      Notification body
+     * @param targetUrl Optional URL for deep linking
+     */
+    @Async
+    @Transactional
+    public void createNotificationAsync(UUID userId, NotificationType type, 
+                                        String title, String body, String targetUrl) {
+        try {
+            createNotification(userId, type, title, body, targetUrl);
+            log.info("Async notification created successfully for user {}", userId);
+        } catch (Exception e) {
+            log.error("Failed to create async notification for user {}: {}", userId, e.getMessage());
+        }
     }
 
     private NotificationDTO.Response mapToResponse(Notification notification) {

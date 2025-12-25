@@ -13,6 +13,7 @@ import pandq.adapter.web.api.dtos.SepayDTO;
 import pandq.application.port.repositories.OrderRepository;
 import pandq.domain.models.order.Order;
 import pandq.domain.models.enums.OrderStatus;
+import pandq.domain.models.enums.NotificationType;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -29,6 +30,7 @@ import java.util.*;
 public class SepayService {
 
     private final OrderRepository orderRepository;
+    private final NotificationService notificationService;
 
     @Value("${SEPAY_API_TOKEN:}")
     private String apiToken;
@@ -168,6 +170,17 @@ public class SepayService {
                                     order.setStatus(OrderStatus.CONFIRMED);
                                     orderRepository.save(order);
                                     log.info("Updated order {} status to CONFIRMED", pending.orderId);
+                                    
+                                    // Send FCM notification to customer (async - non-blocking)
+                                    UUID userId = order.getUser().getId();
+                                    String orderIdShort = pending.orderId.substring(pending.orderId.length() - 8).toUpperCase();
+                                    notificationService.createNotificationAsync(
+                                        userId,
+                                        NotificationType.ORDER_UPDATE,
+                                        "Thanh toán thành công!",
+                                        "Đơn hàng #" + orderIdShort + " đã được thanh toán thành công. Cảm ơn bạn đã mua sắm tại PandQ!",
+                                        "pandq://orders/" + pending.orderId
+                                    );
                                 }
                             } catch (IllegalArgumentException e) {
                                 log.warn("Invalid orderId format: {}", pending.orderId);

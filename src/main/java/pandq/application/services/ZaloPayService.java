@@ -14,6 +14,7 @@ import pandq.adapter.web.api.dtos.ZaloPayDTO;
 import pandq.application.port.repositories.OrderRepository;
 import pandq.domain.models.order.Order;
 import pandq.domain.models.enums.OrderStatus;
+import pandq.domain.models.enums.NotificationType;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -28,6 +29,7 @@ import java.util.*;
 public class ZaloPayService {
 
     private final OrderRepository orderRepository;
+    private final NotificationService notificationService;
 
     @Value("${ZALOPAY_APP_ID:2554}")
     private int appId;
@@ -207,6 +209,17 @@ public class ZaloPayService {
                         order.setStatus(OrderStatus.CONFIRMED);
                         orderRepository.save(order);
                         log.info("Updated order {} status to CONFIRMED", orderId);
+                        
+                        // Send FCM notification to customer (async - non-blocking)
+                        UUID userId = order.getUser().getId();
+                        String orderIdShort = orderId.substring(orderId.length() - 8).toUpperCase();
+                        notificationService.createNotificationAsync(
+                            userId,
+                            NotificationType.ORDER_UPDATE,
+                            "Thanh toán thành công!",
+                            "Đơn hàng #" + orderIdShort + " đã được thanh toán thành công. Cảm ơn bạn đã mua sắm tại PandQ!",
+                            "pandq://orders/" + orderId
+                        );
                     } else {
                         log.warn("Order not found: {}", orderId);
                     }

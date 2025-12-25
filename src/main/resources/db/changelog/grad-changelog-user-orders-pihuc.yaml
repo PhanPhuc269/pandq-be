@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 061-seed-orders-for-pihuc77-v3
+      id: 061-seed-orders-for-pihuc77-v4
       author: antigravity
       comment: "Create orders for existing user pihuc77@gmail.com"
       changes:
@@ -14,7 +14,8 @@ databaseChangeLog:
         - sql:
             sql: |
               INSERT INTO order_items (id, order_id, product_id, quantity, price, total_price)
-              VALUES (gen_random_uuid(), 'aa001100-aa00-1100-aa00-110000aa0001'::uuid, 'a1000001-0001-0001-0001-000000000001'::uuid, 1, 28990000, 28990000)
+              SELECT gen_random_uuid(), 'aa001100-aa00-1100-aa00-110000aa0001'::uuid, 'a1000001-0001-0001-0001-000000000001'::uuid, 1, 28990000, 28990000
+              WHERE EXISTS (SELECT 1 FROM orders WHERE id = 'aa001100-aa00-1100-aa00-110000aa0001'::uuid)
               ON CONFLICT DO NOTHING;
 
         # Order 2: MacBook Air M2 - COMPLETED
@@ -27,7 +28,8 @@ databaseChangeLog:
         - sql:
             sql: |
               INSERT INTO order_items (id, order_id, product_id, quantity, price, total_price)
-              VALUES (gen_random_uuid(), 'bb002200-bb00-2200-bb00-220000bb0002'::uuid, 'b2000001-0002-0002-0002-000000000001'::uuid, 1, 27990000, 27990000)
+              SELECT gen_random_uuid(), 'bb002200-bb00-2200-bb00-220000bb0002'::uuid, 'b2000001-0002-0002-0002-000000000001'::uuid, 1, 27990000, 27990000
+              WHERE EXISTS (SELECT 1 FROM orders WHERE id = 'bb002200-bb00-2200-bb00-220000bb0002'::uuid)
               ON CONFLICT DO NOTHING;
 
         # Order 3: AirPods Pro 2 - DELIVERED
@@ -40,7 +42,8 @@ databaseChangeLog:
         - sql:
             sql: |
               INSERT INTO order_items (id, order_id, product_id, quantity, price, total_price)
-              VALUES (gen_random_uuid(), 'cc003300-cc00-3300-cc00-330000cc0003'::uuid, 'c3000003-0003-0003-0003-000000000003'::uuid, 1, 6790000, 6790000)
+              SELECT gen_random_uuid(), 'cc003300-cc00-3300-cc00-330000cc0003'::uuid, 'c3000003-0003-0003-0003-000000000003'::uuid, 1, 6790000, 6790000
+              WHERE EXISTS (SELECT 1 FROM orders WHERE id = 'cc003300-cc00-3300-cc00-330000cc0003'::uuid)
               ON CONFLICT DO NOTHING;
 
         # Order 4: Samsung Galaxy Watch 6 - PENDING
@@ -53,5 +56,6 @@ databaseChangeLog:
         - sql:
             sql: |
               INSERT INTO order_items (id, order_id, product_id, quantity, price, total_price)
-              VALUES (gen_random_uuid(), 'dd004400-dd00-4400-dd00-440000dd0004'::uuid, 'd4000002-0004-0004-0004-000000000002'::uuid, 1, 7990000, 7990000)
+              SELECT gen_random_uuid(), 'dd004400-dd00-4400-dd00-440000dd0004'::uuid, 'd4000002-0004-0004-0004-000000000002'::uuid, 1, 7990000, 7990000
+              WHERE EXISTS (SELECT 1 FROM orders WHERE id = 'dd004400-dd00-4400-dd00-440000dd0004'::uuid)
               ON CONFLICT DO NOTHING;

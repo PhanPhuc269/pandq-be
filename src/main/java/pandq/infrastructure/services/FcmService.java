@@ -18,6 +18,8 @@ public class FcmService {
 
     /**
      * Send a push notification to a specific device.
+     * Uses DATA-ONLY message so the app has full control over notification display and click handling.
+     * This ensures deep links work correctly when user clicks the notification.
      *
      * @param fcmToken  The FCM token of the target device
      * @param title     Notification title
@@ -34,17 +36,18 @@ public class FcmService {
         }
 
         try {
-            // Build the notification
-            Notification notification = Notification.builder()
-                    .setTitle(title)
-                    .setBody(body)
-                    .build();
-
-            // Build the message with data payload
+            // Build DATA-ONLY message (no notification payload)
+            // This ensures the app receives data even when in background/killed
+            // and can properly handle deep links on click
             Message.Builder messageBuilder = Message.builder()
                     .setToken(fcmToken)
-                    .setNotification(notification)
-                    .putData("type", type != null ? type.name() : "SYSTEM");
+                    .putData("title", title)
+                    .putData("body", body)
+                    .putData("type", type != null ? type.name() : "SYSTEM")
+                    // High priority to wake up device and deliver message reliably
+                    .setAndroidConfig(com.google.firebase.messaging.AndroidConfig.builder()
+                            .setPriority(com.google.firebase.messaging.AndroidConfig.Priority.HIGH)
+                            .build());
 
             if (targetUrl != null && !targetUrl.isEmpty()) {
                 messageBuilder.putData("targetUrl", targetUrl);
@@ -54,7 +57,7 @@ public class FcmService {
 
             // Send the message
             String messageId = FirebaseMessaging.getInstance().send(message);
-            log.info("Successfully sent FCM notification. Message ID: {}", messageId);
+            log.info("Successfully sent FCM data message. Message ID: {}, targetUrl: {}", messageId, targetUrl);
             return messageId;
 
         } catch (FirebaseMessagingException e) {

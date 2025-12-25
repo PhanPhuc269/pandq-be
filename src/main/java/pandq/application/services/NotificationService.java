@@ -91,6 +91,39 @@ public class NotificationService {
     }
 
     /**
+     * Create a new notification WITHOUT sending push notification via FCM.
+     * Use this for in-app notifications that don't require push (e.g., welcome messages).
+     *
+     * @param userId    The user to notify
+     * @param type      Notification type
+     * @param title     Notification title
+     * @param body      Notification body
+     * @param targetUrl Optional URL for deep linking
+     * @return Created notification response
+     */
+    @Transactional
+    public NotificationDTO.Response createNotificationWithoutFcm(UUID userId, NotificationType type, 
+                                                        String title, String body, String targetUrl) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Save notification to database only, no FCM push
+        Notification notification = Notification.builder()
+                .user(user)
+                .type(type)
+                .title(title)
+                .body(body)
+                .targetUrl(targetUrl)
+                .isRead(false)
+                .build();
+
+        Notification savedNotification = notificationRepository.save(notification);
+        log.info("Created notification (no FCM) for user {}: {}", userId, title);
+
+        return mapToResponse(savedNotification);
+    }
+
+    /**
      * Send notification to all subscribed users (broadcast).
      * Useful for promotions or system announcements.
      *

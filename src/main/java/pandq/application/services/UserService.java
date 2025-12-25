@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pandq.adapter.web.api.dtos.UserDTO;
 import pandq.application.port.repositories.UserRepository;
+import pandq.domain.models.enums.NotificationType;
 import pandq.domain.models.enums.Role;
 import pandq.domain.models.enums.UserStatus;
 import pandq.domain.models.user.User;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     @Transactional(readOnly = true)
     public List<UserDTO.Response> getAllUsers() {
@@ -113,6 +115,7 @@ public class UserService {
         Optional<User> existingUser = userRepository.findByEmail(email);
         
         User user;
+        boolean isNewUser = false;
         if (existingUser.isPresent()) {
             user = existingUser.get();
             log.info("Updating FCM token for existing user: {}", email);
@@ -134,11 +137,30 @@ public class UserService {
                     .createdAt(now)
                     .updatedAt(now)
                     .build();
+            isNewUser = true;
         }
         
         user.setFcmToken(fcmToken);
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
         log.info("FCM token updated successfully for: {}", email);
+        
+        // Create welcome notification for new users (without FCM push)
+        if (isNewUser) {
+            try {
+                String welcomeTitle = "Chào mừng đến với PandQ! 🎉";
+                String welcomeBody = "Chúng tôi rất vui khi bạn đã tham gia. Khám phá ngay những sản phẩm công nghệ hot nhất!";
+                notificationService.createNotificationWithoutFcm(
+                    savedUser.getId(),
+                    NotificationType.SYSTEM,
+                    welcomeTitle,
+                    welcomeBody,
+                    "pandq://home"
+                );
+                log.info("Welcome notification created for new user: {}", email);
+            } catch (Exception e) {
+                log.error("Failed to create welcome notification for user {}: {}", email, e.getMessage());
+            }
+        }
     }
 
     /**

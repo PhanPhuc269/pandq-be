@@ -57,4 +57,11 @@ public class OrderController {
     public ResponseEntity<OrderDTO.Response> getCart(@PathVariable String userId) {
         return ResponseEntity.ok(orderService.getCart(userId));
     }
+
+    @PostMapping("/cart/merge/{userId}")
+    public ResponseEntity<OrderDTO.Response> mergeGuestCart(
+            @PathVariable String userId,
+            @RequestBody List<OrderDTO.AddToCartRequest> guestCartItems) {
+        return ResponseEntity.ok(orderService.mergeGuestCart(userId, guestCartItems));
+    }
 }

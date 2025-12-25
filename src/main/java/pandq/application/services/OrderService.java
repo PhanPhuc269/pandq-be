@@ -201,7 +201,7 @@ public class OrderService {
             }
         }
 
-        Product product = productRepository.findById(request.getProductId())
+        Product product = productRepository.findById(UUID.fromString(request.getProductId()))
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
         // Find or create a PENDING order (cart) for the user
@@ -225,8 +225,9 @@ public class OrderService {
         }
 
         // Check if product already exists in cart
+        UUID productUUID = UUID.fromString(request.getProductId());
         OrderItem existingItem = cart.getOrderItems().stream()
-                .filter(item -> item.getProduct().getId().equals(request.getProductId()))
+                .filter(item -> item.getProduct().getId().equals(productUUID))
                 .findFirst()
                 .orElse(null);
 
@@ -314,11 +315,12 @@ public class OrderService {
         }
 
         Order cart = pendingOrders.get(0);
-        Product product = productRepository.findById(request.getProductId())
+        UUID productUUID = UUID.fromString(request.getProductId());
+        Product product = productRepository.findById(productUUID)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
         OrderItem existingItem = cart.getOrderItems().stream()
-                .filter(item -> item.getProduct().getId().equals(request.getProductId()))
+                .filter(item -> item.getProduct().getId().equals(productUUID))
                 .findFirst()
                 .orElse(null);
 
@@ -373,6 +375,94 @@ public class OrderService {
         cart.setFinalAmount(totalAmount);
 
         Order savedCart = orderRepository.save(cart);
+        return mapToResponse(savedCart);
+    }
+
+    /**
+     * Merge guest cart items into user's cart after login
+     * @param userId - User ID (Firebase UID or UUID string)
+     * @param guestCartItems - Items from guest cart
+     * @return - Merged cart with all items
+     */
+    @Transactional
+    public OrderDTO.Response mergeGuestCart(String userId, List<OrderDTO.AddToCartRequest> guestCartItems) {
+        // Find user
+        User user = userRepository.findByFirebaseUid(userId)
+                .orElse(null);
+
+        if (user == null) {
+            try {
+                UUID userUUID = UUID.fromString(userId);
+                user = userRepository.findById(userUUID)
+                        .orElseThrow(() -> new RuntimeException("User not found"));
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("Invalid user ID format");
+            }
+        }
+
+        // Get or create user's cart
+        List<Order> pendingOrders = orderRepository.findByUserIdAndStatus(user.getId(), OrderStatus.PENDING);
+        Order userCart;
+
+        if (pendingOrders.isEmpty()) {
+            // Create new cart for user
+            userCart = new Order();
+            userCart.setUser(user);
+            userCart.setStatus(OrderStatus.PENDING);
+            userCart.setCreatedAt(LocalDateTime.now());
+            userCart.setTotalAmount(BigDecimal.ZERO);
+            userCart.setShippingFee(BigDecimal.ZERO);
+            userCart.setDiscountAmount(BigDecimal.ZERO);
+            userCart.setFinalAmount(BigDecimal.ZERO);
+            userCart.setOrderItems(new ArrayList<>());
+        } else {
+            userCart = pendingOrders.get(0);
+        }
+
+        // Merge guest cart items into user cart
+        for (OrderDTO.AddToCartRequest guestItem : guestCartItems) {
+            // Convert productId string to UUID
+            UUID productUUID;
+            try {
+                productUUID = UUID.fromString(guestItem.getProductId());
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("Invalid product ID format: " + guestItem.getProductId());
+            }
+
+            Product product = productRepository.findById(productUUID)
+                    .orElseThrow(() -> new RuntimeException("Product not found: " + productUUID));
+
+            // Check if product already exists in user's cart
+            OrderItem existingItem = userCart.getOrderItems().stream()
+                    .filter(item -> item.getProduct().getId().equals(productUUID))
+                    .findFirst()
+                    .orElse(null);
+
+            if (existingItem != null) {
+                // Update quantity - add guest quantity to existing quantity
+                existingItem.setQuantity(existingItem.getQuantity() + guestItem.getQuantity());
+                existingItem.setTotalPrice(product.getPrice().multiply(BigDecimal.valueOf(existingItem.getQuantity())));
+            } else {
+                // Add new item from guest cart
+                OrderItem newItem = OrderItem.builder()
+                        .order(userCart)
+                        .product(product)
+                        .quantity(guestItem.getQuantity())
+                        .price(product.getPrice())
+                        .totalPrice(product.getPrice().multiply(BigDecimal.valueOf(guestItem.getQuantity())))
+                        .build();
+                userCart.getOrderItems().add(newItem);
+            }
+        }
+
+        // Recalculate totals
+        BigDecimal totalAmount = userCart.getOrderItems().stream()
+                .map(OrderItem::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        userCart.setTotalAmount(totalAmount);
+        userCart.setFinalAmount(totalAmount);
+
+        Order savedCart = orderRepository.save(userCart);
         return mapToResponse(savedCart);
     }
 }

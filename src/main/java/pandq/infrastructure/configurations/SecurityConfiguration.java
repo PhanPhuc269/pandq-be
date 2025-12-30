@@ -38,6 +38,7 @@ public class SecurityConfiguration {
                                         "/swagger-ui.html",
                                         "/webjars/**",
                                         "/error",
+                                        "/products/**",
                                         "/api/v1/init-config",
                                         "/api/v1/master-data/**",
                                         "/api/v1/products/search",

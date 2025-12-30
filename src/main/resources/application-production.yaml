@@ -1,0 +1,36 @@
+# Production configuration for Render deployment
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 2
+      connection-timeout: 30000
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/grad-changelog-master.yaml
+
+# Server config
+server:
+  port: ${PORT:8080}
+
+# Logging
+logging:
+  level:
+    root: INFO
+    pandq: INFO
+    org.springframework.web: WARN
+    org.hibernate: WARN

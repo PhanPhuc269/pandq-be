@@ -10,9 +10,14 @@ import pandq.application.port.repositories.CategoryRepository;
 import pandq.application.port.repositories.ProductRepository;
 import pandq.domain.models.product.Category;
 import pandq.domain.models.product.Product;
+import pandq.domain.models.product.ProductImage;
+import pandq.domain.models.product.ProductSpecification;
+
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -66,6 +71,29 @@ public class ProductService {
                 .createdAt(LocalDateTime.now())
                 .build();
 
+        if (request.getImages() != null) {
+            List<ProductImage> images = new ArrayList<>();
+            for (int i = 0; i < request.getImages().size(); i++) {
+                images.add(ProductImage.builder()
+                        .product(product)
+                        .imageUrl(request.getImages().get(i))
+                        .displayOrder(i)
+                        .build());
+            }
+            product.setImages(images);
+        }
+
+        if (request.getSpecifications() != null) {
+            List<ProductSpecification> specifications = request.getSpecifications().stream()
+                    .map(spec -> ProductSpecification.builder()
+                            .product(product)
+                            .specKey(spec.getSpecKey())
+                            .specValue(spec.getSpecValue())
+                            .build())
+                    .collect(Collectors.toList());
+            product.setSpecifications(specifications);
+        }
+        
         Product savedProduct = productRepository.save(product);
         return mapToResponse(savedProduct);
     }
@@ -86,6 +114,35 @@ public class ProductService {
         product.setThumbnailUrl(request.getThumbnailUrl());
         product.setStatus(request.getStatus());
         product.setUpdatedAt(LocalDateTime.now());
+
+        if (request.getImages() != null) {
+            if (product.getImages() == null) {
+                product.setImages(new ArrayList<>());
+            }
+            product.getImages().clear();
+            for (int i = 0; i < request.getImages().size(); i++) {
+                product.getImages().add(ProductImage.builder()
+                        .product(product)
+                        .imageUrl(request.getImages().get(i))
+                        .displayOrder(i)
+                        .build());
+            }
+        }
+
+        if (request.getSpecifications() != null) {
+            if (product.getSpecifications() == null) {
+                product.setSpecifications(new ArrayList<>());
+            }
+            product.getSpecifications().clear();
+            product.getSpecifications().addAll(request.getSpecifications().stream()
+                    .map(spec -> ProductSpecification.builder()
+                            .product(product)
+                            .specKey(spec.getSpecKey())
+                            .specValue(spec.getSpecValue())
+                            .build())
+                    .collect(Collectors.toList()));
+        }
+
 
         Product savedProduct = productRepository.save(product);
         return mapToResponse(savedProduct);

@@ -152,7 +152,7 @@ public class WebProductController {
                     <div class="bottom-bar">
                         <div style="width: 100%%">
                             <div class="app-hint">Trải nghiệm tốt nhất trên ứng dụng PandQ</div>
-                            <a href="https://pandq.com/products/%s" class="cta-btn">Mở trong ứng dụng</a>
+                            <a href="https://pandq.phanphuc.id.vn/products/%s" class="cta-btn">Mở trong ứng dụng</a>
                         </div>
                     </div>
                 </div>

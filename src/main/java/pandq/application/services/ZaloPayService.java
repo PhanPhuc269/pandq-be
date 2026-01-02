@@ -30,6 +30,7 @@ public class ZaloPayService {
 
     private final OrderRepository orderRepository;
     private final NotificationService notificationService;
+    private final AdminNotificationService adminNotificationService;
 
     @Value("${ZALOPAY_APP_ID:2554}")
     private int appId;
@@ -209,6 +210,13 @@ public class ZaloPayService {
                         order.setStatus(OrderStatus.CONFIRMED);
                         orderRepository.save(order);
                         log.info("Updated order {} status to CONFIRMED", orderId);
+                        
+                        // Notify admins about new confirmed order (async)
+                        adminNotificationService.notifyNewOrder(
+                            order.getId(),
+                            order.getUser().getFullName(),
+                            order.getTotalAmount()
+                        );
                         
                         // Send FCM notification to customer (async - non-blocking)
                         UUID userId = order.getUser().getId();

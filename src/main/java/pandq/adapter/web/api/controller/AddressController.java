@@ -41,4 +41,9 @@ public class AddressController {
         addressService.deleteAddress(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}/default")
+    public ResponseEntity<AddressDTO.Response> setDefaultAddress(@PathVariable UUID id) {
+        return ResponseEntity.ok(addressService.setDefaultAddress(id));
+    }
 }

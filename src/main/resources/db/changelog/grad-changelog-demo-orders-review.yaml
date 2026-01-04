@@ -1,0 +1,110 @@
+databaseChangeLog:
+  - changeSet:
+      id: 051-seed-demo-orders-for-review-v2
+      author: antigravity
+      comment: "Add completed orders for demo user to test review feature"
+      changes:
+        # Order 1: MacBook Air M2
+        - insert:
+            tableName: orders
+            columns:
+              - column: { name: id, value: "11110001-0001-0001-0001-000000000001" }
+              - column: { name: user_id, value: "cccc2222-cccc-2222-cccc-222222222222" }
+              - column: { name: total_amount, value: 27990000 }
+              - column: { name: shipping_fee, value: 0 }
+              - column: { name: discount_amount, value: 0 }
+              - column: { name: final_amount, value: 27990000 }
+              - column: { name: payment_method, value: "COD" }
+              - column: { name: status, value: "DELIVERED" }
+              - column: { name: shipping_address, value: "123 Le Loi, Ben Nghe, Quan 1, Ho Chi Minh" }
+              - column: { name: created_at, valueDate: "2024-12-01T10:00:00" }
+        - insert:
+            tableName: order_items
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: order_id, value: "11110001-0001-0001-0001-000000000001" }
+              - column: { name: product_id, value: "b2000001-0002-0002-0002-000000000001" }
+              - column: { name: quantity, value: 1 }
+              - column: { name: price, value: 27990000 }
+              - column: { name: total_price, value: 27990000 }
+
+        # Order 2: Samsung Galaxy Z Fold 5
+        - insert:
+            tableName: orders
+            columns:
+              - column: { name: id, value: "22220002-0002-0002-0002-000000000002" }
+              - column: { name: user_id, value: "cccc2222-cccc-2222-cccc-222222222222" }
+              - column: { name: total_amount, value: 41990000 }
+              - column: { name: shipping_fee, value: 0 }
+              - column: { name: discount_amount, value: 0 }
+              - column: { name: final_amount, value: 41990000 }
+              - column: { name: payment_method, value: "ZALOPAY" }
+              - column: { name: status, value: "COMPLETED" }
+              - column: { name: shipping_address, value: "123 Le Loi, Ben Nghe, Quan 1, Ho Chi Minh" }
+              - column: { name: created_at, valueDate: "2024-12-10T14:30:00" }
+        - insert:
+            tableName: order_items
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: order_id, value: "22220002-0002-0002-0002-000000000002" }
+              - column: { name: product_id, value: "a1000003-0001-0001-0001-000000000003" }
+              - column: { name: quantity, value: 1 }
+              - column: { name: price, value: 41990000 }
+              - column: { name: total_price, value: 41990000 }
+
+        # Order 3: Apple Watch Series 9
+        - insert:
+            tableName: orders
+            columns:
+              - column: { name: id, value: "33330003-0003-0003-0003-000000000003" }
+              - column: { name: user_id, value: "cccc2222-cccc-2222-cccc-222222222222" }
+              - column: { name: total_amount, value: 10990000 }
+              - column: { name: shipping_fee, value: 30000 }
+              - column: { name: discount_amount, value: 0 }
+              - column: { name: final_amount, value: 11020000 }
+              - column: { name: payment_method, value: "COD" }
+              - column: { name: status, value: "DELIVERED" }
+              - column: { name: shipping_address, value: "123 Le Loi, Ben Nghe, Quan 1, Ho Chi Minh" }
+              - column: { name: created_at, valueDate: "2024-12-15T09:00:00" }
+        - insert:
+            tableName: order_items
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: order_id, value: "33330003-0003-0003-0003-000000000003" }
+              - column: { name: product_id, value: "d4000001-0004-0004-0004-000000000001" }
+              - column: { name: quantity, value: 1 }
+              - column: { name: price, value: 10990000 }
+              - column: { name: total_price, value: 10990000 }
+
+        # Order 4: AirPods Max + Sony WH-1000XM5 (combo order)
+        - insert:
+            tableName: orders
+            columns:
+              - column: { name: id, value: "44440004-0004-0004-0004-000000000004" }
+              - column: { name: user_id, value: "cccc2222-cccc-2222-cccc-222222222222" }
+              - column: { name: total_amount, value: 21480000 }
+              - column: { name: shipping_fee, value: 0 }
+              - column: { name: discount_amount, value: 1000000 }
+              - column: { name: final_amount, value: 20480000 }
+              - column: { name: payment_method, value: "BANK_TRANSFER" }
+              - column: { name: status, value: "COMPLETED" }
+              - column: { name: shipping_address, value: "123 Le Loi, Ben Nghe, Quan 1, Ho Chi Minh" }
+              - column: { name: created_at, valueDate: "2024-12-20T16:00:00" }
+        - insert:
+            tableName: order_items
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: order_id, value: "44440004-0004-0004-0004-000000000004" }
+              - column: { name: product_id, value: "c3000001-0003-0003-0003-000000000001" }
+              - column: { name: quantity, value: 1 }
+              - column: { name: price, value: 12990000 }
+              - column: { name: total_price, value: 12990000 }
+        - insert:
+            tableName: order_items
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: order_id, value: "44440004-0004-0004-0004-000000000004" }
+              - column: { name: product_id, value: "c3000002-0003-0003-0003-000000000002" }
+              - column: { name: quantity, value: 1 }
+              - column: { name: price, value: 8490000 }
+              - column: { name: total_price, value: 8490000 }

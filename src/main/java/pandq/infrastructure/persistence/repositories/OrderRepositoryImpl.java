@@ -3,6 +3,7 @@ package pandq.infrastructure.persistence.repositories;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import pandq.application.port.repositories.OrderRepository;
+import pandq.domain.models.enums.OrderStatus;
 import pandq.domain.models.order.Order;
 import pandq.infrastructure.persistence.repositories.jpa.JpaOrderRepository;
 
@@ -37,7 +38,17 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
+    public List<Order> findByUserIdAndStatus(UUID userId, OrderStatus status) {
+        return jpaOrderRepository.findByUserIdAndStatus(userId, status);
+    }
+
+    @Override
     public void deleteById(UUID id) {
         jpaOrderRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean hasUserPurchasedProduct(UUID userId, UUID productId) {
+        return jpaOrderRepository.existsByUserIdAndProductIdWithDeliveredStatus(userId, productId);
     }
 }

@@ -9,7 +9,7 @@ public class ReviewDTO {
 
     @Data
     public static class CreateRequest {
-        private UUID userId; // Optional if from context
+        private String userId; // Can be UUID or Firebase UID
         private UUID productId;
         private Integer rating;
         private String comment;

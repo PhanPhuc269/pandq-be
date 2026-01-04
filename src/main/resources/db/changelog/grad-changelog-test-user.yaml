@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: 019-seed-test-user
+      author: antigravity
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  value: "550e8400-e29b-41d4-a716-446655440000"
+              - column:
+                  name: email
+                  value: "leminhanh@example.com"
+              - column:
+                  name: full_name
+                  value: "Lê Minh Anh"
+              - column:
+                  name: phone
+                  value: "0123456789"
+              - column:
+                  name: avatar_url
+                  value: "https://lh3.googleusercontent.com/aida-public/AB6AXuCwILGFmyQOJSWfUNVKWm8accZ99ZMUMajjM5_16dG6r-LbAS5VUTS-SjVchAwiv6T8CUIJPoO9_QIWhQbbjUv2YwJGkrHinCulA75-HDAzfS3IBlDyl5IWJfgMBTJLdOWCV4MuPguh-U1AvZ6LUb_qHUUy_V6357n6jLUAKXeojajAMcxJvqXZmY2bAsliPryIr-4ny0TgV6__D9tF8IEvF4sKVH2DSX1u2kUrTQSdURvOV2aJn__I-w84iZWceHB4qacbhicBJQg"
+              - column:
+                  name: role
+                  value: "CUSTOMER"
+              - column:
+                  name: status
+                  value: "ACTIVE"
+              - column:
+                  name: firebase_uid
+                  value: "test-firebase-uid-leminhanh"
+              - column:
+                  name: created_at
+                  valueDate: "2024-01-01T00:00:00"

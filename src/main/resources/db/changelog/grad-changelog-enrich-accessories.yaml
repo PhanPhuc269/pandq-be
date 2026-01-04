@@ -1,0 +1,90 @@
+databaseChangeLog:
+  - changeSet:
+      id: 065-fix-accessories-specs
+      author: antigravity
+      changes:
+        # Delete bad specs for AirPods Max (c3000001) if any (id collision)
+        - delete:
+            tableName: product_specifications
+            where: product_id = 'c3000001-0003-0003-0003-000000000001'
+
+  - changeSet:
+      id: 066-enrich-accessories
+      author: antigravity
+      changes:
+        # c3000003: Samsung Galaxy Buds3 Pro
+        - update:
+            tableName: products
+            columns:
+              - column: { name: description, value: "Galaxy Buds3 Pro - Âm thanh Hi-Fi chuẩn studio.\n\nThiết kế Blade Lights thời thượng. EQ thích ứng tự động điều chỉnh âm thanh. Khả năng dịch thuật trực tiếp ngay trong tai." }
+            where: id = 'c3000003-0003-0003-0003-000000000003'
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000003-0003-0003-0003-000000000003" }
+              - column: { name: spec_key, value: "Pin" }
+              - column: { name: spec_value, value: "7h (ANC tắt)" }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000003-0003-0003-0003-000000000003" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1695213605330-8a18357876a9?w=600" }
+              - column: { name: display_order, value: 1 }
+
+        # c3000004: Magic Keyboard
+        - update:
+            tableName: products
+            columns:
+              - column: { name: description, value: "Magic Keyboard với Touch ID.\n\nGõ phím thoải mái, chính xác. Mở khóa Mac nhanh chóng và an toàn chỉ với một chạm. Pin sạc dùng cả tháng." }
+            where: id = 'c3000004-0003-0003-0003-000000000004'
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000004-0003-0003-0003-000000000004" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600" }
+              - column: { name: display_order, value: 1 }
+
+        # c3000005: MX Master 3S
+        - update:
+            tableName: products
+            columns:
+              - column: { name: description, value: "Logitech MX Master 3S - Cảm nhận từng cú click.\n\nClick chuột yên tĩnh hơn 90%. Cảm biến 8K DPI di chuột trên mọi bề mặt, kể cả kính. Cuộn MagSpeed điện từ siêu nhanh." }
+            where: id = 'c3000005-0003-0003-0003-000000000005'
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000005-0003-0003-0003-000000000005" }
+              - column: { name: spec_key, value: "DPI" }
+              - column: { name: spec_value, value: "8000 DPI" }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000005-0003-0003-0003-000000000005" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1629810756312-d92d4b179267?w=600" }
+              - column: { name: display_order, value: 1 }
+
+        # c3000008: JBL Flip 6
+        - update:
+            tableName: products
+            columns:
+              - column: { name: description, value: "JBL Flip 6 - Âm thanh mạnh mẽ cho mọi cuộc vui.\n\nChống nước bụi IP67, pin 12 giờ. Hệ thống loa 2 chiều mang lại âm thanh to, rõ ràng và âm trầm sâu lắng." }
+            where: id = 'c3000008-0003-0003-0003-000000000008'
+        - insert:
+            tableName: product_specifications
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000008-0003-0003-0003-000000000008" }
+              - column: { name: spec_key, value: "Công suất" }
+              - column: { name: spec_value, value: "30W" }
+        - insert:
+            tableName: product_images
+            columns:
+              - column: { name: id, valueComputed: "gen_random_uuid()" }
+              - column: { name: product_id, value: "c3000008-0003-0003-0003-000000000008" }
+              - column: { name: image_url, value: "https://images.unsplash.com/photo-1627845348270-134954cc5b1d?w=600" }
+              - column: { name: display_order, value: 1 }

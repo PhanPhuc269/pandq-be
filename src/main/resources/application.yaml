@@ -1,3 +1,6 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: pandq
@@ -5,3 +8,7 @@ spring:
     active: local
   liquibase:
     change-log: classpath:db/changelog/grad-changelog-master.yaml
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB

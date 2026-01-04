@@ -3,6 +3,7 @@ package pandq.adapter.web.api.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pandq.adapter.web.api.dtos.AppConfigDTO;
 import pandq.application.services.CategoryService;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class AppConfigController {
 
@@ -27,11 +29,10 @@ public class AppConfigController {
         // Version numbers - can be stored in database or config
         // For now, using static versions
         return ResponseEntity.ok(
-            AppConfigDTO.InitConfigResponse.builder()
-                .locationVersion(1)
-                .categoryVersion(1)
-                .build()
-        );
+                AppConfigDTO.InitConfigResponse.builder()
+                        .locationVersion(1)
+                        .categoryVersion(1)
+                        .build());
     }
 
     /**
@@ -40,15 +41,15 @@ public class AppConfigController {
     @GetMapping("/master-data/locations")
     public ResponseEntity<List<AppConfigDTO.LocationResponse>> getLocations() {
         List<AppConfigDTO.LocationResponse> locations = branchService.getAllBranches().stream()
-            .map(branch -> AppConfigDTO.LocationResponse.builder()
-                .id(branch.getId().toString())
-                .name(branch.getName())
-                .address(branch.getAddress())
-                .latitude(branch.getLatitude())
-                .longitude(branch.getLongitude())
-                .build())
-            .collect(Collectors.toList());
-        
+                .map(branch -> AppConfigDTO.LocationResponse.builder()
+                        .id(branch.getId().toString())
+                        .name(branch.getName())
+                        .address(branch.getAddress())
+                        .latitude(branch.getLatitude())
+                        .longitude(branch.getLongitude())
+                        .build())
+                .collect(Collectors.toList());
+
         return ResponseEntity.ok(locations);
     }
 
@@ -58,13 +59,13 @@ public class AppConfigController {
     @GetMapping("/master-data/categories")
     public ResponseEntity<List<AppConfigDTO.CategoryResponse>> getCategories() {
         List<AppConfigDTO.CategoryResponse> categories = categoryService.getAllCategories().stream()
-            .map(category -> AppConfigDTO.CategoryResponse.builder()
-                .id(category.getId().toString())
-                .name(category.getName())
-                .iconUrl(category.getImageUrl())
-                .build())
-            .collect(Collectors.toList());
-        
+                .map(category -> AppConfigDTO.CategoryResponse.builder()
+                        .id(category.getId().toString())
+                        .name(category.getName())
+                        .imageUrl(category.getImageUrl())
+                        .build())
+                .collect(Collectors.toList());
+
         return ResponseEntity.ok(categories);
     }
 }

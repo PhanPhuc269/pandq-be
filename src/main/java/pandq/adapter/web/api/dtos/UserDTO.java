@@ -33,4 +33,18 @@ public class UserDTO {
         private Role role;
         private UserStatus status;
     }
+
+    @Data
+    public static class FcmTokenRequest {
+        private UUID userId;
+        private String fcmToken;
+    }
+
+    @Data
+    public static class FcmTokenByEmailRequest {
+        private String email;
+        private String fcmToken;
+        private String firebaseUid;
+    }
 }
+

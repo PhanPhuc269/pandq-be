@@ -35,10 +35,10 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
-    compileOnly 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok:1.18.30'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'org.postgresql:postgresql'
-	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok:1.18.30'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -51,8 +51,15 @@ dependencies {
     implementation 'com.google.guava:guava:33.0.0-jre' // Fixes CVE-2023-2976
     implementation 'com.google.protobuf:protobuf-java:3.25.1' // Fixes CVE-2024-7254
     implementation 'io.grpc:grpc-netty-shaded:1.60.0' // Fixes CVE-2025-55163
+
+    // Apache HttpClient for ZaloPay API (version 5.4 for Spring Boot 3.5.x compatibility)
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.4'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.compilerArgs += ['-parameters']
 }

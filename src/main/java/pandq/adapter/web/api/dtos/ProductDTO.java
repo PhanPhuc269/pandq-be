@@ -17,6 +17,8 @@ public class ProductDTO {
         private BigDecimal costPrice;
         private String thumbnailUrl;
         private Status status;
+        private List<String> images;
+        private List<ProductSpecificationDTO> specifications;
     }
 
     @Data
@@ -28,6 +30,8 @@ public class ProductDTO {
         private BigDecimal costPrice;
         private String thumbnailUrl;
         private Status status;
+        private List<String> images;
+        private List<ProductSpecificationDTO> specifications;
     }
 
     @Data

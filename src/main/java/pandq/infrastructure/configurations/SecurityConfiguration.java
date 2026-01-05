@@ -38,6 +38,7 @@ public class SecurityConfiguration {
                                         "/swagger-ui.html",
                                         "/webjars/**",
                                         "/error",
+                                        "/products/**",
                                         "/api/v1/init-config",
                                         "/api/v1/master-data/**",
                                         "/api/v1/products/search",
@@ -53,7 +54,8 @@ public class SecurityConfiguration {
                                         "/api/v1/users/fcm-token-by-email",
                                         "/api/v1/payments/**",
                                         "/api/v1/zalopay/**",
-                                        "/api/v1/sepay/**"
+                                        "/api/v1/sepay/**",
+                                        "/.well-known/**"
                                 ).permitAll()
                                 .anyRequest().authenticated()
                 )

@@ -1,0 +1,35 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.idea
+*.iml
+.vscode
+
+# Build outputs
+build
+out
+target
+
+# Gradle
+.gradle
+!gradle/wrapper/gradle-wrapper.jar
+
+# Logs
+*.log
+logs
+
+# Local config
+.env
+*.local
+
+# Docker
+docker/local
+
+# Uploads (use cloud storage in production)
+uploads/*
+!uploads/.gitkeep
+
+# Test files
+src/test

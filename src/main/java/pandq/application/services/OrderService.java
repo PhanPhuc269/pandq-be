@@ -27,6 +27,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final JpaUserRepository userRepository;
+    private final AdminNotificationService adminNotificationService;
 
     @Transactional(readOnly = true)
     public List<OrderDTO.Response> getAllOrders() {
@@ -140,6 +141,14 @@ public class OrderService {
         order.setFinalAmount(totalAmount);
 
         Order savedOrder = orderRepository.save(order);
+        
+        // Notify admins about new order (async)
+        adminNotificationService.notifyNewOrder(
+                savedOrder.getId(),
+                user.getFullName(),
+                totalAmount
+        );
+        
         return mapToResponse(savedOrder);
     }
 

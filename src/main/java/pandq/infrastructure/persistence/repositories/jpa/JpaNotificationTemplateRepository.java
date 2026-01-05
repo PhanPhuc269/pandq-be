@@ -13,6 +13,6 @@ public interface JpaNotificationTemplateRepository extends JpaRepository<Notific
     List<NotificationTemplate> findByIsActiveOrderByCreatedAtDesc(Boolean isActive);
     List<NotificationTemplate> findAllByOrderByCreatedAtDesc();
     
-    @Query("SELECT t FROM NotificationTemplate t WHERE t.isActive = true AND t.scheduledAt IS NOT NULL AND t.scheduledAt <= :before")
+    @Query("SELECT t FROM NotificationTemplate t WHERE t.isActive = true AND t.scheduledAt IS NOT NULL AND t.scheduledAt <= :before AND t.lastSentAt IS NULL")
     List<NotificationTemplate> findScheduledToSend(@Param("before") LocalDateTime before);
 }

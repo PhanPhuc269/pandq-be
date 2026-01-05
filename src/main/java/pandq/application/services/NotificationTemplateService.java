@@ -209,4 +209,28 @@ public class NotificationTemplateService {
                 .updatedAt(template.getUpdatedAt())
                 .build();
     }
+    /**
+     * Process scheduled templates.
+     */
+    @Transactional
+    public void processScheduledTemplates() {
+        LocalDateTime now = LocalDateTime.now();
+        List<NotificationTemplate> pendingTemplates = templateRepository.findScheduledToSend(now);
+
+        if (pendingTemplates.isEmpty()) {
+            return;
+        }
+
+        log.info("Found {} scheduled templates to process", pendingTemplates.size());
+
+        for (NotificationTemplate template : pendingTemplates) {
+            try {
+                // Send to all users (reuse existing logic)
+                sendToAllUsers(template.getId());
+                log.info("Successfully processed scheduled template: {}", template.getId());
+            } catch (Exception e) {
+                log.error("Failed to process scheduled template {}: {}", template.getId(), e.getMessage());
+            }
+        }
+    }
 }

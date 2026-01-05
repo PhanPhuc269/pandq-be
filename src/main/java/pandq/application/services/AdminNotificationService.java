@@ -20,15 +20,12 @@ import java.util.UUID;
 public class AdminNotificationService {
 
     private final FcmService fcmService;
+    private final pandq.infrastructure.persistence.repositories.jpa.JpaAdminNotificationRepository notificationRepository;
 
     private static final String ADMIN_TOPIC = "admin_notifications";
 
     /**
      * Notify admins about a new order.
-     *
-     * @param orderId      Order ID
-     * @param customerName Customer name
-     * @param totalAmount  Order total
      */
     @Async
     public void notifyNewOrder(UUID orderId, String customerName, BigDecimal totalAmount) {
@@ -36,79 +33,68 @@ public class AdminNotificationService {
         String body = String.format("Khách: %s - Tổng: %,.0f₫", 
                 customerName != null ? customerName : "Khách vãng lai", 
                 totalAmount);
-        
-        log.info("[AdminNotification] Sending NEW_ORDER to admins: orderId={}", orderId);
-        fcmService.sendToTopicWithData(
-                ADMIN_TOPIC,
-                title,
-                body,
-                NotificationType.NEW_ORDER,
-                "/orders/" + orderId
-        );
+        String targetData = "/orders/" + orderId;
+
+        saveAndSend(title, body, NotificationType.NEW_ORDER, targetData);
     }
 
     /**
      * Notify admins about low stock.
-     *
-     * @param productName    Product name
-     * @param currentStock   Current stock quantity
-     * @param thresholdStock Threshold that triggered the alert
      */
     @Async
     public void notifyLowStock(String productName, int currentStock, int thresholdStock) {
         String title = "⚠️ Sắp hết hàng";
         String body = String.format("%s còn %d sản phẩm (ngưỡng: %d)", 
                 productName, currentStock, thresholdStock);
-        
-        log.info("[AdminNotification] Sending LOW_STOCK alert: product={}, stock={}", 
-                productName, currentStock);
-        fcmService.sendToTopicWithData(
-                ADMIN_TOPIC,
-                title,
-                body,
-                NotificationType.LOW_STOCK,
-                "/inventory"
-        );
+        String targetData = "/inventory";
+
+        saveAndSend(title, body, NotificationType.LOW_STOCK, targetData);
     }
 
     /**
      * Notify admins about payment received.
-     *
-     * @param orderId     Order ID
-     * @param amount      Payment amount
-     * @param paymentMethod Payment method (ZaloPay, Sepay, etc.)
      */
     @Async
     public void notifyPaymentReceived(UUID orderId, BigDecimal amount, String paymentMethod) {
         String title = "💰 Thanh toán thành công";
         String body = String.format("Đơn #%s - %,.0f₫ (%s)", 
                 orderId.toString().substring(0, 8), amount, paymentMethod);
-        
-        log.info("[AdminNotification] Sending PAYMENT_RECEIVED to admins: orderId={}", orderId);
-        fcmService.sendToTopicWithData(
-                ADMIN_TOPIC,
-                title,
-                body,
-                NotificationType.ADMIN_ALERT,
-                "/orders/" + orderId
-        );
+        String targetData = "/orders/" + orderId;
+
+        saveAndSend(title, body, NotificationType.ADMIN_ALERT, targetData);
     }
 
     /**
      * Send a general admin alert.
-     *
-     * @param title   Alert title
-     * @param message Alert message
      */
     @Async
     public void sendAdminAlert(String title, String message) {
-        log.info("[AdminNotification] Sending ADMIN_ALERT: {}", title);
+        saveAndSend("🔔 " + title, message, NotificationType.ADMIN_ALERT, null);
+    }
+
+    private void saveAndSend(String title, String body, NotificationType type, String targetData) {
+        // 1. Save to DB
+        try {
+            pandq.domain.models.interaction.AdminNotification notification = pandq.domain.models.interaction.AdminNotification.builder()
+                    .title(title)
+                    .body(body)
+                    .type(type)
+                    .targetData(targetData)
+                    .isRead(false)
+                    .build();
+            notificationRepository.save(notification);
+        } catch (Exception e) {
+            log.error("[AdminNotification] Failed to save notification to DB", e);
+        }
+
+        // 2. Send FCM
+        log.info("[AdminNotification] Sending {} to admins: {}", type, title);
         fcmService.sendToTopicWithData(
                 ADMIN_TOPIC,
-                "🔔 " + title,
-                message,
-                NotificationType.ADMIN_ALERT,
-                null
+                title,
+                body,
+                type,
+                targetData
         );
     }
 }

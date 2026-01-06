@@ -19,6 +19,7 @@ public class ProductDTO {
         private Status status;
         private List<String> images;
         private List<ProductSpecificationDTO> specifications;
+        private Integer stockQuantity;
     }
 
     @Data

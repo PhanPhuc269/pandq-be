@@ -27,6 +27,8 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final pandq.application.port.repositories.BranchRepository branchRepository;
+    private final pandq.application.port.repositories.InventoryRepository inventoryRepository;
 
     @Transactional(readOnly = true)
     public List<ProductDTO.Response> getAllProducts() {
@@ -95,6 +97,24 @@ public class ProductService {
         }
         
         Product savedProduct = productRepository.save(product);
+
+        if (request.getStockQuantity() != null && request.getStockQuantity() > 0) {
+            // Add to the first available branch (default logic for now)
+            pandq.domain.models.branch.Branch defaultBranch = branchRepository.findAll().stream()
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("No branch found to add inventory"));
+
+            pandq.domain.models.branch.Inventory inventory = pandq.domain.models.branch.Inventory.builder()
+                    .branch(defaultBranch)
+                    .product(savedProduct)
+                    .quantity(request.getStockQuantity())
+                    .minStock(0)
+                    .reservedQuantity(0)
+                    .build();
+            
+            inventoryRepository.save(inventory);
+        }
+
         return mapToResponse(savedProduct);
     }
 

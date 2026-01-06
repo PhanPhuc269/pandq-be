@@ -45,3 +45,5 @@ databaseChangeLog:
       file: db/changelog/grad-changelog-fix-order-status.yaml
   - include:      
       file: db/changelog/grad-changelog-notification-prefs.yaml
+  - include:      
+      file: db/changelog/grad-changelog-customer-tier.yaml

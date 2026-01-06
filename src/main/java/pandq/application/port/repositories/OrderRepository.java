@@ -6,6 +6,7 @@ import pandq.domain.models.order.Order;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.time.LocalDateTime;
 
 public interface OrderRepository {
     Order save(Order order);
@@ -24,5 +25,7 @@ public interface OrderRepository {
      * Check if user has purchased a specific product (with DELIVERED or COMPLETED
      * status)
      */
-    boolean hasUserPurchasedProduct(UUID userId, UUID productId);
+    boolean hasReceivedOrder(UUID userId, UUID productId);
+
+    long countNewCustomersInRange(LocalDateTime startDate, LocalDateTime endDate);
 }

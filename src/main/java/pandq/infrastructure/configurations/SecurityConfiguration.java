@@ -55,10 +55,10 @@ public class SecurityConfiguration {
                                         "/api/v1/payments/**",
                                         "/api/v1/zalopay/**",
                                         "/api/v1/sepay/**",
-                                        "/.well-known/**"
-                                ).permitAll()
-                                .anyRequest().authenticated()
-                )
+                                        "/api/v1/analytics/**",
+                                        "/.well-known/**")
+                                .permitAll()
+                                .anyRequest().authenticated())
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(firebaseAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

@@ -56,6 +56,7 @@ public class SecurityConfiguration {
                                         "/api/v1/zalopay/**",
                                         "/api/v1/sepay/**",
                                         "/api/v1/analytics/**",
+                                        "/api/v1/customers/**",
                                         "/.well-known/**")
                                 .permitAll()
                                 .anyRequest().authenticated())

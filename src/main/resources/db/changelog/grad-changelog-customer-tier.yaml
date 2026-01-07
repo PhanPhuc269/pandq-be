@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-customer-tier-columns
+      author: system
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: total_spent
+                  type: decimal(15,2)
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: customer_tier
+                  type: varchar(20)
+                  defaultValue: 'BRONZE'
+                  constraints:
+                    nullable: false
+              - column:
+                  name: account_status
+                  type: varchar(20)
+                  defaultValue: 'ACTIVE'
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: total_spent
+              - column:
+                  name: customer_tier
+              - column:
+                  name: account_status

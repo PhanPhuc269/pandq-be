@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: clear-all-chat-data
+      author: pandq
+      comment: Clear all chat messages and product chats from database
+      changes:
+        # Delete all chat messages first (child table)
+        - delete:
+            tableName: chat_messages
+        # Then delete all product chats (parent table)
+        - delete:
+            tableName: product_chats
+        # Reset the sequences/auto-increment if needed
+        - sql:
+            sql: ALTER TABLE chat_messages ALTER COLUMN id SET DEFAULT gen_random_uuid()
+        - sql:
+            sql: ALTER TABLE product_chats ALTER COLUMN id SET DEFAULT gen_random_uuid()

@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-image-url-to-chat-messages
+      author: dev
+      changes:
+        - addColumn:
+            tableName: chat_messages
+            columns:
+              - column:
+                  name: image_url
+                  type: VARCHAR(500)
+                  remarks: "URL to uploaded image in chat message"

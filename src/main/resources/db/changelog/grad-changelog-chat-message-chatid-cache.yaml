@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: 033-add-chatid-cache-to-chat-messages
+      author: pandq
+      description: Add chatId column cache to avoid lazy loading issues
+      changes:
+        - addColumn:
+            tableName: chat_messages
+            columns:
+              - column:
+                  name: chat_id
+                  type: UUID
+                  constraints:
+                    nullable: true
+        - sql:
+            dbms: postgresql
+            sql: |
+              UPDATE chat_messages 
+              SET chat_id = product_chat_id
+              WHERE chat_id IS NULL;
+            comment: Populate chat_id from product_chat_id

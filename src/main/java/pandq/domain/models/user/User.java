@@ -32,7 +32,7 @@ public class User {
 
     private String fullName;
     private String phone;
-    @Column(length = 500)
+    @Column(length = 1000)
     private String avatarUrl;
 
     @Enumerated(EnumType.STRING)

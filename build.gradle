@@ -30,6 +30,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	implementation 'org.liquibase:liquibase-core'
     implementation 'org.postgresql:postgresql:42.5.6'
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
@@ -46,6 +47,9 @@ dependencies {
     implementation 'me.paulschwarz:spring-dotenv:3.0.0'
     implementation 'com.google.firebase:firebase-admin:9.2.0'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.3'
+    
+    // Cloudinary for image upload
+    implementation 'com.cloudinary:cloudinary-http45:1.36.0'
     
     // Security Fixes for Transitive Dependencies
     implementation 'com.google.guava:guava:33.0.0-jre' // Fixes CVE-2023-2976

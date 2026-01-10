@@ -1,0 +1,218 @@
+databaseChangeLog:
+  - changeSet:
+      id: 030-create-product-chat-tables
+      author: pandq
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            - tableExists:
+                tableName: product_chats
+      changes:
+        - createTable:
+            tableName: product_chats
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: product_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_product_chats_product
+                    references: products(id)
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_product_chats_customer
+                    references: users(id)
+              - column:
+                  name: admin_id
+                  type: UUID
+                  constraints:
+                    foreignKeyName: fk_product_chats_admin
+                    references: users(id)
+              - column:
+                  name: subject
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                  defaultValue: PENDING
+              - column:
+                  name: closed_at
+                  type: TIMESTAMP
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+
+        - createIndex:
+            tableName: product_chats
+            indexName: idx_product_chats_product_id
+            columns:
+              - column:
+                  name: product_id
+
+        - createIndex:
+            tableName: product_chats
+            indexName: idx_product_chats_user_id
+            columns:
+              - column:
+                  name: user_id
+
+        - createIndex:
+            tableName: product_chats
+            indexName: idx_product_chats_admin_id
+            columns:
+              - column:
+                  name: admin_id
+
+        - createIndex:
+            tableName: product_chats
+            indexName: idx_product_chats_status
+            columns:
+              - column:
+                  name: status
+
+        - createTable:
+            tableName: chat_messages
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: product_chat_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_chat_messages_product_chat
+                    references: product_chats(id)
+              - column:
+                  name: sender_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: message
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: message_type
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                  defaultValue: TEXT
+              - column:
+                  name: is_read
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+                  defaultValue: false
+              - column:
+                  name: read_at
+                  type: TIMESTAMP
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+
+        - createIndex:
+            tableName: chat_messages
+            indexName: idx_chat_messages_product_chat_id
+            columns:
+              - column:
+                  name: product_chat_id
+
+        - createIndex:
+            tableName: chat_messages
+            indexName: idx_chat_messages_sender_id
+            columns:
+              - column:
+                  name: sender_id
+
+        - createIndex:
+            tableName: chat_messages
+            indexName: idx_chat_messages_is_read
+            columns:
+              - column:
+                  name: is_read
+  - changeSet:
+      id: 031-allow-nullable-product-and-user-in-product-chats
+      author: pandq
+      changes:
+        - dropNotNullConstraint:
+            tableName: product_chats
+            columnName: product_id
+        - dropNotNullConstraint:
+            tableName: product_chats
+            columnName: user_id
+  - changeSet:
+      id: 032-drop-old-content-column-if-exists
+      author: pandq
+      changes:
+        - sql:
+            dbms: postgresql
+            sql: ALTER TABLE chat_messages DROP COLUMN IF EXISTS content;
+            failOnError: false
+  - changeSet:
+      id: 033-add-sender-role-to-chat-messages
+      author: pandq
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            - columnExists:
+                tableName: chat_messages
+                columnName: sender_role
+      changes:
+        - addColumn:
+            tableName: chat_messages
+            columns:
+              - column:
+                  name: sender_role
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                  defaultValue: CUSTOMER
+  - changeSet:
+      id: 034-add-sender-name-to-chat-messages
+      author: pandq
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            - columnExists:
+                tableName: chat_messages
+                columnName: sender_name
+      changes:
+        - addColumn:
+            tableName: chat_messages
+            columns:
+              - column:
+                  name: sender_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                  defaultValue: Unknown

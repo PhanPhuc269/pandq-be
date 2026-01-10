@@ -20,6 +20,7 @@ public enum NotificationType {
     PROMOTION,
     PAYMENT_SUCCESS,
     SYSTEM,
+    CHAT_MESSAGE,
     
     // Admin notifications
     ADMIN_ALERT,

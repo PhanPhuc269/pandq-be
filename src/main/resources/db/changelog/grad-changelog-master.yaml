@@ -49,3 +49,5 @@ databaseChangeLog:
       file: db/changelog/grad-changelog-pretty-categories.yaml
   - include:   
       file: db/changelog/grad-changelog-customer-tier.yaml
+  - include:   
+      file: db/changelog/grad-changelog-promotion-description.yaml

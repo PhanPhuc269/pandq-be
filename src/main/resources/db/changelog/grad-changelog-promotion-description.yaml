@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-promotion-description-field
+      author: phanphuc
+      comment: "Thêm field description cho promotions (Feature 8)"
+      changes:
+        - addColumn:
+            tableName: promotions
+            columns:
+              - column:
+                  name: description
+                  type: TEXT
+                  constraints:
+                    nullable: true

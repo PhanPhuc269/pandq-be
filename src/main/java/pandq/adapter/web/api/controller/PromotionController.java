@@ -33,7 +33,7 @@ public class PromotionController {
 
     /**
      * Validate mã giảm giá và tính số tiền giảm
-     * Sử dụng cho checkout flow
+     * Sử dụng cho checkout flow trong User App
      */
     @PostMapping("/validate")
     public ResponseEntity<PromotionDTO.ValidateResponse> validatePromotion(

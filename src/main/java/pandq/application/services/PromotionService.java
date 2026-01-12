@@ -45,7 +45,6 @@ public class PromotionService {
         Promotion promotion = Promotion.builder()
                 .code(request.getCode())
                 .name(request.getName())
-                .description(request.getDescription())
                 .type(request.getType())
                 .value(request.getValue())
                 .maxDiscountAmount(request.getMaxDiscountAmount())
@@ -131,30 +130,7 @@ public class PromotionService {
                     String.format("Đơn hàng phải từ %,.0f₫ để áp dụng mã này", promotion.getMinOrderValue()));
         }
 
-        // 6. Kiểm tra sản phẩm/danh mục áp dụng (nếu có giới hạn)
-        if (promotion.getApplicableProductIds() != null && !promotion.getApplicableProductIds().isEmpty()) {
-            if (request.getProductIds() == null || request.getProductIds().isEmpty()) {
-                return PromotionDTO.ValidateResponse.error("Mã giảm giá chỉ áp dụng cho một số sản phẩm nhất định");
-            }
-            boolean hasApplicableProduct = request.getProductIds().stream()
-                    .anyMatch(promotion.getApplicableProductIds()::contains);
-            if (!hasApplicableProduct) {
-                return PromotionDTO.ValidateResponse.error("Mã giảm giá không áp dụng cho các sản phẩm trong đơn hàng");
-            }
-        }
-
-        if (promotion.getApplicableCategoryIds() != null && !promotion.getApplicableCategoryIds().isEmpty()) {
-            if (request.getCategoryIds() == null || request.getCategoryIds().isEmpty()) {
-                return PromotionDTO.ValidateResponse.error("Mã giảm giá chỉ áp dụng cho một số danh mục nhất định");
-            }
-            boolean hasApplicableCategory = request.getCategoryIds().stream()
-                    .anyMatch(promotion.getApplicableCategoryIds()::contains);
-            if (!hasApplicableCategory) {
-                return PromotionDTO.ValidateResponse.error("Mã giảm giá không áp dụng cho các danh mục trong đơn hàng");
-            }
-        }
-
-        // 7. Tính toán số tiền giảm
+        // 6. Tính toán số tiền giảm
         java.math.BigDecimal discountAmount = calculateDiscount(promotion, request.getOrderTotal());
         java.math.BigDecimal finalAmount = request.getOrderTotal().subtract(discountAmount);
         if (finalAmount.compareTo(java.math.BigDecimal.ZERO) < 0) {
@@ -175,20 +151,16 @@ public class PromotionService {
         java.math.BigDecimal discount;
         switch (promotion.getType()) {
             case PERCENTAGE:
-                // Giảm theo phần trăm
                 discount = orderTotal.multiply(promotion.getValue())
                         .divide(java.math.BigDecimal.valueOf(100), 0, java.math.RoundingMode.HALF_UP);
-                // Áp dụng giới hạn giảm tối đa
                 if (promotion.getMaxDiscountAmount() != null && discount.compareTo(promotion.getMaxDiscountAmount()) > 0) {
                     discount = promotion.getMaxDiscountAmount();
                 }
                 break;
             case FIXED_AMOUNT:
-                // Giảm số tiền cố định
                 discount = promotion.getValue();
                 break;
             case FREE_SHIPPING:
-                // Miễn phí vận chuyển - giả sử phí ship mặc định là giá trị của promotion
                 discount = promotion.getValue() != null ? promotion.getValue() : java.math.BigDecimal.ZERO;
                 break;
             default:
@@ -197,26 +169,11 @@ public class PromotionService {
         return discount;
     }
 
-    /**
-     * Tăng số lượt sử dụng khuyến mãi
-     */
-    @Transactional
-    public void incrementUsageCount(String promoCode) {
-        var promotionOpt = promotionRepository.findByCode(promoCode);
-        if (promotionOpt.isPresent()) {
-            Promotion promotion = promotionOpt.get();
-            int currentCount = promotion.getUsageCount() != null ? promotion.getUsageCount() : 0;
-            promotion.setUsageCount(currentCount + 1);
-            promotionRepository.save(promotion);
-        }
-    }
-
     private PromotionDTO.Response mapToResponse(Promotion promotion) {
         PromotionDTO.Response response = new PromotionDTO.Response();
         response.setId(promotion.getId());
         response.setCode(promotion.getCode());
         response.setName(promotion.getName());
-        response.setDescription(promotion.getDescription());
         response.setType(promotion.getType());
         response.setValue(promotion.getValue());
         response.setMaxDiscountAmount(promotion.getMaxDiscountAmount());

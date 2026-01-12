@@ -163,6 +163,8 @@ public class OrderService {
         response.setPaymentMethod(order.getPaymentMethod());
         response.setStatus(order.getStatus());
         response.setShippingAddress(order.getShippingAddress());
+        response.setShippingProvider(order.getShippingProvider());
+        response.setTrackingNumber(order.getTrackingNumber());
         response.setCreatedAt(order.getCreatedAt());
 
         // Deduplicate order items by ID (Hibernate may return duplicates due to
@@ -473,5 +475,61 @@ public class OrderService {
 
         Order savedCart = orderRepository.save(userCart);
         return mapToResponse(savedCart);
+    }
+
+    // ==================== Shipping Management ====================
+
+    /**
+     * Lấy danh sách đơn hàng theo trạng thái (cho màn hình quản lý vận chuyển)
+     */
+    @Transactional(readOnly = true)
+    public List<OrderDTO.Response> getOrdersByStatus(String status) {
+        try {
+            OrderStatus orderStatus = OrderStatus.valueOf(status.toUpperCase());
+            return orderRepository.findByStatus(orderStatus).stream()
+                    .map(this::mapToResponse)
+                    .collect(Collectors.toList());
+        } catch (IllegalArgumentException e) {
+            // Return all orders if status is "ALL"
+            if ("ALL".equalsIgnoreCase(status)) {
+                return getAllOrders();
+            }
+            throw new RuntimeException("Invalid order status: " + status);
+        }
+    }
+
+    /**
+     * Gán đơn vị vận chuyển cho đơn hàng
+     */
+    @Transactional
+    public OrderDTO.Response assignCarrier(UUID orderId, OrderDTO.AssignCarrierRequest request) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+
+        order.setShippingProvider(request.getShippingProvider());
+        if (request.getTrackingNumber() != null && !request.getTrackingNumber().isEmpty()) {
+            order.setTrackingNumber(request.getTrackingNumber());
+        }
+
+        // Auto-update status to CONFIRMED if it was PENDING
+        if (order.getStatus() == OrderStatus.PENDING) {
+            order.setStatus(OrderStatus.CONFIRMED);
+        }
+
+        Order savedOrder = orderRepository.save(order);
+        return mapToResponse(savedOrder);
+    }
+
+    /**
+     * Cập nhật trạng thái vận chuyển
+     */
+    @Transactional
+    public OrderDTO.Response updateShippingStatus(UUID orderId, OrderDTO.UpdateStatusRequest request) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+
+        order.setStatus(request.getStatus());
+        Order savedOrder = orderRepository.save(order);
+        return mapToResponse(savedOrder);
     }
 }

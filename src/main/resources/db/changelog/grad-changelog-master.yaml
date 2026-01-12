@@ -49,5 +49,13 @@ databaseChangeLog:
       file: db/changelog/grad-changelog-pretty-categories.yaml
   - include:   
       file: db/changelog/grad-changelog-customer-tier.yaml
-  - include:   
-      file: db/changelog/grad-changelog-promotion-description.yaml
+  - include:      
+      file: db/changelog/grad-changelog-chat-feature.yaml
+  - include:      
+      file: db/changelog/grad-changelog-chat-message-chatid-cache.yaml
+  - include:      
+      file: db/changelog/grad-changelog-chat-image-url.yaml
+  - include:      
+      file: db/changelog/grad-changelog-chat-message-product-context.yaml
+  - include:      
+      file: db/changelog/grad-changelog-order-shipping-fields.yaml

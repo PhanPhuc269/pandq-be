@@ -55,6 +55,8 @@ public class OrderDTO {
         private PaymentMethod paymentMethod;
         private OrderStatus status;
         private String shippingAddress;
+        private String shippingProvider;
+        private String trackingNumber;
         private LocalDateTime createdAt;
         private List<OrderItemResponse> items;
 
@@ -117,5 +119,18 @@ public class OrderDTO {
         public void setProductId(String productId) { this.productId = productId; }
         public Integer getQuantity() { return quantity; }
         public void setQuantity(Integer quantity) { this.quantity = quantity; }
+    }
+
+    // ==================== Shipping Management DTOs ====================
+
+    @Data
+    public static class AssignCarrierRequest {
+        private String shippingProvider; // e.g. "Giao Hàng Nhanh", "Viettel Post"
+        private String trackingNumber;   // Optional tracking number
+    }
+
+    @Data
+    public static class UpdateStatusRequest {
+        private OrderStatus status; // SHIPPING, DELIVERED, etc.
     }
 }

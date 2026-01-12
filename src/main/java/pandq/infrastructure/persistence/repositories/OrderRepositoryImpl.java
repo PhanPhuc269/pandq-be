@@ -56,4 +56,9 @@ public class OrderRepositoryImpl implements OrderRepository {
     public long countNewCustomersInRange(java.time.LocalDateTime startDate, java.time.LocalDateTime endDate) {
         return jpaOrderRepository.countNewCustomersInRange(startDate, endDate);
     }
+
+    @Override
+    public List<Order> findByStatus(OrderStatus status) {
+        return jpaOrderRepository.findByStatus(status);
+    }
 }

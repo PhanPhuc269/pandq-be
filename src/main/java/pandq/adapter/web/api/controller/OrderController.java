@@ -64,4 +64,35 @@ public class OrderController {
             @RequestBody List<OrderDTO.AddToCartRequest> guestCartItems) {
         return ResponseEntity.ok(orderService.mergeGuestCart(userId, guestCartItems));
     }
+
+    // ==================== Shipping Management ====================
+
+    /**
+     * Lấy danh sách đơn hàng theo trạng thái (cho màn hình quản lý vận chuyển)
+     */
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<OrderDTO.Response>> getOrdersByStatus(
+            @PathVariable String status) {
+        return ResponseEntity.ok(orderService.getOrdersByStatus(status));
+    }
+
+    /**
+     * Gán đơn vị vận chuyển cho đơn hàng
+     */
+    @PutMapping("/{id}/assign-carrier")
+    public ResponseEntity<OrderDTO.Response> assignCarrier(
+            @PathVariable UUID id,
+            @RequestBody OrderDTO.AssignCarrierRequest request) {
+        return ResponseEntity.ok(orderService.assignCarrier(id, request));
+    }
+
+    /**
+     * Cập nhật trạng thái vận chuyển
+     */
+    @PutMapping("/{id}/shipping-status")
+    public ResponseEntity<OrderDTO.Response> updateShippingStatus(
+            @PathVariable UUID id,
+            @RequestBody OrderDTO.UpdateStatusRequest request) {
+        return ResponseEntity.ok(orderService.updateShippingStatus(id, request));
+    }
 }

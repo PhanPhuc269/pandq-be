@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-shipping-fields-to-orders
+      author: pandq
+      changes:
+        - addColumn:
+            tableName: orders
+            columns:
+              - column:
+                  name: shipping_provider
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+        - addColumn:
+            tableName: orders
+            columns:
+              - column:
+                  name: tracking_number
+                  type: varchar(255)
+                  constraints:
+                    nullable: true

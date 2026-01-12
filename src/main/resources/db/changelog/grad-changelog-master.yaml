@@ -57,3 +57,5 @@ databaseChangeLog:
       file: db/changelog/grad-changelog-chat-image-url.yaml
   - include:      
       file: db/changelog/grad-changelog-chat-message-product-context.yaml
+  - include:      
+      file: db/changelog/grad-changelog-order-shipping-fields.yaml

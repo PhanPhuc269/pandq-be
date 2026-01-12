@@ -14,6 +14,8 @@ public interface JpaOrderRepository extends JpaRepository<Order, UUID> {
 
         List<Order> findByUserIdAndStatus(UUID userId, OrderStatus status);
 
+        List<Order> findByStatus(OrderStatus status);
+
         /**
          * Check if user has purchased a specific product with COMPLETED status
          */

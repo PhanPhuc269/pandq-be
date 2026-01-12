@@ -27,5 +27,10 @@ public interface OrderRepository {
      */
     boolean hasReceivedOrder(UUID userId, UUID productId);
 
+    /**
+     * Find orders by status (for shipping management)
+     */
+    List<Order> findByStatus(OrderStatus status);
+
     long countNewCustomersInRange(LocalDateTime startDate, LocalDateTime endDate);
 }

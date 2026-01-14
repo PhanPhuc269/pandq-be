@@ -64,4 +64,59 @@ public class OrderController {
             @RequestBody List<OrderDTO.AddToCartRequest> guestCartItems) {
         return ResponseEntity.ok(orderService.mergeGuestCart(userId, guestCartItems));
     }
+<<<<<<< Updated upstream
+=======
+
+    // ==================== Shipping Management ====================
+
+    /**
+     * Lấy danh sách đơn hàng theo trạng thái (cho màn hình quản lý vận chuyển)
+     */
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<OrderDTO.Response>> getOrdersByStatus(
+            @PathVariable String status) {
+        return ResponseEntity.ok(orderService.getOrdersByStatus(status));
+    }
+
+    /**
+     * Gán đơn vị vận chuyển cho đơn hàng
+     */
+    @PutMapping("/{id}/assign-carrier")
+    public ResponseEntity<OrderDTO.Response> assignCarrier(
+            @PathVariable UUID id,
+            @RequestBody OrderDTO.AssignCarrierRequest request) {
+        return ResponseEntity.ok(orderService.assignCarrier(id, request));
+    }
+
+    /**
+     * Cập nhật trạng thái vận chuyển
+     */
+    @PutMapping("/{id}/shipping-status")
+    public ResponseEntity<OrderDTO.Response> updateShippingStatus(
+            @PathVariable UUID id,
+            @RequestBody OrderDTO.UpdateStatusRequest request) {
+        return ResponseEntity.ok(orderService.updateShippingStatus(id, request));
+    }
+
+    // ==================== TEST ENDPOINTS (CHỈ DÙNG ĐỂ TEST) ====================
+
+    /**
+     * [TEST ONLY] Simulate thanh toán thành công - chuyển đơn hàng sang PENDING
+     * Sử dụng endpoint này để test luồng shipping mà không cần thanh toán thật
+     * 
+     * Cách dùng: PUT /api/v1/orders/{id}/test-confirm-payment
+     */
+    @PutMapping("/{id}/test-confirm-payment")
+    public ResponseEntity<OrderDTO.Response> testConfirmPayment(@PathVariable UUID id) {
+        return ResponseEntity.ok(orderService.testConfirmPayment(id));
+    }
+
+    /**
+     * [TEST ONLY] Lấy tất cả đơn hàng (kể cả CART) để debug
+     */
+    @GetMapping("/test/all-including-cart")
+    public ResponseEntity<List<OrderDTO.Response>> getAllOrdersIncludingCart() {
+        return ResponseEntity.ok(orderService.getAllOrders());
+    }
+>>>>>>> Stashed changes
 }

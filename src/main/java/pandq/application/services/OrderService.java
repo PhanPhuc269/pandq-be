@@ -474,4 +474,96 @@ public class OrderService {
         Order savedCart = orderRepository.save(userCart);
         return mapToResponse(savedCart);
     }
+<<<<<<< Updated upstream
+=======
+
+    // ==================== Shipping Management ====================
+
+    /**
+     * Lấy danh sách đơn hàng theo trạng thái (cho màn hình quản lý vận chuyển)
+     */
+    @Transactional(readOnly = true)
+    public List<OrderDTO.Response> getOrdersByStatus(String status) {
+        try {
+            OrderStatus orderStatus = OrderStatus.valueOf(status.toUpperCase());
+            return orderRepository.findByStatus(orderStatus).stream()
+                    .map(this::mapToResponse)
+                    .collect(Collectors.toList());
+        } catch (IllegalArgumentException e) {
+            // Return all orders if status is "ALL"
+            if ("ALL".equalsIgnoreCase(status)) {
+                return getAllOrders();
+            }
+            throw new RuntimeException("Invalid order status: " + status);
+        }
+    }
+
+    /**
+     * Gán đơn vị vận chuyển cho đơn hàng
+     */
+    @Transactional
+    public OrderDTO.Response assignCarrier(UUID orderId, OrderDTO.AssignCarrierRequest request) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+
+        order.setShippingProvider(request.getShippingProvider());
+        if (request.getTrackingNumber() != null && !request.getTrackingNumber().isEmpty()) {
+            order.setTrackingNumber(request.getTrackingNumber());
+        }
+
+        // Auto-update status to CONFIRMED if it was PENDING
+        if (order.getStatus() == OrderStatus.PENDING) {
+            order.setStatus(OrderStatus.CONFIRMED);
+        }
+
+        Order savedOrder = orderRepository.save(order);
+        return mapToResponse(savedOrder);
+    }
+
+    /**
+     * Cập nhật trạng thái vận chuyển
+     */
+    @Transactional
+    public OrderDTO.Response updateShippingStatus(UUID orderId, OrderDTO.UpdateStatusRequest request) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+
+        order.setStatus(request.getStatus());
+        Order savedOrder = orderRepository.save(order);
+        return mapToResponse(savedOrder);
+    }
+
+    // ==================== TEST METHODS ====================
+
+    /**
+     * [TEST ONLY] Simulate thanh toán thành công
+     * Chuyển đơn hàng từ CART hoặc bất kỳ status nào sang PENDING
+     * Đồng thời tính và apply shipping fee dựa trên địa chỉ
+     */
+    @Transactional
+    public OrderDTO.Response testConfirmPayment(UUID orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+
+        // Chuyển status sang PENDING (chờ Admin gán đơn vị vận chuyển)
+        order.setStatus(OrderStatus.PENDING);
+        
+        // Tính shipping fee dựa trên địa chỉ nếu chưa có
+        if (order.getShippingFee() == null || order.getShippingFee().compareTo(java.math.BigDecimal.ZERO) == 0) {
+            // Parse city từ shippingAddress nếu có
+            String shippingAddress = order.getShippingAddress();
+            java.math.BigDecimal shippingFee = ShippingFeeCalculator.calculateShippingFee(shippingAddress);
+            order.setShippingFee(shippingFee);
+            
+            // Recalculate finalAmount
+            java.math.BigDecimal totalAmount = order.getTotalAmount() != null ? order.getTotalAmount() : java.math.BigDecimal.ZERO;
+            java.math.BigDecimal discountAmount = order.getDiscountAmount() != null ? order.getDiscountAmount() : java.math.BigDecimal.ZERO;
+            java.math.BigDecimal newFinalAmount = totalAmount.add(shippingFee).subtract(discountAmount);
+            order.setFinalAmount(newFinalAmount);
+        }
+        
+        Order savedOrder = orderRepository.save(order);
+        return mapToResponse(savedOrder);
+    }
+>>>>>>> Stashed changes
 }

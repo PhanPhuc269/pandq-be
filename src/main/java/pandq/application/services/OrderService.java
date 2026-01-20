@@ -28,6 +28,7 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final JpaUserRepository userRepository;
     private final AdminNotificationService adminNotificationService;
+    private final InventoryService inventoryService;
 
     @Transactional(readOnly = true)
     public List<OrderDTO.Response> getAllOrders() {
@@ -473,5 +474,51 @@ public class OrderService {
 
         Order savedCart = orderRepository.save(userCart);
         return mapToResponse(savedCart);
+    }
+
+    /**
+     * Update order status and handle inventory accordingly
+     * - CONFIRMED: Reserve inventory (increase reservedQuantity)
+     * - DELIVERED/COMPLETED: Decrease actual stock and reserved quantity
+     * - CANCELLED: Release reserved inventory
+     */
+    @Transactional
+    public OrderDTO.Response updateOrderStatus(UUID orderId, OrderStatus newStatus) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+        
+        OrderStatus currentStatus = order.getStatus();
+        
+        // Update inventory based on status transition
+        if (newStatus == OrderStatus.CONFIRMED && currentStatus == OrderStatus.PENDING) {
+            // Order confirmed - reserve inventory
+            for (OrderItem item : order.getOrderItems()) {
+                inventoryService.reserveInventoryForOrder(
+                    item.getProduct().getId(),
+                    item.getQuantity()
+                );
+            }
+        } else if ((newStatus == OrderStatus.DELIVERED || newStatus == OrderStatus.COMPLETED) 
+                   && currentStatus != OrderStatus.DELIVERED && currentStatus != OrderStatus.COMPLETED) {
+            // Order delivered/completed - decrease actual stock
+            for (OrderItem item : order.getOrderItems()) {
+                inventoryService.completeOrderInventory(
+                    item.getProduct().getId(),
+                    item.getQuantity()
+                );
+            }
+        } else if (newStatus == OrderStatus.CANCELLED && currentStatus != OrderStatus.CANCELLED) {
+            // Order cancelled - release reserved inventory
+            for (OrderItem item : order.getOrderItems()) {
+                inventoryService.cancelOrderInventory(
+                    item.getProduct().getId(),
+                    item.getQuantity()
+                );
+            }
+        }
+        
+        order.setStatus(newStatus);
+        Order savedOrder = orderRepository.save(order);
+        return mapToResponse(savedOrder);
     }
 }

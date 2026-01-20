@@ -12,5 +12,6 @@ public interface InventoryRepository {
     Optional<Inventory> findByBranchIdAndProductId(UUID branchId, UUID productId);
     List<Inventory> findByBranchId(UUID branchId);
     List<Inventory> findByProductId(UUID productId);
+    List<Inventory> findAll();
     void deleteById(UUID id);
 }

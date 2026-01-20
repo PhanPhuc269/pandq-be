@@ -64,4 +64,11 @@ public class OrderController {
             @RequestBody List<OrderDTO.AddToCartRequest> guestCartItems) {
         return ResponseEntity.ok(orderService.mergeGuestCart(userId, guestCartItems));
     }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<OrderDTO.Response> updateOrderStatus(
+            @PathVariable UUID id,
+            @RequestBody OrderDTO.UpdateStatusRequest request) {
+        return ResponseEntity.ok(orderService.updateOrderStatus(id, request.getStatus()));
+    }
 }

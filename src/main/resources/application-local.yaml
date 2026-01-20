@@ -1,23 +1,16 @@
 spring:
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/GRAD}
-    username: ${SPRING_DATASOURCE_USERNAME:postgres}
-    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    username: ${SPRING_DATASOURCE_USERNAME:dbadmin}
+    password: ${SPRING_DATASOURCE_PASSWORD:dbadmin}
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
   application:
 
     url: ${SPRING_APPLICATION_URL:http://localhost:3000}
-
-# Cloudinary configuration for local development
-cloudinary:
-  cloud-name: ${CLOUDINARY_CLOUD_NAME:dz8u6d4pr}
-  api-key: ${CLOUDINARY_API_KEY:}
-  api-secret: ${CLOUDINARY_API_SECRET:}
-  upload-preset: ${CLOUDINARY_UPLOAD_PRESET:uppaedmp}

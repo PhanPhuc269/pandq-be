@@ -9,7 +9,7 @@ databaseChangeLog:
       file: db/changelog/grad-changelog-more-products.yaml
   - include:
       file: db/changelog/grad-changelog-test-user.yaml
-  - include:      
+  - include:
       file: db/changelog/grad-changelog-add-categories.yaml
   - include:
       file: db/changelog/grad-changelog-demo-data.yaml
@@ -33,27 +33,31 @@ databaseChangeLog:
       file: db/changelog/grad-changelog-related-products-all.yaml
   - include:
       file: db/changelog/grad-changelog-fcm-token.yaml
-  - include:      
+  - include:
       file: db/changelog/grad-changelog-ratings.yaml
-  - include:      
+  - include:
       file: db/changelog/grad-changelog-reset-ratings.yaml
-  - include:      
+  - include:
       file: db/changelog/grad-changelog-user-orders-pihuc.yaml
-  - include:      
+  - include:
       file: db/changelog/grad-changelog-fix-payment.yaml
-  - include:      
+  - include:
       file: db/changelog/grad-changelog-fix-order-status.yaml
-  - include:      
+  - include:
       file: db/changelog/grad-changelog-notification-prefs.yaml
-  - include:      
+  - include:
       file: db/changelog/grad-changelog-pretty-categories.yaml
-  - include:   
+  - include:
       file: db/changelog/grad-changelog-customer-tier.yaml
-  - include:      
+  - include:
       file: db/changelog/grad-changelog-chat-feature.yaml
-  - include:      
+  - include:
       file: db/changelog/grad-changelog-chat-message-chatid-cache.yaml
-  - include:      
+  - include:
       file: db/changelog/grad-changelog-chat-image-url.yaml
-  - include:      
+  - include:
       file: db/changelog/grad-changelog-chat-message-product-context.yaml
+  - include:
+      file: db/changelog/grad-changelog-fix-reserved-quantity.yaml
+  - include:
+      file: db/changelog/grad-changelog-inventory-trigger.yaml

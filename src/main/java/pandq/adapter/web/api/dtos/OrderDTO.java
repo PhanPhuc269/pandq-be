@@ -118,4 +118,12 @@ public class OrderDTO {
         public Integer getQuantity() { return quantity; }
         public void setQuantity(Integer quantity) { this.quantity = quantity; }
     }
+
+    @Data
+    public static class UpdateStatusRequest {
+        private OrderStatus status;
+
+        public OrderStatus getStatus() { return status; }
+        public void setStatus(OrderStatus status) { this.status = status; }
+    }
 }

@@ -37,4 +37,10 @@ public interface JpaOrderRepository extends JpaRepository<Order, UUID> {
         long countNewCustomersInRange(
                         @Param("startDate") java.time.LocalDateTime startDate,
                         @Param("endDate") java.time.LocalDateTime endDate);
+
+        /**
+         * Get orders with CONFIRMED or SHIPPING status (orders that need inventory reserved)
+         */
+        @Query("SELECT o FROM Order o WHERE o.status IN ('CONFIRMED', 'SHIPPING')")
+        List<Order> findActiveOrdersWithReservedInventory();
 }

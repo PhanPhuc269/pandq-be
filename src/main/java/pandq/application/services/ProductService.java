@@ -165,6 +165,29 @@ public class ProductService {
 
 
         Product savedProduct = productRepository.save(product);
+
+        // Update inventory if stockQuantity is provided
+        if (request.getStockQuantity() != null && request.getStockQuantity() >= 0) {
+            pandq.domain.models.branch.Branch defaultBranch = branchRepository.findAll().stream()
+                    .findFirst()
+                    .orElse(null);
+
+            if (defaultBranch != null) {
+                pandq.domain.models.branch.Inventory inventory = inventoryRepository
+                        .findByBranchIdAndProductId(defaultBranch.getId(), savedProduct.getId())
+                        .orElseGet(() -> pandq.domain.models.branch.Inventory.builder()
+                                .branch(defaultBranch)
+                                .product(savedProduct)
+                                .quantity(0)
+                                .minStock(0)
+                                .reservedQuantity(0)
+                                .build());
+
+                inventory.setQuantity(request.getStockQuantity());
+                inventoryRepository.save(inventory);
+            }
+        }
+
         return mapToResponse(savedProduct);
     }
 
@@ -185,6 +208,11 @@ public class ProductService {
         response.setStatus(product.getStatus());
         response.setAverageRating(product.getAverageRating());
         response.setReviewCount(product.getReviewCount());
+
+        // Get stock quantity from inventory
+        List<pandq.domain.models.branch.Inventory> inventories = inventoryRepository.findByProductId(product.getId());
+        int totalStock = inventories.stream().mapToInt(pandq.domain.models.branch.Inventory::getQuantity).sum();
+        response.setStockQuantity(totalStock);
 
         // Map images
         if (product.getImages() != null) {

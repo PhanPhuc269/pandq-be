@@ -133,4 +133,10 @@ public class OrderDTO {
     public static class UpdateStatusRequest {
         private OrderStatus status; // SHIPPING, DELIVERED, etc.
     }
+
+    @Data
+    public static class ApplyPromotionRequest {
+        private String userId; // For voucher validation
+        private UUID promotionId; // The voucher/promotion to apply
+    }
 }

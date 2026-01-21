@@ -1,0 +1,52 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-user-vouchers-table
+      author: antigravity
+      changes:
+        - createTable:
+            tableName: user_vouchers
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: promotion_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: claimed_at
+                  type: DATETIME
+                  constraints:
+                    nullable: false
+              - column:
+                  name: used_at
+                  type: DATETIME
+              - column:
+                  name: is_used
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: user_vouchers
+            constraintName: fk_user_vouchers_user
+            referencedColumnNames: id
+            referencedTableName: users
+        - addForeignKeyConstraint:
+            baseColumnNames: promotion_id
+            baseTableName: user_vouchers
+            constraintName: fk_user_vouchers_promotion
+            referencedColumnNames: id
+            referencedTableName: promotions
+        - addUniqueConstraint:
+            columnNames: user_id, promotion_id
+            constraintName: uk_user_promotion
+            tableName: user_vouchers

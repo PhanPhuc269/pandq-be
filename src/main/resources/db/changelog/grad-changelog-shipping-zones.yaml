@@ -1,0 +1,156 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-shipping-zones-table
+      author: pandq
+      changes:
+        - createTable:
+            tableName: shipping_zones
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: cities
+                  type: text
+              - column:
+                  name: districts
+                  type: text
+              - column:
+                  name: zone_level
+                  type: int
+              - column:
+                  name: base_fee
+                  type: decimal(19,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: extra_fee_per_kg
+                  type: decimal(19,2)
+              - column:
+                  name: free_ship_threshold
+                  type: decimal(19,2)
+              - column:
+                  name: is_active
+                  type: boolean
+                  defaultValueBoolean: true
+
+  - changeSet:
+      id: seed-shipping-zones
+      author: pandq
+      changes:
+        - insert:
+            tableName: shipping_zones
+            columns:
+              - column:
+                  name: id
+                  value: "a1000000-0000-0000-0000-000000000001"
+              - column:
+                  name: name
+                  value: "Nội thành HCM"
+              - column:
+                  name: cities
+                  value: '["Hồ Chí Minh", "Ho Chi Minh", "HCM", "Saigon"]'
+              - column:
+                  name: districts
+                  value: '["Quận 1", "Quận 3", "Quận 5", "Quận 7", "Quận 10", "Bình Thạnh", "Phú Nhuận", "Tân Bình", "Gò Vấp"]'
+              - column:
+                  name: zone_level
+                  valueNumeric: 1
+              - column:
+                  name: base_fee
+                  valueNumeric: 15000
+              - column:
+                  name: extra_fee_per_kg
+                  valueNumeric: 3000
+              - column:
+                  name: free_ship_threshold
+                  valueNumeric: 500000
+              - column:
+                  name: is_active
+                  valueBoolean: true
+        - insert:
+            tableName: shipping_zones
+            columns:
+              - column:
+                  name: id
+                  value: "a1000000-0000-0000-0000-000000000002"
+              - column:
+                  name: name
+                  value: "Ngoại thành & Vùng lân cận"
+              - column:
+                  name: cities
+                  value: '["Hồ Chí Minh", "Bình Dương", "Đồng Nai", "Long An", "Bà Rịa - Vũng Tàu"]'
+              - column:
+                  name: zone_level
+                  valueNumeric: 2
+              - column:
+                  name: base_fee
+                  valueNumeric: 25000
+              - column:
+                  name: extra_fee_per_kg
+                  valueNumeric: 5000
+              - column:
+                  name: free_ship_threshold
+                  valueNumeric: 800000
+              - column:
+                  name: is_active
+                  valueBoolean: true
+        - insert:
+            tableName: shipping_zones
+            columns:
+              - column:
+                  name: id
+                  value: "a1000000-0000-0000-0000-000000000003"
+              - column:
+                  name: name
+                  value: "Liên tỉnh"
+              - column:
+                  name: cities
+                  value: '["Hà Nội", "Đà Nẵng", "Cần Thơ", "Hải Phòng", "Huế", "Nha Trang", "Đà Lạt"]'
+              - column:
+                  name: zone_level
+                  valueNumeric: 3
+              - column:
+                  name: base_fee
+                  valueNumeric: 35000
+              - column:
+                  name: extra_fee_per_kg
+                  valueNumeric: 7000
+              - column:
+                  name: free_ship_threshold
+                  valueNumeric: 1000000
+              - column:
+                  name: is_active
+                  valueBoolean: true
+        - insert:
+            tableName: shipping_zones
+            columns:
+              - column:
+                  name: id
+                  value: "a1000000-0000-0000-0000-000000000004"
+              - column:
+                  name: name
+                  value: "Vùng xa / Hải đảo"
+              - column:
+                  name: zone_level
+                  valueNumeric: 4
+              - column:
+                  name: base_fee
+                  valueNumeric: 50000
+              - column:
+                  name: extra_fee_per_kg
+                  valueNumeric: 10000
+              - column:
+                  name: free_ship_threshold
+                  valueNumeric: 1500000
+              - column:
+                  name: is_active
+                  valueBoolean: true

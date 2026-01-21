@@ -17,19 +17,24 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Payment Service
  * Orchestrates payment operations across different payment providers
  */
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
+
+    private static final Logger log = LoggerFactory.getLogger(PaymentService.class);
 
     private final ZaloPayService zaloPayService;
     private final SepayService sepayService;
     private final OrderRepository orderRepository;
     private final OrderService orderService;
+    private final ShippingCalculatorService shippingCalculatorService;
 
     // Store payment transactions (in production, use database)
     private final Map<String, PaymentTransaction> paymentTransactions = new HashMap<>();
@@ -246,9 +251,32 @@ public class PaymentService {
             
             // Amounts
             response.setSubtotal(subtotal);
-            response.setShippingFee(order.getShippingFee() != null ? order.getShippingFee().longValue() : 0L);
+            
+            // Calculate shipping fee dynamically (for old orders that have shippingFee = 0)
+            Long shippingFee = order.getShippingFee() != null ? order.getShippingFee().longValue() : 0L;
+            if (shippingFee == 0L && subtotal > 0L) {
+                // Build address JSON for zone detection
+                String addressJson = String.format("{\"city\":\"%s\",\"district\":\"%s\"}", 
+                    shippingCity != null ? shippingCity : "",
+                    shippingDistrict != null ? shippingDistrict : "");
+                
+                var shippingResult = shippingCalculatorService.calculateFromOrderItems(
+                    addressJson,
+                    order.getOrderItems() != null ? new java.util.ArrayList<>(order.getOrderItems()) : new java.util.ArrayList<>(),
+                    java.math.BigDecimal.valueOf(subtotal)
+                );
+                shippingFee = shippingResult.getShippingFee().longValue();
+                
+                // Update order with calculated shipping fee
+                order.setShippingFee(java.math.BigDecimal.valueOf(shippingFee));
+                order.setFinalAmount(java.math.BigDecimal.valueOf(subtotal + shippingFee - (order.getDiscountAmount() != null ? order.getDiscountAmount().longValue() : 0L)));
+                orderRepository.save(order);
+                log.info("Calculated and saved shipping fee {} for order {}", shippingFee, orderId);
+            }
+            
+            response.setShippingFee(shippingFee);
             response.setDiscountAmount(order.getDiscountAmount() != null ? order.getDiscountAmount().longValue() : 0L);
-            response.setFinalAmount(order.getFinalAmount() != null ? order.getFinalAmount().longValue() : 0L);
+            response.setFinalAmount(subtotal + shippingFee - (order.getDiscountAmount() != null ? order.getDiscountAmount().longValue() : 0L));
             
             // Additional
             response.setOrderNote(order.getNote());

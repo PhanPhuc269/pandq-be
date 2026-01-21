@@ -11,7 +11,9 @@ import pandq.domain.models.order.Order;
 import pandq.domain.models.order.OrderItem;
 import pandq.domain.models.product.Product;
 import pandq.domain.models.user.User;
+import pandq.domain.models.marketing.Promotion;
 import pandq.infrastructure.persistence.repositories.jpa.JpaUserRepository;
+import pandq.infrastructure.persistence.repositories.jpa.JpaPromotionRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -28,6 +30,9 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final JpaUserRepository userRepository;
     private final AdminNotificationService adminNotificationService;
+    private final ShippingCalculatorService shippingCalculatorService;
+    private final VoucherService voucherService;
+    private final JpaPromotionRepository promotionRepository;
 
     @Transactional(readOnly = true)
     public List<OrderDTO.Response> getAllOrders() {
@@ -136,11 +141,48 @@ public class OrderService {
 
         order.setOrderItems(orderItems);
         order.setTotalAmount(totalAmount);
-        order.setShippingFee(BigDecimal.ZERO); // Simplified
-        order.setDiscountAmount(BigDecimal.ZERO); // Simplified
-        order.setFinalAmount(totalAmount);
+        
+        // Calculate shipping fee dynamically
+        var shippingResult = shippingCalculatorService.calculateFromOrderItems(
+                request.getShippingAddress(),
+                orderItems,
+                totalAmount
+        );
+        order.setShippingFee(shippingResult.getShippingFee());
+        order.setShippingFee(shippingResult.getShippingFee());
+        
+        // Apply voucher if provided
+        BigDecimal discountAmount = BigDecimal.ZERO;
+        if (request.getPromotionId() != null) {
+            String userIdForVoucher = user != null ? user.getId().toString() : request.getUserId();
+            discountAmount = voucherService.applyVoucher(
+                userIdForVoucher, 
+                request.getPromotionId(), 
+                totalAmount, 
+                shippingResult.getShippingFee()
+            );
+            
+            // Store the promotion reference on the order for payment callback to mark as used
+            Promotion promotion = promotionRepository.findById(request.getPromotionId()).orElse(null);
+            order.setPromotion(promotion);
+        }
+        
+        order.setDiscountAmount(discountAmount);
+        
+        // Ensure final amount is not negative
+        BigDecimal finalAmount = totalAmount.add(shippingResult.getShippingFee()).subtract(discountAmount);
+        if (finalAmount.compareTo(BigDecimal.ZERO) < 0) {
+            finalAmount = BigDecimal.ZERO;
+        }
+        order.setFinalAmount(finalAmount);
 
         Order savedOrder = orderRepository.save(order);
+        
+        // Mark voucher as used if order created successfully
+        if (request.getPromotionId() != null) {
+            String userIdForVoucher = user != null ? user.getId().toString() : request.getUserId();
+            voucherService.markVoucherAsUsed(userIdForVoucher, request.getPromotionId());
+        }
         
         // Notify admins about new order (async)
         adminNotificationService.notifyNewOrder(
@@ -193,6 +235,42 @@ public class OrderService {
         response.setItems(items);
 
         return response;
+    }
+
+    /**
+     * Apply a promotion/voucher to an existing order before payment
+     */
+    @Transactional
+    public OrderDTO.Response applyPromotionToOrder(UUID orderId, OrderDTO.ApplyPromotionRequest request) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+        
+        // Validate and apply the voucher
+        if (request.getPromotionId() != null && request.getUserId() != null) {
+            BigDecimal discountAmount = voucherService.applyVoucher(
+                request.getUserId(),
+                request.getPromotionId(),
+                order.getTotalAmount(),
+                order.getShippingFee() != null ? order.getShippingFee() : BigDecimal.ZERO
+            );
+            
+            // Link the promotion to the order
+            Promotion promotion = promotionRepository.findById(request.getPromotionId()).orElse(null);
+            order.setPromotion(promotion);
+            order.setDiscountAmount(discountAmount);
+            
+            // Recalculate final amount
+            BigDecimal shippingFee = order.getShippingFee() != null ? order.getShippingFee() : BigDecimal.ZERO;
+            BigDecimal finalAmount = order.getTotalAmount().add(shippingFee).subtract(discountAmount);
+            if (finalAmount.compareTo(BigDecimal.ZERO) < 0) {
+                finalAmount = BigDecimal.ZERO;
+            }
+            order.setFinalAmount(finalAmount);
+            
+            orderRepository.save(order);
+        }
+        
+        return mapToResponse(order);
     }
 
     @Transactional

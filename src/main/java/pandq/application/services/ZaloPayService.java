@@ -29,6 +29,7 @@ import java.util.*;
 public class ZaloPayService {
 
     private final OrderRepository orderRepository;
+    private final VoucherService voucherService;
     private final NotificationService notificationService;
     private final AdminNotificationService adminNotificationService;
 
@@ -210,6 +211,21 @@ public class ZaloPayService {
                         order.setStatus(OrderStatus.CONFIRMED);
                         orderRepository.save(order);
                         log.info("Updated order {} status to CONFIRMED", orderId);
+                        
+                        // Mark voucher as used if promotion was applied
+                        if (order.getPromotion() != null && order.getUser() != null) {
+                            try {
+                                voucherService.markVoucherAsUsed(
+                                    order.getUser().getId().toString(), 
+                                    order.getPromotion().getId()
+                                );
+                                log.info("Marked voucher {} as used for order {}", 
+                                    order.getPromotion().getId(), orderId);
+                            } catch (Exception e) {
+                                log.error("Failed to mark voucher as used for order {}: {}", 
+                                    orderId, e.getMessage());
+                            }
+                        }
                         
                         // Notify admins about new confirmed order (async)
                         adminNotificationService.notifyNewOrder(

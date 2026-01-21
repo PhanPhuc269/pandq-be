@@ -59,7 +59,10 @@ public class SecurityConfiguration {
                                         "/api/v1/customers/**",
                                         "/api/v1/chats/**",
                                         "/ws/chat/**",
-                                        "/.well-known/**"
+                                        "/.well-known/**",
+                                        "/api/v1/orders/shipping-zones",
+                                        "/api/v1/orders/shipping-fee/**",
+                                        "/api/v1/vouchers/**"
                                 ).permitAll()
                                 .anyRequest().authenticated()
                 )

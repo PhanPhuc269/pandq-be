@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pandq.adapter.web.api.dtos.OrderDTO;
+import pandq.adapter.web.api.dtos.ShippingDTO;
 import pandq.application.services.OrderService;
+import pandq.application.services.ShippingCalculatorService;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,6 +17,7 @@ import java.util.UUID;
 public class OrderController {
 
     private final OrderService orderService;
+    private final ShippingCalculatorService shippingCalculatorService;
 
     @GetMapping
     public ResponseEntity<List<OrderDTO.Response>> getAllOrders() {
@@ -94,5 +97,34 @@ public class OrderController {
             @PathVariable UUID id,
             @RequestBody OrderDTO.UpdateStatusRequest request) {
         return ResponseEntity.ok(orderService.updateShippingStatus(id, request));
+    }
+
+    /**
+     * Apply a promotion/voucher to an order before payment
+     */
+    @PutMapping("/{id}/apply-promotion")
+    public ResponseEntity<OrderDTO.Response> applyPromotion(
+            @PathVariable UUID id,
+            @RequestBody OrderDTO.ApplyPromotionRequest request) {
+        return ResponseEntity.ok(orderService.applyPromotionToOrder(id, request));
+    }
+
+    // ==================== Shipping Fee Calculation ====================
+
+    /**
+     * Preview shipping fee before checkout
+     */
+    @PostMapping("/shipping-fee/calculate")
+    public ResponseEntity<ShippingDTO.CalculateResponse> calculateShippingFee(
+            @RequestBody ShippingDTO.CalculateRequest request) {
+        return ResponseEntity.ok(shippingCalculatorService.calculateForPreview(request));
+    }
+
+    /**
+     * Get all available shipping zones
+     */
+    @GetMapping("/shipping-zones")
+    public ResponseEntity<List<ShippingDTO.ZoneResponse>> getShippingZones() {
+        return ResponseEntity.ok(shippingCalculatorService.getAllZones());
     }
 }

@@ -57,6 +57,12 @@ public class VoucherService {
         }
         
         List<VoucherDTO.VoucherResponse> vouchers = promotions.stream()
+                .filter(p -> {
+                    // Filter out vouchers that have been used by this user
+                    UserVoucher uv = claimedVouchersMap.get(p.getId());
+                    boolean isUsed = uv != null && uv.getIsUsed();
+                    return !isUsed; // Only include vouchers that have NOT been used
+                })
                 .map(p -> {
                     UserVoucher uv = claimedVouchersMap.get(p.getId());
                     boolean isClaimed = uv != null;

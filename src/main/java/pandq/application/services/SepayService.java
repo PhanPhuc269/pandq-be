@@ -31,6 +31,7 @@ public class SepayService {
 
     private final OrderRepository orderRepository;
     private final NotificationService notificationService;
+    private final InventoryService inventoryService;
 
     @Value("${SEPAY_API_TOKEN:}")
     private String apiToken;
@@ -170,6 +171,15 @@ public class SepayService {
                                     order.setStatus(OrderStatus.CONFIRMED);
                                     orderRepository.save(order);
                                     log.info("Updated order {} status to CONFIRMED", pending.orderId);
+                                    
+                                    // Reserve inventory for confirmed order
+                                    for (var item : order.getOrderItems()) {
+                                        inventoryService.reserveInventoryForOrder(
+                                            item.getProduct().getId(),
+                                            item.getQuantity()
+                                        );
+                                    }
+                                    log.info("Reserved inventory for order {}", pending.orderId);
                                     
                                     // Send FCM notification to customer (async - non-blocking)
                                     UUID userId = order.getUser().getId();

@@ -131,12 +131,15 @@ public class OrderDTO {
 
     @Data
     public static class UpdateStatusRequest {
-        private OrderStatus status; // SHIPPING, DELIVERED, etc.
+        private OrderStatus status;
+
+        public OrderStatus getStatus() { return status; }
+        public void setStatus(OrderStatus status) { this.status = status; }
     }
 
     @Data
     public static class ApplyPromotionRequest {
         private String userId; // For voucher validation
         private UUID promotionId; // The voucher/promotion to apply
-    }
+    }        
 }

@@ -16,6 +16,16 @@ public class InventoryController {
 
     private final InventoryService inventoryService;
 
+    @GetMapping("/stats")
+    public ResponseEntity<InventoryDTO.StatsResponse> getInventoryStats() {
+        return ResponseEntity.ok(inventoryService.getInventoryStats());
+    }
+
+    @GetMapping
+    public ResponseEntity<List<InventoryDTO.Response>> getAllInventory() {
+        return ResponseEntity.ok(inventoryService.getAllInventory());
+    }
+
     @GetMapping("/branch/{branchId}")
     public ResponseEntity<List<InventoryDTO.Response>> getInventoryByBranch(@PathVariable UUID branchId) {
         return ResponseEntity.ok(inventoryService.getInventoryByBranch(branchId));
@@ -27,5 +37,18 @@ public class InventoryController {
             @PathVariable UUID productId,
             @RequestBody InventoryDTO.UpdateRequest request) {
         return ResponseEntity.ok(inventoryService.updateInventory(branchId, productId, request));
+    }
+    
+    /**
+     * Recalculate and sync reserved quantities based on actual active orders.
+     * Use this endpoint when reserved quantities are out of sync with order statuses.
+     * Active orders = CONFIRMED or SHIPPING status
+     * 
+     * @return Number of inventory items that were corrected
+     */
+    @PostMapping("/recalculate-reserved")
+    public ResponseEntity<String> recalculateReservedQuantities() {
+        int correctedCount = inventoryService.recalculateReservedQuantities();
+        return ResponseEntity.ok("Recalculated reserved quantities. Products with active reservations: " + correctedCount);
     }
 }

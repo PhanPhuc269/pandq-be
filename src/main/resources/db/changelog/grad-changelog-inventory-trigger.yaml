@@ -1,0 +1,103 @@
+databaseChangeLog:
+  - changeSet:
+      id: 080-create-inventory-sync-function
+      author: antigravity
+      comment: "Create function to sync inventory when order status changes"
+      changes:
+        - sql:
+            splitStatements: false
+            sql: |
+              CREATE OR REPLACE FUNCTION sync_inventory_on_order_status_change()
+              RETURNS TRIGGER AS $$
+              DECLARE
+                item RECORD;
+              BEGIN
+                -- Only process if status actually changed
+                IF OLD.status = NEW.status THEN
+                  RETURN NEW;
+                END IF;
+
+                -- Case 1: PENDING → CONFIRMED (Reserve inventory)
+                IF OLD.status = 'PENDING' AND NEW.status = 'CONFIRMED' THEN
+                  FOR item IN 
+                    SELECT product_id, quantity FROM order_items WHERE order_id = NEW.id
+                  LOOP
+                    UPDATE inventory 
+                    SET reserved_quantity = COALESCE(reserved_quantity, 0) + item.quantity
+                    WHERE product_id = item.product_id;
+                  END LOOP;
+                END IF;
+
+                -- Case 2: CONFIRMED/SHIPPING → COMPLETED or DELIVERED (Complete order - reduce stock)
+                IF OLD.status IN ('CONFIRMED', 'SHIPPING') 
+                   AND NEW.status IN ('COMPLETED', 'DELIVERED') THEN
+                  FOR item IN 
+                    SELECT product_id, quantity FROM order_items WHERE order_id = NEW.id
+                  LOOP
+                    UPDATE inventory 
+                    SET quantity = GREATEST(0, COALESCE(quantity, 0) - item.quantity),
+                        reserved_quantity = GREATEST(0, COALESCE(reserved_quantity, 0) - item.quantity)
+                    WHERE product_id = item.product_id;
+                  END LOOP;
+                END IF;
+
+                -- Case 3: CONFIRMED/SHIPPING → CANCELLED (Cancel order - release reserved)
+                IF OLD.status IN ('CONFIRMED', 'SHIPPING') 
+                   AND NEW.status = 'CANCELLED' THEN
+                  FOR item IN 
+                    SELECT product_id, quantity FROM order_items WHERE order_id = NEW.id
+                  LOOP
+                    UPDATE inventory 
+                    SET reserved_quantity = GREATEST(0, COALESCE(reserved_quantity, 0) - item.quantity)
+                    WHERE product_id = item.product_id;
+                  END LOOP;
+                END IF;
+
+                -- Case 4: PENDING → CANCELLED (No inventory change needed - was never reserved)
+                -- No action needed
+
+                -- Case 5: Handle edge case - direct PENDING → COMPLETED/DELIVERED
+                -- This shouldn't happen in normal flow, but handle it for data consistency
+                IF OLD.status = 'PENDING' AND NEW.status IN ('COMPLETED', 'DELIVERED') THEN
+                  FOR item IN 
+                    SELECT product_id, quantity FROM order_items WHERE order_id = NEW.id
+                  LOOP
+                    UPDATE inventory 
+                    SET quantity = GREATEST(0, COALESCE(quantity, 0) - item.quantity)
+                    WHERE product_id = item.product_id;
+                  END LOOP;
+                END IF;
+
+                RETURN NEW;
+              END;
+              $$ LANGUAGE plpgsql;
+
+  - changeSet:
+      id: 081-create-inventory-sync-trigger
+      author: antigravity
+      comment: "Create trigger to auto-sync inventory on order status change"
+      changes:
+        - sql:
+            splitStatements: false
+            sql: |
+              DROP TRIGGER IF EXISTS trigger_sync_inventory_on_order_status ON orders;
+              
+              CREATE TRIGGER trigger_sync_inventory_on_order_status
+                AFTER UPDATE OF status ON orders
+                FOR EACH ROW
+                EXECUTE FUNCTION sync_inventory_on_order_status_change();
+
+  - changeSet:
+      id: 082-add-trigger-comment
+      author: antigravity
+      comment: "Add comment to document the trigger"
+      changes:
+        - sql:
+            splitStatements: false
+            sql: |
+              COMMENT ON FUNCTION sync_inventory_on_order_status_change() IS 
+              'Automatically syncs inventory when order status changes:
+               - PENDING → CONFIRMED: Reserve inventory (increase reserved_quantity)
+               - CONFIRMED/SHIPPING → COMPLETED/DELIVERED: Reduce actual stock and reserved
+               - CONFIRMED/SHIPPING → CANCELLED: Release reserved inventory
+               This ensures data consistency even when status is updated directly via SQL.';

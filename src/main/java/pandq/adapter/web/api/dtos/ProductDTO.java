@@ -33,6 +33,7 @@ public class ProductDTO {
         private Status status;
         private List<String> images;
         private List<ProductSpecificationDTO> specifications;
+        private Integer stockQuantity;
     }
 
     @Data
@@ -47,6 +48,7 @@ public class ProductDTO {
         private Status status;
         private Double averageRating;
         private Integer reviewCount;
+        private Integer stockQuantity;
         private List<ProductImageDTO> images;
         private List<ProductSpecificationDTO> specifications;
         private List<RelatedProductDTO> relatedProducts;

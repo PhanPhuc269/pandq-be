@@ -32,6 +32,7 @@ public class ZaloPayService {
     private final VoucherService voucherService;
     private final NotificationService notificationService;
     private final AdminNotificationService adminNotificationService;
+    private final InventoryService inventoryService;
 
     @Value("${ZALOPAY_APP_ID:2554}")
     private int appId;
@@ -226,6 +227,14 @@ public class ZaloPayService {
                                     orderId, e.getMessage());
                             }
                         }
+                        // Reserve inventory for confirmed order
+                        for (var item : order.getOrderItems()) {
+                            inventoryService.reserveInventoryForOrder(
+                                item.getProduct().getId(),
+                                item.getQuantity()
+                            );
+                        }
+                        log.info("Reserved inventory for order {}", orderId);
                         
                         // Notify admins about new confirmed order (async)
                         adminNotificationService.notifyNewOrder(

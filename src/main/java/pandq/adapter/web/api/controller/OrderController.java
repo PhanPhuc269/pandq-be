@@ -127,4 +127,11 @@ public class OrderController {
     public ResponseEntity<List<ShippingDTO.ZoneResponse>> getShippingZones() {
         return ResponseEntity.ok(shippingCalculatorService.getAllZones());
     }
+            
+    @PutMapping("/{id}/status")
+    public ResponseEntity<OrderDTO.Response> updateOrderStatus(
+            @PathVariable UUID id,
+            @RequestBody OrderDTO.UpdateStatusRequest request) {
+        return ResponseEntity.ok(orderService.updateOrderStatus(id, request.getStatus()));
+    }
 }

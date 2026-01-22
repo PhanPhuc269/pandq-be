@@ -64,8 +64,6 @@ public class OrderController {
             @RequestBody List<OrderDTO.AddToCartRequest> guestCartItems) {
         return ResponseEntity.ok(orderService.mergeGuestCart(userId, guestCartItems));
     }
-<<<<<<< Updated upstream
-=======
 
     // ==================== Shipping Management ====================
 
@@ -98,6 +96,17 @@ public class OrderController {
         return ResponseEntity.ok(orderService.updateShippingStatus(id, request));
     }
 
+    // ==================== COD Payment ====================
+
+    /**
+     * Xác nhận đơn hàng với phương thức COD (Thanh toán khi nhận hàng)
+     * Chuyển status sang PENDING để Admin xử lý
+     */
+    @PutMapping("/{id}/confirm-cod")
+    public ResponseEntity<OrderDTO.Response> confirmCODOrder(@PathVariable UUID id) {
+        return ResponseEntity.ok(orderService.confirmCODOrder(id));
+    }
+
     // ==================== TEST ENDPOINTS (CHỈ DÙNG ĐỂ TEST) ====================
 
     /**
@@ -118,5 +127,4 @@ public class OrderController {
     public ResponseEntity<List<OrderDTO.Response>> getAllOrdersIncludingCart() {
         return ResponseEntity.ok(orderService.getAllOrders());
     }
->>>>>>> Stashed changes
 }

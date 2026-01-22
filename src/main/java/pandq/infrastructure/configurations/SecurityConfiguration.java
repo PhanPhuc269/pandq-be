@@ -57,11 +57,6 @@ public class SecurityConfiguration {
                                         "/api/v1/sepay/**",
                                         "/api/v1/analytics/**",
                                         "/api/v1/customers/**",
-<<<<<<< Updated upstream
-                                        "/.well-known/**")
-                                .permitAll()
-                                .anyRequest().authenticated())
-=======
                                         "/api/v1/chats/**",
                                         "/ws/chat/**",
                                         "/.well-known/**",
@@ -71,7 +66,6 @@ public class SecurityConfiguration {
                                 ).permitAll()
                                 .anyRequest().authenticated()
                 )
->>>>>>> Stashed changes
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(firebaseAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

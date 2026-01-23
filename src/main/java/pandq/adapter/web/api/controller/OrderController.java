@@ -133,5 +133,36 @@ public class OrderController {
             @PathVariable UUID id,
             @RequestBody OrderDTO.UpdateStatusRequest request) {
         return ResponseEntity.ok(orderService.updateOrderStatus(id, request.getStatus()));
+    }        
+    // ==================== COD Payment ====================
+
+    /**
+     * Xác nhận đơn hàng với phương thức COD (Thanh toán khi nhận hàng)
+     * Chuyển status sang PENDING để Admin xử lý
+     */
+    @PutMapping("/{id}/confirm-cod")
+    public ResponseEntity<OrderDTO.Response> confirmCODOrder(@PathVariable UUID id) {
+        return ResponseEntity.ok(orderService.confirmCODOrder(id));
+    }
+
+    // ==================== TEST ENDPOINTS (CHỈ DÙNG ĐỂ TEST) ====================
+
+    /**
+     * [TEST ONLY] Simulate thanh toán thành công - chuyển đơn hàng sang PENDING
+     * Sử dụng endpoint này để test luồng shipping mà không cần thanh toán thật
+     * 
+     * Cách dùng: PUT /api/v1/orders/{id}/test-confirm-payment
+     */
+    @PutMapping("/{id}/test-confirm-payment")
+    public ResponseEntity<OrderDTO.Response> testConfirmPayment(@PathVariable UUID id) {
+        return ResponseEntity.ok(orderService.testConfirmPayment(id));
+    }
+
+    /**
+     * [TEST ONLY] Lấy tất cả đơn hàng (kể cả CART) để debug
+     */
+    @GetMapping("/test/all-including-cart")
+    public ResponseEntity<List<OrderDTO.Response>> getAllOrdersIncludingCart() {
+        return ResponseEntity.ok(orderService.getAllOrders());
     }
 }

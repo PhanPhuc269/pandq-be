@@ -54,10 +54,8 @@ public class Order {
     @Column(columnDefinition = "TEXT")
     private String shippingAddress; // JSON snapshot of address
 
-    // Shipping management fields
-    private String shippingProvider; // e.g. "Giao Hàng Nhanh", "Viettel Post"
-    
-    private String trackingNumber; // Mã theo dõi từ đơn vị vận chuyển
+    private String shippingProvider; // e.g. "Giao Hàng Nhanh", "Viettel Post", "SPX Express"
+    private String trackingNumber;   // Tracking number from shipping provider
 
     @Column(columnDefinition = "TEXT")
     private String note;

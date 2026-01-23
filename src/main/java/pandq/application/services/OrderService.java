@@ -7,6 +7,7 @@ import pandq.adapter.web.api.dtos.OrderDTO;
 import pandq.application.port.repositories.OrderRepository;
 import pandq.application.port.repositories.ProductRepository;
 import pandq.domain.models.enums.OrderStatus;
+import pandq.domain.models.enums.PaymentMethod;
 import pandq.domain.models.order.Order;
 import pandq.domain.models.order.OrderItem;
 import pandq.domain.models.product.Product;
@@ -199,6 +200,12 @@ public class OrderService {
         OrderDTO.Response response = new OrderDTO.Response();
         response.setId(order.getId());
         response.setUserId(order.getUser().getId().toString());
+        
+        // Lấy thông tin khách hàng từ User
+        User user = order.getUser();
+        response.setCustomerName(user.getFullName() != null ? user.getFullName() : user.getEmail());
+        response.setCustomerPhone(user.getPhone());
+        
         response.setTotalAmount(order.getTotalAmount());
         response.setShippingFee(order.getShippingFee());
         response.setDiscountAmount(order.getDiscountAmount());
@@ -656,5 +663,124 @@ public class OrderService {
         order.setStatus(newStatus);
         Order savedOrder = orderRepository.save(order);
         return mapToResponse(savedOrder);
+    }        
+
+    /**
+     * Xác nhận đơn hàng với phương thức COD (Thanh toán khi nhận hàng)
+     * - Set payment method to COD
+     * - Lấy địa chỉ giao hàng từ User default address nếu chưa có
+     * - Tính shipping fee dựa trên địa chỉ
+     * - Chuyển status sang PENDING để Admin xử lý
+     */
+    @Transactional
+    public OrderDTO.Response confirmCODOrder(UUID orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+
+        // Set payment method to COD
+        order.setPaymentMethod(PaymentMethod.COD);
+        
+        // Chuyển status sang PENDING (chờ Admin gán đơn vị vận chuyển)
+        order.setStatus(OrderStatus.PENDING);
+        
+        // Lấy và lưu địa chỉ giao hàng từ User nếu chưa có
+        if (order.getShippingAddress() == null || order.getShippingAddress().isEmpty()) {
+            User user = order.getUser();
+            if (user != null && user.getAddresses() != null) {
+                // Force load addresses collection (avoid lazy loading issues)
+                user.getAddresses().size();
+                // Tìm địa chỉ mặc định
+                for (var addr : user.getAddresses()) {
+                    if (addr.getIsDefault() != null && addr.getIsDefault()) {
+                        // Format địa chỉ đầy đủ dạng JSON
+                        String fullAddress = String.format(
+                            "{\"fullName\":\"%s\",\"phone\":\"%s\",\"address\":\"%s\",\"ward\":\"%s\",\"district\":\"%s\",\"city\":\"%s\"}",
+                            user.getFullName() != null ? user.getFullName() : "",
+                            user.getPhone() != null ? user.getPhone() : "",
+                            addr.getDetailAddress() != null ? addr.getDetailAddress() : "",
+                            addr.getWard() != null ? addr.getWard() : "",
+                            addr.getDistrict() != null ? addr.getDistrict() : "",
+                            addr.getCity() != null ? addr.getCity() : ""
+                        );
+                        order.setShippingAddress(fullAddress);
+                        break;
+                    }
+                }
+                
+                // Nếu không có địa chỉ mặc định, lấy địa chỉ đầu tiên
+                if ((order.getShippingAddress() == null || order.getShippingAddress().isEmpty()) 
+                        && !user.getAddresses().isEmpty()) {
+                    var addr = user.getAddresses().get(0);
+                    String fullAddress = String.format(
+                        "{\"fullName\":\"%s\",\"phone\":\"%s\",\"address\":\"%s\",\"ward\":\"%s\",\"district\":\"%s\",\"city\":\"%s\"}",
+                        user.getFullName() != null ? user.getFullName() : "",
+                        user.getPhone() != null ? user.getPhone() : "",
+                        addr.getDetailAddress() != null ? addr.getDetailAddress() : "",
+                        addr.getWard() != null ? addr.getWard() : "",
+                        addr.getDistrict() != null ? addr.getDistrict() : "",
+                        addr.getCity() != null ? addr.getCity() : ""
+                    );
+                    order.setShippingAddress(fullAddress);
+                }
+            }
+        }
+        
+        // Tính shipping fee dựa trên địa chỉ nếu chưa có
+        if (order.getShippingFee() == null || order.getShippingFee().compareTo(java.math.BigDecimal.ZERO) == 0) {
+            String shippingAddress = order.getShippingAddress();
+            java.math.BigDecimal shippingFee = ShippingFeeCalculator.calculateShippingFee(shippingAddress);
+            order.setShippingFee(shippingFee);
+            
+            // Recalculate finalAmount = totalAmount + shippingFee - discountAmount
+            java.math.BigDecimal totalAmount = order.getTotalAmount() != null ? order.getTotalAmount() : java.math.BigDecimal.ZERO;
+            java.math.BigDecimal discountAmount = order.getDiscountAmount() != null ? order.getDiscountAmount() : java.math.BigDecimal.ZERO;
+            java.math.BigDecimal newFinalAmount = totalAmount.add(shippingFee).subtract(discountAmount);
+            order.setFinalAmount(newFinalAmount);
+        }
+        
+        Order savedOrder = orderRepository.save(order);
+        
+        // Notify admins about new COD order
+        adminNotificationService.notifyNewOrder(
+                savedOrder.getId(),
+                order.getUser().getFullName(),
+                savedOrder.getFinalAmount()
+        );
+        
+        return mapToResponse(savedOrder);
+    }
+
+    // ==================== TEST METHODS ====================
+
+    /**
+     * [TEST ONLY] Simulate thanh toán thành công
+     * Chuyển đơn hàng từ CART hoặc bất kỳ status nào sang PENDING
+     * Đồng thời tính và apply shipping fee dựa trên địa chỉ
+     */
+    @Transactional
+    public OrderDTO.Response testConfirmPayment(UUID orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+
+        // Chuyển status sang PENDING (chờ Admin gán đơn vị vận chuyển)
+        order.setStatus(OrderStatus.PENDING);
+        
+        // Tính shipping fee dựa trên địa chỉ nếu chưa có
+        if (order.getShippingFee() == null || order.getShippingFee().compareTo(java.math.BigDecimal.ZERO) == 0) {
+            // Parse city từ shippingAddress nếu có
+            String shippingAddress = order.getShippingAddress();
+            java.math.BigDecimal shippingFee = ShippingFeeCalculator.calculateShippingFee(shippingAddress);
+            order.setShippingFee(shippingFee);
+            
+            // Recalculate finalAmount
+            java.math.BigDecimal totalAmount = order.getTotalAmount() != null ? order.getTotalAmount() : java.math.BigDecimal.ZERO;
+            java.math.BigDecimal discountAmount = order.getDiscountAmount() != null ? order.getDiscountAmount() : java.math.BigDecimal.ZERO;
+            java.math.BigDecimal newFinalAmount = totalAmount.add(shippingFee).subtract(discountAmount);
+            order.setFinalAmount(newFinalAmount);
+        }
+        
+        Order savedOrder = orderRepository.save(order);
+        return mapToResponse(savedOrder);
     }
 }
+

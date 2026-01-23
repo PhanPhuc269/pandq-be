@@ -218,6 +218,26 @@ public class PaymentService {
             response.setShippingCity(shippingCity);
             response.setShippingDistrict(shippingDistrict);
             
+            // ==================== TÍNH PHÍ VẬN CHUYỂN THEO VÙNG ====================
+            // Tính phí ship dựa trên thành phố/tỉnh của khách hàng
+            BigDecimal calculatedShippingFee = ShippingFeeCalculator.calculateShippingFee(shippingCity);
+            
+            // Kiểm tra nếu shipping fee thay đổi thì cập nhật Order
+            if (order.getShippingFee() == null || order.getShippingFee().compareTo(calculatedShippingFee) != 0) {
+                order.setShippingFee(calculatedShippingFee);
+                
+                // Recalculate finalAmount = totalAmount + shippingFee - discountAmount
+                BigDecimal totalAmount = order.getTotalAmount() != null ? order.getTotalAmount() : BigDecimal.ZERO;
+                BigDecimal discountAmount = order.getDiscountAmount() != null ? order.getDiscountAmount() : BigDecimal.ZERO;
+                BigDecimal newFinalAmount = totalAmount.add(calculatedShippingFee).subtract(discountAmount);
+                order.setFinalAmount(newFinalAmount);
+                
+                // Lưu Order với shipping fee mới
+                orderRepository.save(order);
+                log.info("Updated shipping fee for order {}: {} (city: {})", orderId, calculatedShippingFee, shippingCity);
+            }
+            // ====================================================================
+            
             // Order items
             List<PaymentDTO.OrderItemDetail> items = new ArrayList<>();
             Long subtotal = 0L;
@@ -249,7 +269,7 @@ public class PaymentService {
             }
             response.setItems(items);
             
-            // Amounts
+            // Amounts - sử dụng giá trị đã tính lại
             response.setSubtotal(subtotal);
             
             // Calculate shipping fee dynamically (for old orders that have shippingFee = 0)
@@ -283,11 +303,12 @@ public class PaymentService {
             response.setCreatedAt(order.getCreatedAt());
             response.setMessage("Order payment details retrieved successfully");
             
-            log.info("Retrieved payment details for order: {} - User: {}, Items: {}, Amount: {}", 
+            log.info("Retrieved payment details for order: {} - User: {}, Items: {}, Amount: {}, ShippingFee: {}", 
                 orderId, 
                 response.getUserName(),
                 response.getItems().size(),
-                response.getFinalAmount());
+                response.getFinalAmount(),
+                response.getShippingFee());
             
             return response;
             

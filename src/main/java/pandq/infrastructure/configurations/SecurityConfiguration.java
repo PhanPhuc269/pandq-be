@@ -62,7 +62,10 @@ public class SecurityConfiguration {
                                         "/.well-known/**",
                                         "/api/v1/orders/shipping-zones",
                                         "/api/v1/orders/shipping-fee/**",
-                                        "/api/v1/vouchers/**"
+                                        "/api/v1/vouchers/**",
+                                        // Orders endpoints for testing
+                                        "/api/v1/orders/**",
+                                        "/api/v1/promotions/**"
                                 ).permitAll()
                                 .anyRequest().authenticated()
                 )

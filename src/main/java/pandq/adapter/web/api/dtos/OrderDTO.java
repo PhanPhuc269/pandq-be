@@ -48,6 +48,8 @@ public class OrderDTO {
     public static class Response {
         private UUID id;
         private String userId;
+        private String customerName;      // Tên khách hàng
+        private String customerPhone;     // SĐT khách hàng
         private BigDecimal totalAmount;
         private BigDecimal shippingFee;
         private BigDecimal discountAmount;
@@ -64,6 +66,10 @@ public class OrderDTO {
         public void setId(UUID id) { this.id = id; }
         public String getUserId() { return userId; }
         public void setUserId(String userId) { this.userId = userId; }
+        public String getCustomerName() { return customerName; }
+        public void setCustomerName(String customerName) { this.customerName = customerName; }
+        public String getCustomerPhone() { return customerPhone; }
+        public void setCustomerPhone(String customerPhone) { this.customerPhone = customerPhone; }
         public BigDecimal getTotalAmount() { return totalAmount; }
         public void setTotalAmount(BigDecimal totalAmount) { this.totalAmount = totalAmount; }
         public BigDecimal getShippingFee() { return shippingFee; }
@@ -78,6 +84,10 @@ public class OrderDTO {
         public void setStatus(OrderStatus status) { this.status = status; }
         public String getShippingAddress() { return shippingAddress; }
         public void setShippingAddress(String shippingAddress) { this.shippingAddress = shippingAddress; }
+        public String getShippingProvider() { return shippingProvider; }
+        public void setShippingProvider(String shippingProvider) { this.shippingProvider = shippingProvider; }
+        public String getTrackingNumber() { return trackingNumber; }
+        public void setTrackingNumber(String trackingNumber) { this.trackingNumber = trackingNumber; }
         public LocalDateTime getCreatedAt() { return createdAt; }
         public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
         public List<OrderItemResponse> getItems() { return items; }
@@ -125,8 +135,13 @@ public class OrderDTO {
 
     @Data
     public static class AssignCarrierRequest {
-        private String shippingProvider; // e.g. "Giao Hàng Nhanh", "Viettel Post"
+        private String shippingProvider; // e.g. "Giao Hàng Nhanh", "Viettel Post", "SPX Express"
         private String trackingNumber;   // Optional tracking number
+
+        public String getShippingProvider() { return shippingProvider; }
+        public void setShippingProvider(String shippingProvider) { this.shippingProvider = shippingProvider; }
+        public String getTrackingNumber() { return trackingNumber; }
+        public void setTrackingNumber(String trackingNumber) { this.trackingNumber = trackingNumber; }
     }
 
     @Data

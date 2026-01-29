@@ -17,8 +17,10 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<NotificationDTO.Response>> getNotificationsByUserId(@PathVariable UUID userId) {
-        return ResponseEntity.ok(notificationService.getNotificationsByUserId(userId));
+    public ResponseEntity<List<NotificationDTO.Response>> getNotificationsByUserId(@PathVariable UUID userId, 
+                                                                                   @RequestParam(required = false) pandq.domain.models.enums.NotificationType type) {
+        // Need to fix type reference. Using FQDN or Import. The file uses imports.
+        return ResponseEntity.ok(notificationService.getNotificationsByUserId(userId, type));
     }
 
     @GetMapping("/by-email")
@@ -30,6 +32,17 @@ public class NotificationController {
     public ResponseEntity<Void> markAsRead(@PathVariable UUID id) {
         notificationService.markAsRead(id);
         return ResponseEntity.noContent().build();
+    }
+    
+    @GetMapping("/preferences/{userId}")
+    public ResponseEntity<NotificationDTO.PreferenceResponse> getPreferences(@PathVariable UUID userId) {
+        return ResponseEntity.ok(notificationService.getPreferences(userId));
+    }
+
+    @PutMapping("/preferences/{userId}")
+    public ResponseEntity<Void> updatePreferences(@PathVariable UUID userId, @RequestBody NotificationDTO.PreferenceRequest request) {
+        notificationService.updatePreferences(userId, request);
+        return ResponseEntity.ok().build();
     }
 }
 

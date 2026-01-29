@@ -29,7 +29,7 @@ public class AdminNotificationService {
      */
     @Async
     public void notifyNewOrder(UUID orderId, String customerName, BigDecimal totalAmount) {
-        String title = "🛒 Đơn hàng mới";
+        String title = "Đơn hàng mới";
         String body = String.format("Khách: %s - Tổng: %,.0f₫", 
                 customerName != null ? customerName : "Khách vãng lai", 
                 totalAmount);

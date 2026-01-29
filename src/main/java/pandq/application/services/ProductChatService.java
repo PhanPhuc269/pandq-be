@@ -351,7 +351,7 @@ public class ProductChatService {
             // Build target URL for deep linking to chat
             String targetUrl = "chat/" + chat.getId().toString();
 
-            // Save notification to database so it appears in notification list
+            // Save notification to database AND send FCM (via NotificationService, which checks preferences)
             try {
                 notificationService.createNotification(
                         recipient.getId(),
@@ -360,30 +360,13 @@ public class ProductChatService {
                         notificationBody,
                         targetUrl
                 );
-                log.info("Chat notification saved to database for user {}", recipient.getId());
+                log.info("Chat notification processed for user {}", recipient.getId());
             } catch (Exception dbEx) {
-                log.error("Failed to save chat notification to database: {}", dbEx.getMessage());
+                log.error("Failed to create chat notification: {}", dbEx.getMessage());
             }
-
-            // Also send push notification via FCM if token available
-            if (recipient.getFcmToken() != null && !recipient.getFcmToken().isEmpty()) {
-                Map<String, String> data = Map.of(
-                        "type", "CHAT_MESSAGE",
-                        "chatId", chat.getId().toString(),
-                        "targetUrl", targetUrl,
-                        "senderId", message.getSenderId().toString(),
-                        "senderName", senderName
-                );
-
-                fcmService.sendNotificationWithData(
-                        recipient.getFcmToken(),
-                        notificationTitle,
-                        notificationBody,
-                        data
-                );
-
-                log.info("Push notification sent for chat {} to user {}", chat.getId(), recipient.getId());
-            }
+            
+            // NOTE: FCM is now handled inside NotificationService.createNotification.
+            // Removed direct fcmService call to respect user preferences.
 
         } catch (Exception e) {
             log.error("Failed to send chat notification: {}", e.getMessage());

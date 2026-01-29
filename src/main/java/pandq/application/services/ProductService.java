@@ -29,6 +29,7 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
     private final pandq.application.port.repositories.BranchRepository branchRepository;
     private final pandq.application.port.repositories.InventoryRepository inventoryRepository;
+    private final pandq.application.port.repositories.SearchKeywordRepository searchKeywordRepository;
 
     @Transactional(readOnly = true)
     public List<ProductDTO.Response> getAllProducts() {
@@ -51,8 +52,13 @@ public class ProductService {
         return mapToResponse(product);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Page<ProductSearchDTO.Response> searchProducts(ProductSearchDTO.SearchRequest request) {
+        // Log search query for trending analysis
+        if (request.getQuery() != null && !request.getQuery().isBlank()) {
+            logSearchKeyword(request.getQuery());
+        }
+        
         Page<Product> products = productRepository.search(request);
         return products.map(this::mapToSearchResponse);
     }
@@ -255,6 +261,32 @@ public class ProductService {
         }
 
         return response;
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> getTrendingSearches() {
+        // Get popular keywords from search history
+        return searchKeywordRepository.findTopKeywords(10).stream()
+                .map(pandq.domain.models.search.SearchKeyword::getKeyword)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void logSearchKeyword(String query) {
+        if (query == null || query.isBlank()) return;
+        
+        String cleanQuery = query.trim().toLowerCase();
+        // Ignore very short queries
+        if (cleanQuery.length() < 2) return;
+
+        pandq.domain.models.search.SearchKeyword keyword = searchKeywordRepository.findByKeyword(cleanQuery)
+                .orElse(pandq.domain.models.search.SearchKeyword.builder()
+                        .keyword(cleanQuery)
+                        .searchCount(0L)
+                        .build());
+        
+        keyword.setSearchCount(keyword.getSearchCount() + 1);
+        searchKeywordRepository.save(keyword);
     }
 
     private ProductSearchDTO.Response mapToSearchResponse(Product product) {

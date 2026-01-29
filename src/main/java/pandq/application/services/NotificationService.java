@@ -25,10 +25,19 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
     private final FcmService fcmService;
+    private final pandq.application.port.repositories.NotificationPreferenceRepository preferenceRepository;
 
     @Transactional(readOnly = true)
-    public List<NotificationDTO.Response> getNotificationsByUserId(UUID userId) {
-        return notificationRepository.findByUserId(userId).stream()
+    public List<NotificationDTO.Response> getNotificationsByUserId(UUID userId, NotificationType type) {
+        List<Notification> notifications = notificationRepository.findByUserId(userId);
+        
+        if (type != null) {
+            notifications = notifications.stream()
+                    .filter(n -> n.getType() == type)
+                    .collect(Collectors.toList());
+        }
+        
+        return notifications.stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
@@ -37,9 +46,37 @@ public class NotificationService {
     public List<NotificationDTO.Response> getNotificationsByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
-        return notificationRepository.findByUserId(user.getId()).stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+        return getNotificationsByUserId(user.getId(), null);
+    }
+    
+    @Transactional(readOnly = true)
+    public NotificationDTO.PreferenceResponse getPreferences(UUID userId) {
+        pandq.domain.models.interaction.NotificationPreference pref = preferenceRepository.findByUserId(userId)
+                .orElse(pandq.domain.models.interaction.NotificationPreference.builder()
+                        .user(userRepository.findById(userId).orElseThrow())
+                        .build());
+        
+        NotificationDTO.PreferenceResponse response = new NotificationDTO.PreferenceResponse();
+        response.setEnablePromotions(pref.getEnablePromotions());
+        response.setEnableOrders(pref.getEnableOrders());
+        response.setEnableSystem(pref.getEnableSystem());
+        response.setEnableChat(pref.getEnableChat());
+        return response;
+    }
+
+    @Transactional
+    public void updatePreferences(UUID userId, NotificationDTO.PreferenceRequest request) {
+        pandq.domain.models.interaction.NotificationPreference pref = preferenceRepository.findByUserId(userId)
+                .orElse(pandq.domain.models.interaction.NotificationPreference.builder()
+                        .user(userRepository.findById(userId).orElseThrow())
+                        .build());
+        
+        if (request.getEnablePromotions() != null) pref.setEnablePromotions(request.getEnablePromotions());
+        if (request.getEnableOrders() != null) pref.setEnableOrders(request.getEnableOrders());
+        if (request.getEnableSystem() != null) pref.setEnableSystem(request.getEnableSystem());
+        if (request.getEnableChat() != null) pref.setEnableChat(request.getEnableChat());
+        
+        preferenceRepository.save(pref);
     }
 
     @Transactional
@@ -50,15 +87,24 @@ public class NotificationService {
         notificationRepository.save(notification);
     }
 
+    private boolean isNotificationEnabled(UUID userId, NotificationType type) {
+        // If critical notification, always allow? Maybe not.
+        // Let's check preferences.
+        return preferenceRepository.findByUserId(userId)
+                .map(pref -> switch (type) {
+                    case PROMOTION -> pref.getEnablePromotions();
+                    case ORDER_UPDATE, PAYMENT_SUCCESS -> pref.getEnableOrders();
+                    case SYSTEM -> pref.getEnableSystem();
+                    case CHAT_MESSAGE -> pref.getEnableChat();
+                    default -> true;
+                })
+                .orElse(true); // Default to true if no preference set
+    }
+
     /**
      * Create a new notification and send push notification via FCM.
-     *
-     * @param userId    The user to notify
-     * @param type      Notification type
-     * @param title     Notification title
-     * @param body      Notification body
-     * @param targetUrl Optional URL for deep linking
-     * @return Created notification response
+     * Notification is ALWAYS saved to database (appears in notification list).
+     * FCM push is only sent if user has enabled this notification type.
      */
     @Transactional
     public NotificationDTO.Response createNotification(UUID userId, NotificationType type, 
@@ -66,7 +112,7 @@ public class NotificationService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Save notification to database
+        // Always save notification to database (appears in notification list)
         Notification notification = Notification.builder()
                 .user(user)
                 .type(type)
@@ -79,6 +125,12 @@ public class NotificationService {
         Notification savedNotification = notificationRepository.save(notification);
         log.info("Created notification for user {}: {}", userId, title);
 
+        // Only send FCM push if user has enabled this notification type
+        if (!isNotificationEnabled(userId, type)) {
+            log.info("FCM push skipped for user {} type {} (preference disabled)", userId, type);
+            return mapToResponse(savedNotification);
+        }
+
         // Send push notification via FCM
         String fcmToken = user.getFcmToken();
         if (fcmToken != null && !fcmToken.isEmpty()) {
@@ -90,20 +142,13 @@ public class NotificationService {
         return mapToResponse(savedNotification);
     }
 
-    /**
-     * Create a new notification WITHOUT sending push notification via FCM.
-     * Use this for in-app notifications that don't require push (e.g., welcome messages).
-     *
-     * @param userId    The user to notify
-     * @param type      Notification type
-     * @param title     Notification title
-     * @param body      Notification body
-     * @param targetUrl Optional URL for deep linking
-     * @return Created notification response
-     */
+    // ... (keep createNotificationWithoutFcm and other methods but add check if needed) ...
+
     @Transactional
     public NotificationDTO.Response createNotificationWithoutFcm(UUID userId, NotificationType type, 
                                                         String title, String body, String targetUrl) {
+        // No preference check here - this method always saves to DB (no FCM involved)
+        
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -122,30 +167,13 @@ public class NotificationService {
 
         return mapToResponse(savedNotification);
     }
-
-    /**
-     * Send notification to all subscribed users (broadcast).
-     * Useful for promotions or system announcements.
-     *
-     * @param topic Topic to send to
-     * @param title Notification title
-     * @param body  Notification body
-     */
+    
+    // ... kept broadcast logic ...
     public void sendBroadcastNotification(String topic, String title, String body) {
         fcmService.sendToTopic(topic, title, body);
         log.info("Sent broadcast notification to topic '{}': {}", topic, title);
     }
 
-    /**
-     * Create a notification asynchronously (non-blocking).
-     * Use this from payment callbacks to avoid blocking the response.
-     *
-     * @param userId    The user to notify
-     * @param type      Notification type
-     * @param title     Notification title
-     * @param body      Notification body
-     * @param targetUrl Optional URL for deep linking
-     */
     @Async
     @Transactional
     public void createNotificationAsync(UUID userId, NotificationType type, 

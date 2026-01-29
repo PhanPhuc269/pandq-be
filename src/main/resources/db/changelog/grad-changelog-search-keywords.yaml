@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-search-keywords-table
+      author: antigravity
+      changes:
+        - createTable:
+            tableName: search_keywords
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: keyword
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: search_count
+                  type: bigint
+                  defaultValueNumeric: 1
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_searched_at
+                  type: datetime

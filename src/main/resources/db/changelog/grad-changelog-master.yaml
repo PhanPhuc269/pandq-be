@@ -43,8 +43,7 @@ databaseChangeLog:
       file: db/changelog/grad-changelog-fix-payment.yaml
   - include:
       file: db/changelog/grad-changelog-fix-order-status.yaml
-  - include:
-      file: db/changelog/grad-changelog-notification-prefs.yaml
+
   - include:
       file: db/changelog/grad-changelog-pretty-categories.yaml
   - include:
@@ -67,3 +66,7 @@ databaseChangeLog:
       file: db/changelog/grad-changelog-fix-reserved-quantity.yaml
   - include:
       file: db/changelog/grad-changelog-inventory-trigger.yaml
+  - include:
+      file: db/changelog/grad-changelog-search-keywords.yaml
+  - include:
+      file: db/changelog/grad-changelog-notification-preferences.yaml

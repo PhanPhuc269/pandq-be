@@ -65,7 +65,7 @@ public class NotificationTemplateService {
         NotificationTemplate template = NotificationTemplate.builder()
                 .title(request.getTitle())
                 .body(request.getBody())
-                .type(request.getType() != null ? request.getType() : NotificationType.SYSTEM)
+                .type(request.getType() != null ? request.getType() : NotificationType.PROMOTION)
                 .targetUrl(request.getTargetUrl())
                 .isActive(request.getIsActive() != null ? request.getIsActive() : true)
                 .scheduledAt(request.getScheduledAt())
@@ -164,8 +164,8 @@ public class NotificationTemplateService {
             throw new RuntimeException("Cannot send inactive template");
         }
 
-        // Send to FCM topic
-        fcmService.sendToTopic(topic, template.getTitle(), template.getBody());
+        // Send to FCM topic with type for client-side filtering
+        fcmService.sendToTopicWithData(topic, template.getTitle(), template.getBody(), template.getType(), template.getTargetUrl());
 
         // Update template stats
         template.setLastSentAt(LocalDateTime.now());

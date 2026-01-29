@@ -100,6 +100,14 @@ public class OrderController {
     }
 
     /**
+     * User confirms delivery - chuyển đơn hàng từ DELIVERED → COMPLETED
+     */
+    @PostMapping("/{id}/confirm-delivery")
+    public ResponseEntity<OrderDTO.Response> confirmDelivery(@PathVariable UUID id) {
+        return ResponseEntity.ok(orderService.confirmDelivery(id));
+    }
+
+    /**
      * Apply a promotion/voucher to an order before payment
      */
     @PutMapping("/{id}/apply-promotion")

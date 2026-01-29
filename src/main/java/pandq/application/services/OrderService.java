@@ -620,6 +620,25 @@ public class OrderService {
     }
     
     /**
+     * User confirms delivery - chuyển đơn hàng từ DELIVERED → COMPLETED
+     */
+    @Transactional
+    public OrderDTO.Response confirmDelivery(UUID orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+        
+        // Validate order is in DELIVERED status
+        if (order.getStatus() != OrderStatus.DELIVERED) {
+            throw new RuntimeException("Only DELIVERED orders can be confirmed. Current status: " + order.getStatus());
+        }
+        
+        // Update status to COMPLETED
+        order.setStatus(OrderStatus.COMPLETED);
+        Order savedOrder = orderRepository.save(order);
+        return mapToResponse(savedOrder);
+    }
+    
+    /**
      * Update order status and handle inventory accordingly
      * - CONFIRMED: Reserve inventory (increase reservedQuantity)
      * - DELIVERED/COMPLETED: Decrease actual stock and reserved quantity

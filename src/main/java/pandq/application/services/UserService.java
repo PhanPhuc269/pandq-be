@@ -245,6 +245,43 @@ public class UserService {
         }
         return result.toString().trim();
     }
+
+    /**
+     * Close user account permanently.
+     * This will:
+     * 1. Update user status to CLOSED
+     * 2. Disable Firebase account
+     * @param email User's email
+     * @param reason Optional reason for closing
+     */
+    @Transactional
+    public void closeAccount(String email, String reason) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found: " + email));
+        
+        if (user.getStatus() == UserStatus.CLOSED) {
+            throw new RuntimeException("Account is already closed");
+        }
+        
+        // Update user status to CLOSED
+        user.setStatus(UserStatus.CLOSED);
+        userRepository.save(user);
+        log.info("User account closed: {} - Reason: {}", email, reason != null ? reason : "Not provided");
+        
+        // Disable Firebase account if firebaseUid exists
+        if (user.getFirebaseUid() != null) {
+            try {
+                com.google.firebase.auth.UserRecord.UpdateRequest updateRequest = 
+                    new com.google.firebase.auth.UserRecord.UpdateRequest(user.getFirebaseUid())
+                        .setDisabled(true);
+                com.google.firebase.auth.FirebaseAuth.getInstance().updateUser(updateRequest);
+                log.info("Firebase account disabled for user: {}", email);
+            } catch (com.google.firebase.auth.FirebaseAuthException e) {
+                log.error("Failed to disable Firebase account for {}: {}", email, e.getMessage());
+                // Continue anyway - the local account is already closed
+            }
+        }
+    }
 }
 
 

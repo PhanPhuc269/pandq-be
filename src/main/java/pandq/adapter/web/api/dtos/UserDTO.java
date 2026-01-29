@@ -46,5 +46,11 @@ public class UserDTO {
         private String fcmToken;
         private String firebaseUid;
     }
+
+    @Data
+    public static class CloseAccountRequest {
+        private String email;
+        private String reason;
+    }
 }
 

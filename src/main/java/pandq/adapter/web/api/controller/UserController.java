@@ -53,6 +53,12 @@ public class UserController {
         userService.updateFcmTokenByEmail(request.getEmail(), request.getFcmToken(), request.getFirebaseUid());
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/close-account")
+    public ResponseEntity<Void> closeAccount(@RequestBody UserDTO.CloseAccountRequest request) {
+        userService.closeAccount(request.getEmail(), request.getReason());
+        return ResponseEntity.ok().build();
+    }
 }
 
 

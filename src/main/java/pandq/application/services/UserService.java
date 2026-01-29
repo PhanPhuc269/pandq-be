@@ -48,6 +48,50 @@ public class UserService {
 
     @Transactional
     public UserDTO.Response createUser(UserDTO.CreateRequest request) {
+        // Check if user already exists
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new RuntimeException("User with email " + request.getEmail() + " already exists");
+        }
+        
+        String firebaseUid = null;
+        
+        // Create Firebase user for ADMIN and STAFF roles
+        if (request.getRole() == Role.ADMIN || request.getRole() == Role.STAFF) {
+            try {
+                // Generate random temporary password
+                String tempPassword = generateRandomPassword();
+                
+                // Create Firebase user with temporary password
+                com.google.firebase.auth.UserRecord.CreateRequest firebaseRequest = 
+                    new com.google.firebase.auth.UserRecord.CreateRequest()
+                        .setEmail(request.getEmail())
+                        .setPassword(tempPassword)
+                        .setDisplayName(request.getFullName())
+                        .setEmailVerified(false); // Not verified, will verify via reset link
+                
+                com.google.firebase.auth.UserRecord firebaseUser = 
+                    com.google.firebase.auth.FirebaseAuth.getInstance().createUser(firebaseRequest);
+                firebaseUid = firebaseUser.getUid();
+                log.info("Created Firebase user for {}: {}", request.getEmail(), firebaseUid);
+                
+                // Send password reset email so user can set their own password
+                try {
+                    String resetLink = com.google.firebase.auth.FirebaseAuth.getInstance()
+                        .generatePasswordResetLink(request.getEmail());
+                    log.info("Password reset link generated for {}: {}", request.getEmail(), resetLink);
+                    // Firebase will automatically send email to user with the reset link
+                } catch (com.google.firebase.auth.FirebaseAuthException resetEx) {
+                    log.warn("Could not generate password reset link for {}: {}", 
+                        request.getEmail(), resetEx.getMessage());
+                    // Continue anyway - user was created
+                }
+                
+            } catch (com.google.firebase.auth.FirebaseAuthException e) {
+                log.error("Failed to create Firebase user for {}: {}", request.getEmail(), e.getMessage());
+                throw new RuntimeException("Failed to create Firebase account: " + e.getMessage());
+            }
+        }
+        
         User user = User.builder()
                 .email(request.getEmail())
                 .fullName(request.getFullName())
@@ -55,10 +99,25 @@ public class UserService {
                 .avatarUrl(request.getAvatarUrl())
                 .role(request.getRole())
                 .status(UserStatus.ACTIVE)
+                .firebaseUid(firebaseUid)
                 .build();
 
         User savedUser = userRepository.save(user);
+        log.info("Created user in database: {} with role {}", request.getEmail(), request.getRole());
         return mapToResponse(savedUser);
+    }
+    
+    /**
+     * Generate a random secure password
+     */
+    private String generateRandomPassword() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%";
+        java.security.SecureRandom random = new java.security.SecureRandom();
+        StringBuilder sb = new StringBuilder(16);
+        for (int i = 0; i < 16; i++) {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return sb.toString();
     }
 
     @Transactional

@@ -70,3 +70,5 @@ databaseChangeLog:
       file: db/changelog/grad-changelog-search-keywords.yaml
   - include:
       file: db/changelog/grad-changelog-notification-preferences.yaml
+  - include:
+      file: db/changelog/grad-changelog-customer-tier-config.yaml

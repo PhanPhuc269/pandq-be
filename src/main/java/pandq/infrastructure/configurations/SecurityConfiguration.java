@@ -65,10 +65,10 @@ public class SecurityConfiguration {
                                         "/api/v1/vouchers/**",
                                         // Orders endpoints for testing
                                         "/api/v1/orders/**",
-                                        "/api/v1/promotions/**"
-                                ).permitAll()
-                                .anyRequest().authenticated()
-                )
+                                        "/api/v1/promotions/**",
+                                        "/api/v1/customer-tier-config/**")
+                                .permitAll()
+                                .anyRequest().authenticated())
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(firebaseAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

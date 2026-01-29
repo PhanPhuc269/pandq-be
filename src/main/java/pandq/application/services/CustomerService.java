@@ -24,6 +24,7 @@ public class CustomerService {
 
         private final UserRepository userRepository;
         private final OrderRepository orderRepository;
+        private final CustomerTierConfigService tierConfigService;
 
         /**
          * Get paginated customer list with search and filters
@@ -93,8 +94,8 @@ public class CustomerService {
                                 .map(o -> o.getFinalAmount() != null ? o.getFinalAmount() : BigDecimal.ZERO)
                                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-                // Calculate tier from totalSpent
-                CustomerTier tier = CustomerTier.fromTotalSpent(totalSpent);
+                // Calculate tier from totalSpent using dynamic config
+                CustomerTier tier = tierConfigService.getTierFromSpent(totalSpent);
 
                 // Get recent orders for display
                 List<CustomerDTO.OrderSummaryDto> recentOrders = orders.stream()
@@ -195,7 +196,7 @@ public class CustomerService {
                                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
                 user.setTotalSpent(totalSpent);
-                user.setCustomerTier(CustomerTier.fromTotalSpent(totalSpent));
+                user.setCustomerTier(tierConfigService.getTierFromSpent(totalSpent));
 
                 userRepository.save(user);
                 log.info("Updated customer tier for {} to {} with total spent: {}", userId, user.getCustomerTier(),
@@ -242,8 +243,8 @@ public class CustomerService {
                                 .map(o -> o.getFinalAmount() != null ? o.getFinalAmount() : BigDecimal.ZERO)
                                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-                // Calculate tier from totalSpent
-                CustomerTier tier = CustomerTier.fromTotalSpent(totalSpent);
+                // Calculate tier from totalSpent using dynamic config
+                CustomerTier tier = tierConfigService.getTierFromSpent(totalSpent);
 
                 return CustomerDTO.CustomerListItemDto.builder()
                                 .id(user.getId().toString())

@@ -4,13 +4,20 @@ import lombok.Data;
 import pandq.domain.models.enums.Role;
 import pandq.domain.models.enums.UserStatus;
 import java.util.UUID;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 public class UserDTO {
 
     @Data
     public static class CreateRequest {
+        @NotBlank(message = "Email is required")
+        @Email(message = "Invalid email format")
         private String email;
+        
+        @NotBlank(message = "Full name is required")
         private String fullName;
+        
         private String phone;
         private String avatarUrl;
         private Role role;

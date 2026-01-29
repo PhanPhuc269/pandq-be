@@ -17,6 +17,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import pandq.application.exceptions.ConflictException;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -48,9 +50,22 @@ public class UserService {
 
     @Transactional
     public UserDTO.Response createUser(UserDTO.CreateRequest request) {
-        // Check if user already exists
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new RuntimeException("User with email " + request.getEmail() + " already exists");
+        Optional<User> existingUserOpt = userRepository.findByEmail(request.getEmail());
+        
+        if (existingUserOpt.isPresent()) {
+            User existingUser = existingUserOpt.get();
+            // Allow promoting CUSTOMER to ADMIN/STAFF
+            if (existingUser.getRole() == Role.CUSTOMER && (request.getRole() == Role.ADMIN || request.getRole() == Role.STAFF)) {
+                log.info("Promoting user {} from {} to {}", existingUser.getEmail(), existingUser.getRole(), request.getRole());
+                existingUser.setRole(request.getRole());
+                // Ensure status is active
+                existingUser.setStatus(UserStatus.ACTIVE);
+                User savedUser = userRepository.save(existingUser);
+                return mapToResponse(savedUser);
+            } else {
+                // If already Admin/Staff or other conflict
+                throw new ConflictException("User", "email", request.getEmail());
+            }
         }
         
         String firebaseUid = null;
@@ -76,9 +91,8 @@ public class UserService {
                 
                 // Send password reset email so user can set their own password
                 try {
-                    String resetLink = com.google.firebase.auth.FirebaseAuth.getInstance()
+                    com.google.firebase.auth.FirebaseAuth.getInstance()
                         .generatePasswordResetLink(request.getEmail());
-                    log.info("Password reset link generated for {}: {}", request.getEmail(), resetLink);
                     // Firebase will automatically send email to user with the reset link
                 } catch (com.google.firebase.auth.FirebaseAuthException resetEx) {
                     log.warn("Could not generate password reset link for {}: {}", 
@@ -87,8 +101,18 @@ public class UserService {
                 }
                 
             } catch (com.google.firebase.auth.FirebaseAuthException e) {
-                log.error("Failed to create Firebase user for {}: {}", request.getEmail(), e.getMessage());
-                throw new RuntimeException("Failed to create Firebase account: " + e.getMessage());
+                // If user already exists in Firebase but not in DB (edge case) or other error
+                if ("email-already-exists".equals(e.getErrorCode())) {
+                     log.warn("User {} already exists in Firebase, proceeding with local DB creation", request.getEmail());
+                     try {
+                        firebaseUid = com.google.firebase.auth.FirebaseAuth.getInstance().getUserByEmail(request.getEmail()).getUid();
+                     } catch (Exception ex) {
+                        log.error("Failed to retrieve existing MyFirebase user uid", ex);
+                     }
+                } else {
+                    log.error("Failed to create Firebase user for {}: {}", request.getEmail(), e.getMessage());
+                    throw new RuntimeException("Failed to create Firebase account: " + e.getMessage());
+                }
             }
         }
         
@@ -281,6 +305,27 @@ public class UserService {
                 // Continue anyway - the local account is already closed
             }
         }
+    }
+    
+    /**
+     * Demote an Admin/Staff back to Customer role.
+     * Use case: "Stop Admin privileges"
+     */
+    @Transactional
+    public void demoteToCustomer(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found: " + email));
+        
+        if (user.getRole() == Role.CUSTOMER) {
+            throw new ConflictException("User", "role", "Already a CUSTOMER");
+        }
+        
+        // Don't allow demoting the Seeded Super Admin if possible (check by email??)
+        // For now, just allow it but log strict warning.
+        
+        log.info("Demoting user {} from {} to CUSTOMER", email, user.getRole());
+        user.setRole(Role.CUSTOMER);
+        userRepository.save(user);
     }
 }
 

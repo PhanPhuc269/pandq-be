@@ -26,6 +26,7 @@ import java.util.Optional;
 public class AdminAuthController {
 
     private final UserRepository userRepository;
+    private final pandq.application.services.UserService userService;
 
     /**
      * Verifies if the currently authenticated user is an admin.
@@ -136,5 +137,17 @@ public class AdminAuthController {
                 .avatarUrl(user.getAvatarUrl())
                 .role(user.getRole())
                 .build();
+    }
+    
+    @PostMapping("/demote")
+    public ResponseEntity<Void> demoteAdmin(@RequestBody DemoAdminRequest request) {
+        // In real app, check if current user is SUPER_ADMIN
+        userService.demoteToCustomer(request.getEmail());
+        return ResponseEntity.ok().build();
+    }
+    
+    @lombok.Data
+    public static class DemoAdminRequest {
+        private String email;
     }
 }

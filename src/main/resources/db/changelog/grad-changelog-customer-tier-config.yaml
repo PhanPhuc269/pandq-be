@@ -1,0 +1,150 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-customer-tier-config-table
+      author: system
+      changes:
+        - createTable:
+            tableName: customer_tier_configs
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: tier
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: min_spent
+                  type: decimal(15,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: max_spent
+                  type: decimal(15,2)
+              - column:
+                  name: display_name
+                  type: varchar(100)
+              - column:
+                  name: description
+                  type: varchar(500)
+              - column:
+                  name: is_active
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp
+              - column:
+                  name: updated_by
+                  type: varchar(100)
+
+  - changeSet:
+      id: seed-customer-tier-configs
+      author: system
+      changes:
+        - insert:
+            tableName: customer_tier_configs
+            columns:
+              - column:
+                  name: id
+                  valueComputed: gen_random_uuid()
+              - column:
+                  name: tier
+                  value: BRONZE
+              - column:
+                  name: min_spent
+                  valueNumeric: 0
+              - column:
+                  name: max_spent
+                  valueNumeric: 10000000
+              - column:
+                  name: display_name
+                  value: "Đồng"
+              - column:
+                  name: description
+                  value: "Hạng khởi đầu cho khách hàng mới"
+              - column:
+                  name: is_active
+                  valueBoolean: true
+
+        - insert:
+            tableName: customer_tier_configs
+            columns:
+              - column:
+                  name: id
+                  valueComputed: gen_random_uuid()
+              - column:
+                  name: tier
+                  value: SILVER
+              - column:
+                  name: min_spent
+                  valueNumeric: 10000001
+              - column:
+                  name: max_spent
+                  valueNumeric: 50000000
+              - column:
+                  name: display_name
+                  value: "Bạc"
+              - column:
+                  name: description
+                  value: "Khách hàng thân thiết"
+              - column:
+                  name: is_active
+                  valueBoolean: true
+
+        - insert:
+            tableName: customer_tier_configs
+            columns:
+              - column:
+                  name: id
+                  valueComputed: gen_random_uuid()
+              - column:
+                  name: tier
+                  value: GOLD
+              - column:
+                  name: min_spent
+                  valueNumeric: 50000001
+              - column:
+                  name: max_spent
+                  valueNumeric: 200000000
+              - column:
+                  name: display_name
+                  value: "Vàng"
+              - column:
+                  name: description
+                  value: "Khách hàng VIP"
+              - column:
+                  name: is_active
+                  valueBoolean: true
+
+        - insert:
+            tableName: customer_tier_configs
+            columns:
+              - column:
+                  name: id
+                  valueComputed: gen_random_uuid()
+              - column:
+                  name: tier
+                  value: PLATINUM
+              - column:
+                  name: min_spent
+                  valueNumeric: 200000001
+              - column:
+                  name: max_spent
+                  value: null
+              - column:
+                  name: display_name
+                  value: "Kim cương"
+              - column:
+                  name: description
+                  value: "Khách hàng cao cấp nhất"
+              - column:
+                  name: is_active
+                  valueBoolean: true

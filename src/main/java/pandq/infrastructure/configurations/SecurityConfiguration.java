@@ -38,6 +38,7 @@ public class SecurityConfiguration {
                                         "/swagger-ui.html",
                                         "/webjars/**",
                                         "/error",
+                                        "/products/**",
                                         "/api/v1/init-config",
                                         "/api/v1/master-data/**",
                                         "/api/v1/products/search",
@@ -53,10 +54,21 @@ public class SecurityConfiguration {
                                         "/api/v1/users/fcm-token-by-email",
                                         "/api/v1/payments/**",
                                         "/api/v1/zalopay/**",
-                                        "/api/v1/sepay/**"
-                                ).permitAll()
-                                .anyRequest().authenticated()
-                )
+                                        "/api/v1/sepay/**",
+                                        "/api/v1/analytics/**",
+                                        "/api/v1/customers/**",
+                                        "/api/v1/chats/**",
+                                        "/ws/chat/**",
+                                        "/.well-known/**",
+                                        "/api/v1/orders/shipping-zones",
+                                        "/api/v1/orders/shipping-fee/**",
+                                        "/api/v1/vouchers/**",
+                                        // Orders endpoints for testing
+                                        "/api/v1/orders/**",
+                                        "/api/v1/promotions/**",
+                                        "/api/v1/customer-tier-config/**")
+                                .permitAll()
+                                .anyRequest().authenticated())
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(firebaseAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

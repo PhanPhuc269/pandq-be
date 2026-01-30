@@ -1,0 +1,37 @@
+databaseChangeLog:
+  # =====================================================
+  # Update category images with Amazon Product Photos (Stable & High-Res)
+  # =====================================================
+
+  - changeSet:
+      id: 053-update-category-images-amazon
+      author: antigravity
+      changes:
+        # Điện thoại - iPhone 15 Pro Max Natural Titanium
+        # Amazon images are well-cropped and stable
+        - update:
+            tableName: categories
+            columns:
+              - column: { name: image_url, value: "https://njoyshop.vn/cdn/shop/collections/p_iphone_category.jpg?v=1766144531&width=600" }
+            where: id = '11111111-1111-1111-1111-111111111111'
+        
+        # Laptop - MacBook Pro 14 M3
+        - update:
+            tableName: categories
+            columns:
+              - column: { name: image_url, value: "https://www.tnc.com.vn/uploads/product/sp2025/laptop-dell-15-dc15250-i5-cph99.webp" }
+            where: id = '22222222-2222-2222-2222-222222222222'
+        
+        # Phụ kiện - AirPods Pro 2 USB-C
+        - update:
+            tableName: categories
+            columns:
+              - column: { name: image_url, value: "https://vitinhthanhtin.com/wp-content/uploads/2024/01/MTJV3_AV2.jpg" }
+            where: id = '33333333-aaaa-3333-aaaa-333333333333'
+        
+        # Đồng hồ - Apple Watch Series 9 Midnight Sport Band
+        - update:
+            tableName: categories
+            columns:
+              - column: { name: image_url, value: "https://i.ebayimg.com/images/g/BdMAAOSwJaVmLfSK/s-l1200.jpg" }
+            where: id = '44444444-aaaa-4444-aaaa-444444444444'

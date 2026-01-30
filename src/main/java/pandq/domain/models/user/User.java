@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import pandq.domain.models.enums.Role;
 import pandq.domain.models.enums.UserStatus;
+import pandq.domain.enums.CustomerTier;
+import pandq.domain.enums.AccountStatus;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -30,6 +32,7 @@ public class User {
 
     private String fullName;
     private String phone;
+    @Column(length = 1000)
     private String avatarUrl;
 
     @Enumerated(EnumType.STRING)
@@ -48,6 +51,21 @@ public class User {
 
     // FCM token for push notifications
     private String fcmToken;
+
+    // Customer tier management
+    @Builder.Default
+    @Column(precision = 15, scale = 2)
+    private java.math.BigDecimal totalSpent = java.math.BigDecimal.ZERO;
+
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private CustomerTier customerTier = CustomerTier.BRONZE;
+
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private AccountStatus accountStatus = AccountStatus.ACTIVE;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Address> addresses;

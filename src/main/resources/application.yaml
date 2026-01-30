@@ -12,3 +12,18 @@ spring:
     multipart:
       max-file-size: 20MB
       max-request-size: 20MB
+
+# Admin seed configuration
+app:
+  admin:
+    seed:
+      enabled: ${ADMIN_SEED_ENABLED:true}
+      email: ${ADMIN_SEED_EMAIL:admin@pandq.com}
+      name: ${ADMIN_SEED_NAME:Super Admin}
+
+# Cloudinary configuration
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME:}
+  api-key: ${CLOUDINARY_API_KEY:}
+  api-secret: ${CLOUDINARY_API_SECRET:}
+  upload-preset: ${CLOUDINARY_UPLOAD_PRESET:}

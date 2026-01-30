@@ -29,7 +29,10 @@ import java.util.*;
 public class ZaloPayService {
 
     private final OrderRepository orderRepository;
+    private final VoucherService voucherService;
     private final NotificationService notificationService;
+    private final AdminNotificationService adminNotificationService;
+    private final InventoryService inventoryService;
 
     @Value("${ZALOPAY_APP_ID:2554}")
     private int appId;
@@ -209,6 +212,36 @@ public class ZaloPayService {
                         order.setStatus(OrderStatus.CONFIRMED);
                         orderRepository.save(order);
                         log.info("Updated order {} status to CONFIRMED", orderId);
+                        
+                        // Mark voucher as used if promotion was applied
+                        if (order.getPromotion() != null && order.getUser() != null) {
+                            try {
+                                voucherService.markVoucherAsUsed(
+                                    order.getUser().getId().toString(), 
+                                    order.getPromotion().getId()
+                                );
+                                log.info("Marked voucher {} as used for order {}", 
+                                    order.getPromotion().getId(), orderId);
+                            } catch (Exception e) {
+                                log.error("Failed to mark voucher as used for order {}: {}", 
+                                    orderId, e.getMessage());
+                            }
+                        }
+                        // Reserve inventory for confirmed order
+                        for (var item : order.getOrderItems()) {
+                            inventoryService.reserveInventoryForOrder(
+                                item.getProduct().getId(),
+                                item.getQuantity()
+                            );
+                        }
+                        log.info("Reserved inventory for order {}", orderId);
+                        
+                        // Notify admins about new confirmed order (async)
+                        adminNotificationService.notifyNewOrder(
+                            order.getId(),
+                            order.getUser().getFullName(),
+                            order.getTotalAmount()
+                        );
                         
                         // Send FCM notification to customer (async - non-blocking)
                         UUID userId = order.getUser().getId();

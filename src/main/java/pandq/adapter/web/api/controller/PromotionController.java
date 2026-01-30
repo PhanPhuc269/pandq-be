@@ -31,6 +31,16 @@ public class PromotionController {
         return ResponseEntity.ok(promotionService.getPromotionByCode(code));
     }
 
+    /**
+     * Validate mã giảm giá và tính số tiền giảm
+     * Sử dụng cho checkout flow trong User App
+     */
+    @PostMapping("/validate")
+    public ResponseEntity<PromotionDTO.ValidateResponse> validatePromotion(
+            @RequestBody PromotionDTO.ValidateRequest request) {
+        return ResponseEntity.ok(promotionService.validatePromotion(request));
+    }
+
     @PostMapping
     public ResponseEntity<PromotionDTO.Response> createPromotion(@RequestBody PromotionDTO.CreateRequest request) {
         return ResponseEntity.ok(promotionService.createPromotion(request));

@@ -14,6 +14,8 @@ public interface JpaOrderRepository extends JpaRepository<Order, UUID> {
 
         List<Order> findByUserIdAndStatus(UUID userId, OrderStatus status);
 
+        List<Order> findByStatus(OrderStatus status);
+
         /**
          * Check if user has purchased a specific product with COMPLETED status
          */
@@ -25,4 +27,22 @@ public interface JpaOrderRepository extends JpaRepository<Order, UUID> {
         boolean existsByUserIdAndProductIdWithDeliveredStatus(
                         @Param("userId") UUID userId,
                         @Param("productId") UUID productId);
+
+        @Query("SELECT COUNT(DISTINCT o.user.id) FROM Order o " +
+                        "WHERE o.createdAt BETWEEN :startDate AND :endDate " +
+                        "AND o.status = 'COMPLETED' " +
+                        "AND o.user.id NOT IN (" +
+                        "    SELECT p.user.id FROM Order p " +
+                        "    WHERE p.createdAt < :startDate " +
+                        "    AND p.status = 'COMPLETED'" +
+                        ")")
+        long countNewCustomersInRange(
+                        @Param("startDate") java.time.LocalDateTime startDate,
+                        @Param("endDate") java.time.LocalDateTime endDate);
+
+        /**
+         * Get orders with CONFIRMED or SHIPPING status (orders that need inventory reserved)
+         */
+        @Query("SELECT o FROM Order o WHERE o.status IN ('CONFIRMED', 'SHIPPING')")
+        List<Order> findActiveOrdersWithReservedInventory();
 }

@@ -19,4 +19,20 @@ public class NotificationDTO {
         private Boolean isRead;
         private LocalDateTime createdAt;
     }
+
+    @Data
+    public static class PreferenceResponse {
+        private Boolean enablePromotions;
+        private Boolean enableOrders;
+        private Boolean enableSystem;
+        private Boolean enableChat;
+    }
+
+    @Data
+    public static class PreferenceRequest {
+        private Boolean enablePromotions;
+        private Boolean enableOrders;
+        private Boolean enableSystem;
+        private Boolean enableChat;
+    }
 }

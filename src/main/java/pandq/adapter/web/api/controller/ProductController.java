@@ -70,6 +70,11 @@ public class ProductController {
         ));
     }
 
+    @GetMapping("/trending-searches")
+    public ResponseEntity<List<String>> getTrendingSearches() {
+        return ResponseEntity.ok(productService.getTrendingSearches());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO.Response> getProductById(@PathVariable UUID id) {
         return ResponseEntity.ok(productService.getProductById(id));

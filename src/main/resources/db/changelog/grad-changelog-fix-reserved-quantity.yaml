@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: 070-fix-reserved-quantity-for-completed-orders
+      author: antigravity
+      comment: "Reset reserved_quantity to 0 for products where all orders are completed. Fix for data inconsistency caused by direct SQL updates."
+      changes:
+        - sql:
+            sql: |
+              -- Reset reserved_quantity to 0 for all inventory items where:
+              -- 1. All orders containing that product are COMPLETED, DELIVERED, or CANCELLED
+              -- 2. There are no pending, confirmed, or shipping orders for that product
+              UPDATE inventory i
+              SET reserved_quantity = 0
+              WHERE NOT EXISTS (
+                SELECT 1 
+                FROM order_items oi
+                JOIN orders o ON o.id = oi.order_id
+                WHERE oi.product_id = i.product_id
+                AND o.status IN ('PENDING', 'CONFIRMED', 'SHIPPING')
+              );
+
+  - changeSet:
+      id: 071-recalculate-reserved-quantity
+      author: antigravity
+      comment: "Recalculate correct reserved_quantity based on active orders (CONFIRMED or SHIPPING status)"
+      changes:
+        - sql:
+            sql: |
+              -- Recalculate reserved_quantity for products that have active orders
+              -- Only count items from orders with status CONFIRMED or SHIPPING
+              UPDATE inventory i
+              SET reserved_quantity = COALESCE((
+                SELECT SUM(oi.quantity)
+                FROM order_items oi
+                JOIN orders o ON o.id = oi.order_id
+                WHERE oi.product_id = i.product_id
+                AND o.status IN ('CONFIRMED', 'SHIPPING')
+              ), 0);

@@ -138,4 +138,44 @@ public class FcmService {
             return null;
         }
     }
+
+    /**
+     * Send a DATA-ONLY notification to a topic with type and targetUrl for deep linking.
+     * This is preferred for admin notifications to ensure proper handling and deep links.
+     *
+     * @param topic     Topic name (e.g., "admin_notifications")
+     * @param title     Notification title
+     * @param body      Notification body
+     * @param type      Notification type for client-side handling
+     * @param targetUrl Optional URL for deep linking
+     * @return Message ID if successful, null otherwise
+     */
+    public String sendToTopicWithData(String topic, String title, String body, 
+                                       NotificationType type, String targetUrl) {
+        try {
+            Message.Builder messageBuilder = Message.builder()
+                    .setTopic(topic)
+                    .putData("title", title)
+                    .putData("body", body)
+                    .putData("type", type != null ? type.name() : "SYSTEM")
+                    // High priority to wake up device and deliver message reliably
+                    .setAndroidConfig(com.google.firebase.messaging.AndroidConfig.builder()
+                            .setPriority(com.google.firebase.messaging.AndroidConfig.Priority.HIGH)
+                            .build());
+
+            if (targetUrl != null && !targetUrl.isEmpty()) {
+                messageBuilder.putData("targetUrl", targetUrl);
+            }
+
+            Message message = messageBuilder.build();
+            String messageId = FirebaseMessaging.getInstance().send(message);
+            log.info("Successfully sent FCM data message to topic '{}'. Type: {}, Message ID: {}", 
+                    topic, type, messageId);
+            return messageId;
+
+        } catch (FirebaseMessagingException e) {
+            log.error("Failed to send FCM data message to topic '{}': {}", topic, e.getMessage());
+            return null;
+        }
+    }
 }

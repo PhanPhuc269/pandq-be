@@ -42,6 +42,11 @@ public class InventoryRepositoryImpl implements InventoryRepository {
     }
 
     @Override
+    public List<Inventory> findAll() {
+        return jpaInventoryRepository.findAll();
+    }
+
+    @Override
     public void deleteById(UUID id) {
         jpaInventoryRepository.deleteById(id);
     }

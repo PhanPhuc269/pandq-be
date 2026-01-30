@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-product-context-to-chat-messages
+      author: pandq
+      changes:
+        - addColumn:
+            tableName: chat_messages
+            columns:
+              - column:
+                  name: product_context_id
+                  type: UUID
+                  constraints:
+                    nullable: true
+              - column:
+                  name: product_context_name
+                  type: VARCHAR(500)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: product_context_image
+                  type: VARCHAR(1000)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: product_context_price
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: true
+      comment: Add product context fields to chat_messages table for displaying product divider in chat

@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.group1.pandqapplication",
+      "sha256_cert_fingerprints": [
+        "05:0E:06:20:A9:83:A8:22:D7:3F:14:06:14:E9:CF:20:46:4D:E0:52:2F:C4:9E:9E:97:FA:76:39:02:DD:56:00"
+      ]
+    }
+  }
+]

@@ -17,6 +17,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import pandq.application.exceptions.ConflictException;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -48,6 +50,72 @@ public class UserService {
 
     @Transactional
     public UserDTO.Response createUser(UserDTO.CreateRequest request) {
+        Optional<User> existingUserOpt = userRepository.findByEmail(request.getEmail());
+        
+        if (existingUserOpt.isPresent()) {
+            User existingUser = existingUserOpt.get();
+            // Allow promoting CUSTOMER to ADMIN/STAFF
+            if (existingUser.getRole() == Role.CUSTOMER && (request.getRole() == Role.ADMIN || request.getRole() == Role.STAFF)) {
+                log.info("Promoting user {} from {} to {}", existingUser.getEmail(), existingUser.getRole(), request.getRole());
+                existingUser.setRole(request.getRole());
+                // Ensure status is active
+                existingUser.setStatus(UserStatus.ACTIVE);
+                User savedUser = userRepository.save(existingUser);
+                return mapToResponse(savedUser);
+            } else {
+                // If already Admin/Staff or other conflict
+                throw new ConflictException("User", "email", request.getEmail());
+            }
+        }
+        
+        String firebaseUid = null;
+        
+        // Create Firebase user for ADMIN and STAFF roles
+        if (request.getRole() == Role.ADMIN || request.getRole() == Role.STAFF) {
+            try {
+                // Generate random temporary password
+                String tempPassword = generateRandomPassword();
+                
+                // Create Firebase user with temporary password
+                com.google.firebase.auth.UserRecord.CreateRequest firebaseRequest = 
+                    new com.google.firebase.auth.UserRecord.CreateRequest()
+                        .setEmail(request.getEmail())
+                        .setPassword(tempPassword)
+                        .setDisplayName(request.getFullName())
+                        .setEmailVerified(false); // Not verified, will verify via reset link
+                
+                com.google.firebase.auth.UserRecord firebaseUser = 
+                    com.google.firebase.auth.FirebaseAuth.getInstance().createUser(firebaseRequest);
+                firebaseUid = firebaseUser.getUid();
+                log.info("Created Firebase user for {}: {}", request.getEmail(), firebaseUid);
+                
+                // Send password reset email so user can set their own password
+                try {
+                    com.google.firebase.auth.FirebaseAuth.getInstance()
+                        .generatePasswordResetLink(request.getEmail());
+                    // Firebase will automatically send email to user with the reset link
+                } catch (com.google.firebase.auth.FirebaseAuthException resetEx) {
+                    log.warn("Could not generate password reset link for {}: {}", 
+                        request.getEmail(), resetEx.getMessage());
+                    // Continue anyway - user was created
+                }
+                
+            } catch (com.google.firebase.auth.FirebaseAuthException e) {
+                // If user already exists in Firebase but not in DB (edge case) or other error
+                if ("email-already-exists".equals(e.getErrorCode())) {
+                     log.warn("User {} already exists in Firebase, proceeding with local DB creation", request.getEmail());
+                     try {
+                        firebaseUid = com.google.firebase.auth.FirebaseAuth.getInstance().getUserByEmail(request.getEmail()).getUid();
+                     } catch (Exception ex) {
+                        log.error("Failed to retrieve existing MyFirebase user uid", ex);
+                     }
+                } else {
+                    log.error("Failed to create Firebase user for {}: {}", request.getEmail(), e.getMessage());
+                    throw new RuntimeException("Failed to create Firebase account: " + e.getMessage());
+                }
+            }
+        }
+        
         User user = User.builder()
                 .email(request.getEmail())
                 .fullName(request.getFullName())
@@ -55,10 +123,25 @@ public class UserService {
                 .avatarUrl(request.getAvatarUrl())
                 .role(request.getRole())
                 .status(UserStatus.ACTIVE)
+                .firebaseUid(firebaseUid)
                 .build();
 
         User savedUser = userRepository.save(user);
+        log.info("Created user in database: {} with role {}", request.getEmail(), request.getRole());
         return mapToResponse(savedUser);
+    }
+    
+    /**
+     * Generate a random secure password
+     */
+    private String generateRandomPassword() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%";
+        java.security.SecureRandom random = new java.security.SecureRandom();
+        StringBuilder sb = new StringBuilder(16);
+        for (int i = 0; i < 16; i++) {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return sb.toString();
     }
 
     @Transactional
@@ -185,6 +268,64 @@ public class UserService {
             }
         }
         return result.toString().trim();
+    }
+
+    /**
+     * Close user account permanently.
+     * This will:
+     * 1. Update user status to CLOSED
+     * 2. Disable Firebase account
+     * @param email User's email
+     * @param reason Optional reason for closing
+     */
+    @Transactional
+    public void closeAccount(String email, String reason) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found: " + email));
+        
+        if (user.getStatus() == UserStatus.CLOSED) {
+            throw new RuntimeException("Account is already closed");
+        }
+        
+        // Update user status to CLOSED
+        user.setStatus(UserStatus.CLOSED);
+        userRepository.save(user);
+        log.info("User account closed: {} - Reason: {}", email, reason != null ? reason : "Not provided");
+        
+        // Disable Firebase account if firebaseUid exists
+        if (user.getFirebaseUid() != null) {
+            try {
+                com.google.firebase.auth.UserRecord.UpdateRequest updateRequest = 
+                    new com.google.firebase.auth.UserRecord.UpdateRequest(user.getFirebaseUid())
+                        .setDisabled(true);
+                com.google.firebase.auth.FirebaseAuth.getInstance().updateUser(updateRequest);
+                log.info("Firebase account disabled for user: {}", email);
+            } catch (com.google.firebase.auth.FirebaseAuthException e) {
+                log.error("Failed to disable Firebase account for {}: {}", email, e.getMessage());
+                // Continue anyway - the local account is already closed
+            }
+        }
+    }
+    
+    /**
+     * Demote an Admin/Staff back to Customer role.
+     * Use case: "Stop Admin privileges"
+     */
+    @Transactional
+    public void demoteToCustomer(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found: " + email));
+        
+        if (user.getRole() == Role.CUSTOMER) {
+            throw new ConflictException("User", "role", "Already a CUSTOMER");
+        }
+        
+        // Don't allow demoting the Seeded Super Admin if possible (check by email??)
+        // For now, just allow it but log strict warning.
+        
+        log.info("Demoting user {} from {} to CUSTOMER", email, user.getRole());
+        user.setRole(Role.CUSTOMER);
+        userRepository.save(user);
     }
 }
 

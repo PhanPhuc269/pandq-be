@@ -22,9 +22,19 @@ public class Promotion {
     private UUID id;
     
     @ElementCollection
+    @CollectionTable(
+        name = "promotion_applicable_categories",
+        joinColumns = @JoinColumn(name = "promotion_id")
+    )
+    @Column(name = "applicable_category_ids")
     private java.util.List<UUID> applicableCategoryIds;
 
     @ElementCollection
+    @CollectionTable(
+        name = "promotion_applicable_products",
+        joinColumns = @JoinColumn(name = "promotion_id")
+    )
+    @Column(name = "applicable_product_ids")
     private java.util.List<UUID> applicableProductIds;
 
     @Column(nullable = false, unique = true)
@@ -32,6 +42,9 @@ public class Promotion {
 
     @Column(nullable = false)
     private String name;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
     @Enumerated(EnumType.STRING)
     private DiscountType type;

@@ -33,7 +33,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO.Response> createUser(@RequestBody UserDTO.CreateRequest request) {
+    public ResponseEntity<UserDTO.Response> createUser(@RequestBody @jakarta.validation.Valid UserDTO.CreateRequest request) {
         return ResponseEntity.ok(userService.createUser(request));
     }
 
@@ -51,6 +51,12 @@ public class UserController {
     @PostMapping("/fcm-token-by-email")
     public ResponseEntity<Void> updateFcmTokenByEmail(@RequestBody UserDTO.FcmTokenByEmailRequest request) {
         userService.updateFcmTokenByEmail(request.getEmail(), request.getFcmToken(), request.getFirebaseUid());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/close-account")
+    public ResponseEntity<Void> closeAccount(@RequestBody UserDTO.CloseAccountRequest request) {
+        userService.closeAccount(request.getEmail(), request.getReason());
         return ResponseEntity.ok().build();
     }
 }

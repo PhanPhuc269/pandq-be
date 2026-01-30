@@ -116,10 +116,8 @@ public class ReviewService {
                 });
         log.info("Product found: {}", product.getName());
 
-        // Check if user has purchased this product
-        boolean hasPurchased = orderRepository.hasUserPurchasedProduct(
-                user.getId(), request.getProductId());
-        if (!hasPurchased) {
+        // Check if user has purchased the product
+        if (!orderRepository.hasReceivedOrder(user.getId(), request.getProductId())) {
             log.warn("User {} has not purchased product {}, review not allowed",
                     user.getId(), request.getProductId());
             throw new RuntimeException("Bạn chỉ có thể đánh giá sản phẩm mà bạn đã mua và nhận hàng thành công");

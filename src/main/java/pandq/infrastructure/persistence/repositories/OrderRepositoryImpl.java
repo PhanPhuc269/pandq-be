@@ -48,7 +48,17 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    public boolean hasUserPurchasedProduct(UUID userId, UUID productId) {
+    public boolean hasReceivedOrder(UUID userId, UUID productId) {
         return jpaOrderRepository.existsByUserIdAndProductIdWithDeliveredStatus(userId, productId);
+    }
+
+    @Override
+    public long countNewCustomersInRange(java.time.LocalDateTime startDate, java.time.LocalDateTime endDate) {
+        return jpaOrderRepository.countNewCustomersInRange(startDate, endDate);
+    }
+
+    @Override
+    public List<Order> findByStatus(OrderStatus status) {
+        return jpaOrderRepository.findByStatus(status);
     }
 }

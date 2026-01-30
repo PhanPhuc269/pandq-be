@@ -6,6 +6,8 @@ import com.google.firebase.FirebaseOptions;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,10 +17,16 @@ public class FirebaseConfiguration {
 
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
-        // Warning: This assumes the file exists in src/main/resources/firebase-service-account.json
-        // In a real production environment, using GOOGLE_APPLICATION_CREDENTIALS env var is often preferred
-        // or GoogleCredentials.getApplicationDefault() if running on GCP.
-        ClassPathResource resource = new ClassPathResource("firebase-service-account.json");
+        Resource resource;
+        
+        // Check if the file exists in /etc/secrets (Render Secret Files location)
+        FileSystemResource secretsResource = new FileSystemResource("/etc/secrets/firebase-service-account.json");
+        if (secretsResource.exists()) {
+            resource = secretsResource;
+        } else {
+            // Fall back to classpath resource (for local development)
+            resource = new ClassPathResource("firebase-service-account.json");
+        }
         
         try (InputStream serviceAccount = resource.getInputStream()) {
             FirebaseOptions options = FirebaseOptions.builder()

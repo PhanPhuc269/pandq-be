@@ -7,11 +7,14 @@ import pandq.adapter.web.api.dtos.OrderDTO;
 import pandq.application.port.repositories.OrderRepository;
 import pandq.application.port.repositories.ProductRepository;
 import pandq.domain.models.enums.OrderStatus;
+import pandq.domain.models.enums.PaymentMethod;
 import pandq.domain.models.order.Order;
 import pandq.domain.models.order.OrderItem;
 import pandq.domain.models.product.Product;
 import pandq.domain.models.user.User;
+import pandq.domain.models.marketing.Promotion;
 import pandq.infrastructure.persistence.repositories.jpa.JpaUserRepository;
+import pandq.infrastructure.persistence.repositories.jpa.JpaPromotionRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -27,6 +30,11 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final JpaUserRepository userRepository;
+    private final AdminNotificationService adminNotificationService;
+    private final ShippingCalculatorService shippingCalculatorService;
+    private final VoucherService voucherService;
+    private final JpaPromotionRepository promotionRepository;
+    private final InventoryService inventoryService;
 
     @Transactional(readOnly = true)
     public List<OrderDTO.Response> getAllOrders() {
@@ -135,11 +143,56 @@ public class OrderService {
 
         order.setOrderItems(orderItems);
         order.setTotalAmount(totalAmount);
-        order.setShippingFee(BigDecimal.ZERO); // Simplified
-        order.setDiscountAmount(BigDecimal.ZERO); // Simplified
-        order.setFinalAmount(totalAmount);
+        
+        // Calculate shipping fee dynamically
+        var shippingResult = shippingCalculatorService.calculateFromOrderItems(
+                request.getShippingAddress(),
+                orderItems,
+                totalAmount
+        );
+        order.setShippingFee(shippingResult.getShippingFee());
+        order.setShippingFee(shippingResult.getShippingFee());
+        
+        // Apply voucher if provided
+        BigDecimal discountAmount = BigDecimal.ZERO;
+        if (request.getPromotionId() != null) {
+            String userIdForVoucher = user != null ? user.getId().toString() : request.getUserId();
+            discountAmount = voucherService.applyVoucher(
+                userIdForVoucher, 
+                request.getPromotionId(), 
+                totalAmount, 
+                shippingResult.getShippingFee()
+            );
+            
+            // Store the promotion reference on the order for payment callback to mark as used
+            Promotion promotion = promotionRepository.findById(request.getPromotionId()).orElse(null);
+            order.setPromotion(promotion);
+        }
+        
+        order.setDiscountAmount(discountAmount);
+        
+        // Ensure final amount is not negative
+        BigDecimal finalAmount = totalAmount.add(shippingResult.getShippingFee()).subtract(discountAmount);
+        if (finalAmount.compareTo(BigDecimal.ZERO) < 0) {
+            finalAmount = BigDecimal.ZERO;
+        }
+        order.setFinalAmount(finalAmount);
 
         Order savedOrder = orderRepository.save(order);
+        
+        // Mark voucher as used if order created successfully
+        if (request.getPromotionId() != null) {
+            String userIdForVoucher = user != null ? user.getId().toString() : request.getUserId();
+            voucherService.markVoucherAsUsed(userIdForVoucher, request.getPromotionId());
+        }
+        
+        // Notify admins about new order (async)
+        adminNotificationService.notifyNewOrder(
+                savedOrder.getId(),
+                user.getFullName(),
+                totalAmount
+        );
+        
         return mapToResponse(savedOrder);
     }
 
@@ -147,6 +200,12 @@ public class OrderService {
         OrderDTO.Response response = new OrderDTO.Response();
         response.setId(order.getId());
         response.setUserId(order.getUser().getId().toString());
+        
+        // Lấy thông tin khách hàng từ User
+        User user = order.getUser();
+        response.setCustomerName(user.getFullName() != null ? user.getFullName() : user.getEmail());
+        response.setCustomerPhone(user.getPhone());
+        
         response.setTotalAmount(order.getTotalAmount());
         response.setShippingFee(order.getShippingFee());
         response.setDiscountAmount(order.getDiscountAmount());
@@ -154,6 +213,8 @@ public class OrderService {
         response.setPaymentMethod(order.getPaymentMethod());
         response.setStatus(order.getStatus());
         response.setShippingAddress(order.getShippingAddress());
+        response.setShippingProvider(order.getShippingProvider());
+        response.setTrackingNumber(order.getTrackingNumber());
         response.setCreatedAt(order.getCreatedAt());
 
         // Deduplicate order items by ID (Hibernate may return duplicates due to
@@ -182,6 +243,42 @@ public class OrderService {
         response.setItems(items);
 
         return response;
+    }
+
+    /**
+     * Apply a promotion/voucher to an existing order before payment
+     */
+    @Transactional
+    public OrderDTO.Response applyPromotionToOrder(UUID orderId, OrderDTO.ApplyPromotionRequest request) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+        
+        // Validate and apply the voucher
+        if (request.getPromotionId() != null && request.getUserId() != null) {
+            BigDecimal discountAmount = voucherService.applyVoucher(
+                request.getUserId(),
+                request.getPromotionId(),
+                order.getTotalAmount(),
+                order.getShippingFee() != null ? order.getShippingFee() : BigDecimal.ZERO
+            );
+            
+            // Link the promotion to the order
+            Promotion promotion = promotionRepository.findById(request.getPromotionId()).orElse(null);
+            order.setPromotion(promotion);
+            order.setDiscountAmount(discountAmount);
+            
+            // Recalculate final amount
+            BigDecimal shippingFee = order.getShippingFee() != null ? order.getShippingFee() : BigDecimal.ZERO;
+            BigDecimal finalAmount = order.getTotalAmount().add(shippingFee).subtract(discountAmount);
+            if (finalAmount.compareTo(BigDecimal.ZERO) < 0) {
+                finalAmount = BigDecimal.ZERO;
+            }
+            order.setFinalAmount(finalAmount);
+            
+            orderRepository.save(order);
+        }
+        
+        return mapToResponse(order);
     }
 
     @Transactional
@@ -465,4 +562,244 @@ public class OrderService {
         Order savedCart = orderRepository.save(userCart);
         return mapToResponse(savedCart);
     }
+
+    // ==================== Shipping Management ====================
+
+    /**
+     * Lấy danh sách đơn hàng theo trạng thái (cho màn hình quản lý vận chuyển)
+     */
+    @Transactional(readOnly = true)
+    public List<OrderDTO.Response> getOrdersByStatus(String status) {
+        try {
+            OrderStatus orderStatus = OrderStatus.valueOf(status.toUpperCase());
+            return orderRepository.findByStatus(orderStatus).stream()
+                    .map(this::mapToResponse)
+                    .collect(Collectors.toList());
+        } catch (IllegalArgumentException e) {
+            // Return all orders if status is "ALL"
+            if ("ALL".equalsIgnoreCase(status)) {
+                return getAllOrders();
+            }
+            throw new RuntimeException("Invalid order status: " + status);
+        }
+    }
+
+    /**
+     * Gán đơn vị vận chuyển cho đơn hàng
+     */
+    @Transactional
+    public OrderDTO.Response assignCarrier(UUID orderId, OrderDTO.AssignCarrierRequest request) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+
+        order.setShippingProvider(request.getShippingProvider());
+        if (request.getTrackingNumber() != null && !request.getTrackingNumber().isEmpty()) {
+            order.setTrackingNumber(request.getTrackingNumber());
+        }
+
+        // Auto-update status to CONFIRMED if it was PENDING
+        if (order.getStatus() == OrderStatus.PENDING) {
+            order.setStatus(OrderStatus.CONFIRMED);
+        }
+
+        Order savedOrder = orderRepository.save(order);
+        return mapToResponse(savedOrder);
+    }
+
+    /**
+     * Cập nhật trạng thái vận chuyển
+     */
+    @Transactional
+    public OrderDTO.Response updateShippingStatus(UUID orderId, OrderDTO.UpdateStatusRequest request) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+
+        order.setStatus(request.getStatus());
+        Order savedOrder = orderRepository.save(order);
+        return mapToResponse(savedOrder);
+    }
+    
+    /**
+     * User confirms delivery - chuyển đơn hàng từ DELIVERED → COMPLETED
+     */
+    @Transactional
+    public OrderDTO.Response confirmDelivery(UUID orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+        
+        // Validate order is in DELIVERED status
+        if (order.getStatus() != OrderStatus.DELIVERED) {
+            throw new RuntimeException("Only DELIVERED orders can be confirmed. Current status: " + order.getStatus());
+        }
+        
+        // Update status to COMPLETED
+        order.setStatus(OrderStatus.COMPLETED);
+        Order savedOrder = orderRepository.save(order);
+        return mapToResponse(savedOrder);
+    }
+    
+    /**
+     * Update order status and handle inventory accordingly
+     * - CONFIRMED: Reserve inventory (increase reservedQuantity)
+     * - DELIVERED/COMPLETED: Decrease actual stock and reserved quantity
+     * - CANCELLED: Release reserved inventory
+     */
+    @Transactional
+    public OrderDTO.Response updateOrderStatus(UUID orderId, OrderStatus newStatus) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+        
+        OrderStatus currentStatus = order.getStatus();
+        
+        // Update inventory based on status transition
+        if (newStatus == OrderStatus.CONFIRMED && currentStatus == OrderStatus.PENDING) {
+            // Order confirmed - reserve inventory
+            for (OrderItem item : order.getOrderItems()) {
+                inventoryService.reserveInventoryForOrder(
+                    item.getProduct().getId(),
+                    item.getQuantity()
+                );
+            }
+        } else if ((newStatus == OrderStatus.DELIVERED || newStatus == OrderStatus.COMPLETED) 
+                   && currentStatus != OrderStatus.DELIVERED && currentStatus != OrderStatus.COMPLETED) {
+            // Order delivered/completed - decrease actual stock
+            for (OrderItem item : order.getOrderItems()) {
+                inventoryService.completeOrderInventory(
+                    item.getProduct().getId(),
+                    item.getQuantity()
+                );
+            }
+        } else if (newStatus == OrderStatus.CANCELLED && currentStatus != OrderStatus.CANCELLED) {
+            // Order cancelled - release reserved inventory
+            for (OrderItem item : order.getOrderItems()) {
+                inventoryService.cancelOrderInventory(
+                    item.getProduct().getId(),
+                    item.getQuantity()
+                );
+            }
+        }
+        
+        order.setStatus(newStatus);
+        Order savedOrder = orderRepository.save(order);
+        return mapToResponse(savedOrder);
+    }        
+
+    /**
+     * Xác nhận đơn hàng với phương thức COD (Thanh toán khi nhận hàng)
+     * - Set payment method to COD
+     * - Lấy địa chỉ giao hàng từ User default address nếu chưa có
+     * - Tính shipping fee dựa trên địa chỉ
+     * - Chuyển status sang PENDING để Admin xử lý
+     */
+    @Transactional
+    public OrderDTO.Response confirmCODOrder(UUID orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+
+        // Set payment method to COD
+        order.setPaymentMethod(PaymentMethod.COD);
+        
+        // Chuyển status sang PENDING (chờ Admin gán đơn vị vận chuyển)
+        order.setStatus(OrderStatus.PENDING);
+        
+        // Lấy và lưu địa chỉ giao hàng từ User nếu chưa có
+        if (order.getShippingAddress() == null || order.getShippingAddress().isEmpty()) {
+            User user = order.getUser();
+            if (user != null && user.getAddresses() != null) {
+                // Force load addresses collection (avoid lazy loading issues)
+                user.getAddresses().size();
+                // Tìm địa chỉ mặc định
+                for (var addr : user.getAddresses()) {
+                    if (addr.getIsDefault() != null && addr.getIsDefault()) {
+                        // Format địa chỉ đầy đủ dạng JSON
+                        String fullAddress = String.format(
+                            "{\"fullName\":\"%s\",\"phone\":\"%s\",\"address\":\"%s\",\"ward\":\"%s\",\"district\":\"%s\",\"city\":\"%s\"}",
+                            user.getFullName() != null ? user.getFullName() : "",
+                            user.getPhone() != null ? user.getPhone() : "",
+                            addr.getDetailAddress() != null ? addr.getDetailAddress() : "",
+                            addr.getWard() != null ? addr.getWard() : "",
+                            addr.getDistrict() != null ? addr.getDistrict() : "",
+                            addr.getCity() != null ? addr.getCity() : ""
+                        );
+                        order.setShippingAddress(fullAddress);
+                        break;
+                    }
+                }
+                
+                // Nếu không có địa chỉ mặc định, lấy địa chỉ đầu tiên
+                if ((order.getShippingAddress() == null || order.getShippingAddress().isEmpty()) 
+                        && !user.getAddresses().isEmpty()) {
+                    var addr = user.getAddresses().get(0);
+                    String fullAddress = String.format(
+                        "{\"fullName\":\"%s\",\"phone\":\"%s\",\"address\":\"%s\",\"ward\":\"%s\",\"district\":\"%s\",\"city\":\"%s\"}",
+                        user.getFullName() != null ? user.getFullName() : "",
+                        user.getPhone() != null ? user.getPhone() : "",
+                        addr.getDetailAddress() != null ? addr.getDetailAddress() : "",
+                        addr.getWard() != null ? addr.getWard() : "",
+                        addr.getDistrict() != null ? addr.getDistrict() : "",
+                        addr.getCity() != null ? addr.getCity() : ""
+                    );
+                    order.setShippingAddress(fullAddress);
+                }
+            }
+        }
+        
+        // Tính shipping fee dựa trên địa chỉ nếu chưa có
+        if (order.getShippingFee() == null || order.getShippingFee().compareTo(java.math.BigDecimal.ZERO) == 0) {
+            String shippingAddress = order.getShippingAddress();
+            java.math.BigDecimal shippingFee = ShippingFeeCalculator.calculateShippingFee(shippingAddress);
+            order.setShippingFee(shippingFee);
+            
+            // Recalculate finalAmount = totalAmount + shippingFee - discountAmount
+            java.math.BigDecimal totalAmount = order.getTotalAmount() != null ? order.getTotalAmount() : java.math.BigDecimal.ZERO;
+            java.math.BigDecimal discountAmount = order.getDiscountAmount() != null ? order.getDiscountAmount() : java.math.BigDecimal.ZERO;
+            java.math.BigDecimal newFinalAmount = totalAmount.add(shippingFee).subtract(discountAmount);
+            order.setFinalAmount(newFinalAmount);
+        }
+        
+        Order savedOrder = orderRepository.save(order);
+        
+        // Notify admins about new COD order
+        adminNotificationService.notifyNewOrder(
+                savedOrder.getId(),
+                order.getUser().getFullName(),
+                savedOrder.getFinalAmount()
+        );
+        
+        return mapToResponse(savedOrder);
+    }
+
+    // ==================== TEST METHODS ====================
+
+    /**
+     * [TEST ONLY] Simulate thanh toán thành công
+     * Chuyển đơn hàng từ CART hoặc bất kỳ status nào sang PENDING
+     * Đồng thời tính và apply shipping fee dựa trên địa chỉ
+     */
+    @Transactional
+    public OrderDTO.Response testConfirmPayment(UUID orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+
+        // Chuyển status sang PENDING (chờ Admin gán đơn vị vận chuyển)
+        order.setStatus(OrderStatus.PENDING);
+        
+        // Tính shipping fee dựa trên địa chỉ nếu chưa có
+        if (order.getShippingFee() == null || order.getShippingFee().compareTo(java.math.BigDecimal.ZERO) == 0) {
+            // Parse city từ shippingAddress nếu có
+            String shippingAddress = order.getShippingAddress();
+            java.math.BigDecimal shippingFee = ShippingFeeCalculator.calculateShippingFee(shippingAddress);
+            order.setShippingFee(shippingFee);
+            
+            // Recalculate finalAmount
+            java.math.BigDecimal totalAmount = order.getTotalAmount() != null ? order.getTotalAmount() : java.math.BigDecimal.ZERO;
+            java.math.BigDecimal discountAmount = order.getDiscountAmount() != null ? order.getDiscountAmount() : java.math.BigDecimal.ZERO;
+            java.math.BigDecimal newFinalAmount = totalAmount.add(shippingFee).subtract(discountAmount);
+            order.setFinalAmount(newFinalAmount);
+        }
+        
+        Order savedOrder = orderRepository.save(order);
+        return mapToResponse(savedOrder);
+    }
 }
+
